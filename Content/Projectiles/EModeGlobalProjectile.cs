@@ -827,7 +827,7 @@ namespace FargowiltasSouls.Content.Projectiles
                     break;
 
                 case ProjectileID.EyeBeam:
-                    if (NonSwarmFight(projectile, NPCID.GolemHead, NPCID.GolemHeadFree))
+                    if (!(Main.getGoodWorld && WorldSavingSystem.MasochistModeReal) && NonSwarmFight(projectile, NPCID.GolemHead, NPCID.GolemHeadFree))
                     {
                         if (!firstTickAICheckDone)
                         {
