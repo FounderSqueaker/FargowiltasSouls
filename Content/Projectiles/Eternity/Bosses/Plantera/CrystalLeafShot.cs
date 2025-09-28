@@ -1,9 +1,13 @@
-﻿using FargowiltasSouls.Assets.Textures;
+﻿using FargowiltasSouls.Assets.Particles;
+using FargowiltasSouls.Assets.Textures;
 using FargowiltasSouls.Content.Buffs.Eternity;
+using FargowiltasSouls.Content.Dusts;
 using FargowiltasSouls.Core;
 using FargowiltasSouls.Core.Systems;
+using Luminance.Core.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.GameContent.Drawing;
@@ -12,19 +16,24 @@ using Terraria.ModLoader;
 
 namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
 {
-    public class CrystalLeafShot : ModProjectile
+    public class CrystalLeafShot : ModProjectile, IPixelatedPrimitiveRenderer
     {
-        public override string Texture => "Terraria/Images/Projectile_227";
+        public override string Texture => "Terraria/Images/Item_183";
+
+        public bool hasRedirect = false;
+
+        public int rotLerp;
 
         public override void SetStaticDefaults()
         {
-            // DisplayName.SetDefault("Crystal Leaf");
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 40;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
         public override void SetDefaults()
         {
-            Projectile.width = 10;
-            Projectile.height = 10;
+            Projectile.width = 15;
+            Projectile.height = 15;
             Projectile.hostile = true;
             Projectile.tileCollide = false;
             Projectile.timeLeft = 900;
@@ -45,16 +54,6 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
             Color value3 = recolor ? color : Main.hslToRgb(num348, 1f, 0.5f);
             value3 = Color.Lerp(value3, recolor ? Color.DarkSlateGray : Color.Red, Utils.Remap(num348, 0.33f, 0.7f, 0f, 1f));
             value3 = Color.Lerp(value3, Color.Lerp(color, Color.Gold, 0.3f), value3.R / 255f * 1f);
-            if (Projectile.frameCounter++ >= 1)
-            {
-                Projectile.frameCounter = 0;
-                ParticleOrchestrator.RequestParticleSpawn(clientOnly: true, ParticleOrchestraType.ChlorophyteLeafCrystalShot, new ParticleOrchestraSettings
-                {
-                    PositionInWorld = Projectile.Center,
-                    MovementVector = Projectile.velocity,
-                    UniqueInfoPiece = (byte)(Main.rgbToHsl(value3).X * 255f)
-                });
-            }
             Lighting.AddLight(Projectile.Center, new Vector3(0.05f, 0.2f, 0.1f) * 1.5f);
             if (Main.rand.NextBool(5))
             {
@@ -97,13 +96,14 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
                     Player player = Main.player[(int)Projectile.ai[2]];
                     if (player.Alive())
                     {
+                        
                         Vector2 LV = Projectile.velocity;
                         Vector2 PV = Projectile.SafeDirectionTo(player.Center);
                         float anglediff = FargoSoulsUtil.RotationDifference(LV, PV);
                         //change rotation towards target
                         Projectile.velocity = Projectile.velocity.RotatedBy(Math.Sign(anglediff) * Math.Min(Math.Abs(anglediff), MathHelper.Pi / redirectTime));
                         Projectile.rotation = Projectile.velocity.ToRotation();
-
+                        
                         /*
                         float angledif = FargoSoulsUtil.RotationDifference(Projectile.rotation.ToRotationVector2(), Projectile.SafeDirectionTo(player.Center));
                         float amt = MathHelper.Min(Math.Abs(angledif), MathHelper.Pi / redirectTime);
@@ -118,8 +118,13 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
                 if (Projectile.ai[1] > redirectTime)
                 {
                     Projectile.ai[1] = 0;
+                    hasRedirect = true;
                     Projectile.netUpdate = true;
                 }
+            }
+            if (hasRedirect)
+            {
+                Projectile.ai[2]++;
             }
             VanillaAIStyleCrystalLeafShot();
         }
@@ -135,13 +140,24 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
         public override bool PreDraw(ref Color lightColor)
         {
             bool recolor = SoulConfig.Instance.BossRecolors && WorldSavingSystem.EternityMode;
-            Texture2D texture2D13 = recolor ? FargoAssets.GetTexture2D("Content/Projectiles/Eternity/Bosses/Plantera", "CrystalLeafShot").Value : Terraria.GameContent.TextureAssets.Projectile[Type].Value;
+            Texture2D texture2D13 = recolor ? Terraria.GameContent.TextureAssets.Projectile[Type].Value : Main.Assets.Request<Texture2D>("Images/Item_5", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
 
             int num156 = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value.Height / Main.projFrames[Projectile.type]; //ypos of lower right corner of sprite to draw
             int y3 = num156 * Projectile.frame; //ypos of upper left corner of sprite to draw
             Rectangle rectangle = new(0, y3, texture2D13.Width, num156);
             Vector2 origin2 = rectangle.Size() / 2f;
 
+            float rotation = Projectile.rotation - MathHelper.PiOver2 + (Projectile.ai[1] > 0 || hasRedirect == true? 0 : ((float)Math.Sin(15 * Main.GlobalTimeWrappedHourly) * 0.15f));
+            if (hasRedirect)
+            {
+                float extrarotation = Projectile.ai[2] * MathHelper.Lerp(0.1f, 0.34f, ++rotLerp * 0.03f);
+                if (extrarotation >= Projectile.ai[2] * 0.34f)
+                {
+                    extrarotation = Projectile.ai[2] * 0.34f;
+                }
+                rotation += extrarotation;
+                
+            }
             SpriteEffects spriteEffects = Projectile.spriteDirection < 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
             Color color26 = lightColor;
@@ -149,11 +165,38 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
 
             float scale = Projectile.scale * 1.5f;
 
-            Main.EntitySpriteDraw(texture2D13, Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY), new Microsoft.Xna.Framework.Rectangle?(rectangle), color26, Projectile.rotation, origin2, scale, spriteEffects, 0);
+            Main.spriteBatch.UseBlendState(BlendState.Additive);
+            for (int j = 0; j < 12; j++)
+            {
+                Vector2 afterimageOffset = (MathHelper.TwoPi * j / 12).ToRotationVector2() * 2f * scale;
+                Color glowColor = hasRedirect ? Color.HotPink : Color.LightSkyBlue;
 
-            color26.A = 150;
-            Main.EntitySpriteDraw(texture2D13, Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY), new Microsoft.Xna.Framework.Rectangle?(rectangle), color26, Projectile.rotation, origin2, scale, spriteEffects, 0);
+                Main.EntitySpriteDraw(texture2D13, Projectile.Center - Main.screenPosition + afterimageOffset, rectangle, Projectile.GetAlpha(glowColor), rotation, rectangle.Size() / 2, scale, spriteEffects);
+            }
+            Main.spriteBatch.ResetToDefault();
+
+
+            Main.EntitySpriteDraw(texture2D13, Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY), new Microsoft.Xna.Framework.Rectangle?(rectangle), color26, rotation, origin2, scale, spriteEffects, 1);
             return false;
+        }
+
+        public float WidthFunction(float completionRatio)
+        {
+            float baseWidth = Projectile.scale * 1.5f * Projectile.width * 2f;
+            return MathHelper.SmoothStep(baseWidth, 3.5f, completionRatio);
+        }
+
+        public static Color ColorFunction(float completionRatio)
+        {
+            bool recolor = SoulConfig.Instance.BossRecolors && WorldSavingSystem.EternityMode;
+            Color color = recolor? Color.Blue : Color.IndianRed;
+            return Color.Lerp(color, Color.Transparent, completionRatio) * 0.7f;
+        }
+        public void RenderPixelatedPrimitives(SpriteBatch spriteBatch)
+        {
+            ManagedShader shader = ShaderManager.GetShader("FargowiltasSouls.MushroomTrail");
+            FargoAssets.HoneycombNoise.Value.SetTexture1();
+            PrimitiveRenderer.RenderTrail(Projectile.oldPos, new(WidthFunction, ColorFunction, _ => Projectile.Size * 0.5f, Pixelate: true, Shader: shader), 75);
         }
     }
 }

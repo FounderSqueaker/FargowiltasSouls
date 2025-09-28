@@ -1031,8 +1031,11 @@ LithosphericClusterInactive: {
 		[i:FargowiltasSouls/WretchedPouch] Fires a concentrated beam of shadowflame if fully charged
 		[i:FargowiltasSouls/DreadShell] Parry negates up to 200 damage and curses enemies
 		[i:FargowiltasSouls/WyvernFeather] Cursed enemies drop orbs on hit that refill shadow energy and flight time
-		[c/00FFFF:Passively:] grants immunity to [i:FargowiltasSouls/MysticSkull] Suffocation and [i:FargowiltasSouls/SecurityWallet] Midas
-		[c/00FFFF:Passively:] [i:FargowiltasSouls/WyvernFeather] stabilizes gravity in space and liquids, [i:FargowiltasSouls/SecurityWallet] sends money to piggy bank, reduces reforge cost by 50%, and [i:FargowiltasSouls/MysticSkull] uses mana potions when needed
+		[c/00FFFF:Following effects are currently disabled in inventory (right click to enable):]
+		    Grants immunity to [i:FargowiltasSouls/MysticSkull] Suffocation and [i:FargowiltasSouls/SecurityWallet] Midas
+		    [i:FargowiltasSouls/WyvernFeather] Stabilizes gravity in space and liquids
+		    [i:FargowiltasSouls/SecurityWallet] Automatically sends money to piggy bank and reduces reforge cost by 50%
+		    [i:FargowiltasSouls/MysticSkull] Automatically uses mana potions when needed and increases pickup range for mana stars
 		'The amalgamate born of a thousand common enemies'
 		''' */
 }
