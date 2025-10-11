@@ -1,4 +1,5 @@
-﻿using FargowiltasSouls.Content.Bosses.VanillaEternity;
+﻿using FargowiltasSouls.Assets.Textures;
+using FargowiltasSouls.Content.Bosses.VanillaEternity;
 using FargowiltasSouls.Content.Buffs.Eternity;
 using FargowiltasSouls.Core;
 using FargowiltasSouls.Core.Systems;
@@ -16,7 +17,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.BossMinions
 {
     public class CrystalLeaf : ModNPC
     {
-        public override string Texture => "Terraria/Images/Item_183";
+        public override string Texture => FargoAssets.GetAssetString("Content/Projectiles/Eternity/Bosses/Plantera", "CrystalLeafShotVanilla");
 
         public override void SetStaticDefaults()
         {
@@ -256,7 +257,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.BossMinions
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             bool recolor = SoulConfig.Instance.BossRecolors && WorldSavingSystem.EternityMode;
-            Texture2D texture2D13 = recolor ? Terraria.GameContent.TextureAssets.Npc[Type].Value : Main.Assets.Request<Texture2D>("Images/Item_5", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+            Texture2D texture2D13 = !recolor ? Terraria.GameContent.TextureAssets.Npc[Type].Value : FargoAssets.GetTexture2D("Content/Projectiles/Eternity/Bosses/Plantera", "CrystalLeafShot").Value;
 
             Rectangle rectangle = NPC.frame;
             Vector2 origin2 = rectangle.Size() / 2f;
@@ -279,7 +280,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.BossMinions
                     color27 *= (float)(NPCID.Sets.TrailCacheLength[NPC.type] - i) / NPCID.Sets.TrailCacheLength[NPC.type];
                     Vector2 value4 = NPC.oldPos[i];
                     float num165 = NPC.rotation; //NPC.oldRot[i];
-                    Main.EntitySpriteDraw(texture2D13, value4 + NPC.Size / 2f - Main.screenPosition + new Vector2(0, NPC.gfxOffY), new Microsoft.Xna.Framework.Rectangle?(rectangle), color27, num165, origin2, NPC.scale * 1.5f, effects, 0);
+                    Main.EntitySpriteDraw(texture2D13, value4 + NPC.Size / 2f - Main.screenPosition + new Vector2(0, NPC.gfxOffY), new Microsoft.Xna.Framework.Rectangle?(rectangle), color27, num165, origin2, NPC.scale, effects, 0);
                 }
             }
 
@@ -289,11 +290,11 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.BossMinions
                 Vector2 afterimageOffset = (MathHelper.TwoPi * j / 12).ToRotationVector2() * 2f * NPC.scale;
                 Color glowColor = recolor ? Color.Blue : Color.IndianRed;
 
-                Main.EntitySpriteDraw(texture2D13, NPC.Center - Main.screenPosition + afterimageOffset, rectangle, NPC.GetAlpha(glowColor), NPC.rotation, rectangle.Size() / 2, NPC.scale * 1.5f, SpriteEffects.None);
+                Main.EntitySpriteDraw(texture2D13, NPC.Center - Main.screenPosition + afterimageOffset, rectangle, NPC.GetAlpha(glowColor), NPC.rotation, rectangle.Size() / 2, NPC.scale, SpriteEffects.None);
             }
             Main.spriteBatch.ResetToDefault();
 
-            Main.EntitySpriteDraw(texture2D13, NPC.Center - Main.screenPosition + new Vector2(0f, NPC.gfxOffY), new Microsoft.Xna.Framework.Rectangle?(rectangle), Color.White, NPC.rotation, origin2, NPC.scale * 1.5f, effects, 0);
+            Main.EntitySpriteDraw(texture2D13, NPC.Center - Main.screenPosition + new Vector2(0f, NPC.gfxOffY), new Microsoft.Xna.Framework.Rectangle?(rectangle), drawColor, NPC.rotation, origin2, NPC.scale, effects, 0);
             return false;
         }
     }

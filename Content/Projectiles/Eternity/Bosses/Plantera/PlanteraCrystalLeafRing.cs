@@ -1,4 +1,5 @@
-﻿using FargowiltasSouls.Common.Graphics.Particles;
+﻿using FargowiltasSouls.Assets.Textures;
+using FargowiltasSouls.Common.Graphics.Particles;
 using FargowiltasSouls.Content.Bosses.MutantBoss;
 using FargowiltasSouls.Content.Buffs.Eternity;
 using FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera;
@@ -16,12 +17,12 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity
 {
     public class PlanteraCrystalLeafRing : MutantCrystalLeaf
     {
-        public override string Texture => "Terraria/Images/Item_183";
+        public override string Texture => FargoAssets.GetAssetString("Content/Projectiles/Eternity/Bosses/Plantera", "CrystalLeafShotVanilla");
 
         public override void SetDefaults()
         {
             base.SetDefaults();
-            Projectile.scale = 1.5f;
+            Projectile.width = Projectile.height = 36;
             CooldownSlot = -1;
             Projectile.FargoSouls().DeletionImmuneRank = 1;
         }
@@ -91,7 +92,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity
         public override bool PreDraw(ref Color lightColor)
         {
             bool recolor = SoulConfig.Instance.BossRecolors && WorldSavingSystem.EternityMode;
-            Texture2D texture2D13 = recolor ? Terraria.GameContent.TextureAssets.Projectile[Type].Value : Main.Assets.Request<Texture2D>("Images/Item_5", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+            Texture2D texture2D13 = !recolor ? Terraria.GameContent.TextureAssets.Projectile[Type].Value : FargoAssets.GetTexture2D("Content/Projectiles/Eternity/Bosses/Plantera", "CrystalLeafShot").Value;
 
             int num156 = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value.Height / Main.projFrames[Projectile.type]; //ypos of lower right corner of sprite to draw
             int y3 = num156 * Projectile.frame; //ypos of upper left corner of sprite to draw
