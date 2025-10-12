@@ -17,7 +17,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.BossMinions
 {
     public class CrystalLeaf : ModNPC
     {
-        public override string Texture => FargoAssets.GetAssetString("Content/Projectiles/Eternity/Bosses/Plantera", "CrystalLeafShotVanilla");
+        public override string Texture => FargoAssets.GetAssetString("Content/NPCs/EternityModeNPCs/BossMinions", "CrystalLeaf");
 
         public override void SetStaticDefaults()
         {
@@ -25,6 +25,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.BossMinions
             NPCID.Sets.TrailingMode[NPC.type] = 1;
             NPCID.Sets.CantTakeLunchMoney[Type] = true;
             NPCID.Sets.ImmuneToAllBuffs[Type] = true;
+            Main.npcFrameCount[NPC.type] = 2;
 
             this.ExcludeFromBestiary();
         }
@@ -158,7 +159,8 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.BossMinions
             if (!phase3 && plantera.GetGlobalNPC<Plantera>().RingTossTimer > 120 && plantera.GetGlobalNPC<Plantera>().RingTossTimer < 120 + 45 && NPC.ai[1] == 130) //pause before shooting
             {
                 NPC.localAI[3] = 1;
-                NPC.scale *= 1.5f;
+                NPC.scale *= 1.3f;
+                NPC.frame = new(0, 40, 36, 80);
             }
             else
             {
@@ -200,6 +202,11 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.BossMinions
                 NPC.alpha = 0;
 
             NPC.dontTakeDamage = NPC.alpha > 0;
+        }
+
+        public override void FindFrame(int frameHeight)
+        {
+            base.FindFrame(frameHeight);
         }
 
         public override bool CanHitPlayer(Player target, ref int CooldownSlot)

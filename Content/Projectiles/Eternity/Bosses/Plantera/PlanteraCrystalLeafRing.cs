@@ -17,8 +17,13 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity
 {
     public class PlanteraCrystalLeafRing : MutantCrystalLeaf
     {
-        public override string Texture => FargoAssets.GetAssetString("Content/Projectiles/Eternity/Bosses/Plantera", "CrystalLeafShotVanilla");
+        public override string Texture => FargoAssets.GetAssetString("Content/NPCs/EternityModeNPCs/BossMinions", "CrystalLeaf");
 
+        public override void SetStaticDefaults()
+        {
+            Main.projFrames[Type] = 2;
+            base.SetStaticDefaults();
+        }
         public override void SetDefaults()
         {
             base.SetDefaults();
@@ -29,6 +34,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity
 
         public override void AI()
         {
+            Projectile.frame = 1;
             bool recolor = SoulConfig.Instance.BossRecolors && WorldSavingSystem.EternityMode;
             if (++Projectile.localAI[0] == 0)
             {
