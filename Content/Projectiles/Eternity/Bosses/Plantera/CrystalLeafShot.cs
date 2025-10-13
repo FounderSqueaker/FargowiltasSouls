@@ -11,6 +11,7 @@ using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.GameContent.Drawing;
+using Terraria.GameContent.UI.Chat;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -18,7 +19,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
 {
     public class CrystalLeafShot : ModProjectile, IPixelatedPrimitiveRenderer
     {
-        public override string Texture => FargoAssets.GetAssetString("Content/Projectiles/Eternity/Bosses/Plantera", "CrystalLeafShotVanilla");
+        public override string Texture => FargoAssets.GetAssetString("Content/Projectiles/Eternity/Bosses/Plantera", "CrystalLeafShot");
 
         public bool hasRedirect = false;
 
@@ -28,6 +29,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
         {
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 40;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+            Main.projFrames[Type] = 3;
         }
 
         public override void SetDefaults()
@@ -42,6 +44,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
         }
         public void VanillaAIStyleCrystalLeafShot()
         {
+            GlyphTagHandler.GenerateTag();
             Projectile.rotation = (float)Math.Atan2(Projectile.velocity.Y, Projectile.velocity.X) + 3.14f;
 
             float num347 = 1f - Projectile.timeLeft / 180f;
@@ -72,6 +75,9 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
 
         public override void AI()
         {
+            if (Projectile.timeLeft == ContentSamples.ProjectilesByType[Type].timeLeft)
+                Projectile.frame = Main.rand.Next(3);
+
             if (!Collision.SolidCollision(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height))
             {
                 bool recolor = SoulConfig.Instance.BossRecolors && WorldSavingSystem.EternityMode;
@@ -139,7 +145,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
         public override bool PreDraw(ref Color lightColor)
         {
             bool recolor = SoulConfig.Instance.BossRecolors && WorldSavingSystem.EternityMode;
-            Texture2D texture2D13 = !recolor ? Terraria.GameContent.TextureAssets.Projectile[Type].Value : FargoAssets.GetTexture2D("Content/Projectiles/Eternity/Bosses/Plantera", "CrystalLeafShot").Value;
+            Texture2D texture2D13 = recolor ? Terraria.GameContent.TextureAssets.Projectile[Type].Value : FargoAssets.GetTexture2D("Content/Projectiles/Eternity/Bosses/Plantera", "CrystalLeafShotVanilla").Value;
 
             int num156 = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value.Height / Main.projFrames[Projectile.type]; //ypos of lower right corner of sprite to draw
             int y3 = num156 * Projectile.frame; //ypos of upper left corner of sprite to draw

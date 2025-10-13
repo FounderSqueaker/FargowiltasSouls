@@ -264,7 +264,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.BossMinions
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             bool recolor = SoulConfig.Instance.BossRecolors && WorldSavingSystem.EternityMode;
-            Texture2D texture2D13 = !recolor ? Terraria.GameContent.TextureAssets.Npc[Type].Value : FargoAssets.GetTexture2D("Content/Projectiles/Eternity/Bosses/Plantera", "CrystalLeafShot").Value;
+            Texture2D texture2D13 = recolor ? Terraria.GameContent.TextureAssets.Npc[Type].Value : FargoAssets.GetTexture2D("Content/NPCs/EternityModeNPCs/BossMinions", "CrystalLeafVanilla").Value;
 
             Rectangle rectangle = NPC.frame;
             Vector2 origin2 = rectangle.Size() / 2f;
