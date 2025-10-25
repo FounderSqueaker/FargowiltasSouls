@@ -44,7 +44,6 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
         }
         public void VanillaAIStyleCrystalLeafShot()
         {
-            GlyphTagHandler.GenerateTag();
             Projectile.rotation = (float)Math.Atan2(Projectile.velocity.Y, Projectile.velocity.X) + 3.14f;
 
             float num347 = 1f - Projectile.timeLeft / 180f;

@@ -1,3 +1,4 @@
+using FargowiltasSouls.Assets.Textures;
 using FargowiltasSouls.Core;
 using FargowiltasSouls.Core.Systems;
 using Microsoft.Xna.Framework;
@@ -15,9 +16,14 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
 {
     public class DicerPlantera : ModProjectile
     {
-        public override string Texture => FargoSoulsUtil.VanillaTextureProjectile(ProjectileID.ThornBall);
+        public override string Texture => FargoAssets.GetAssetString("Content/Projectiles/Eternity/Bosses/Plantera", Name);
 
         private const float range = 160f;
+
+        public override void SetStaticDefaults()
+        {
+            Main.projFrames[Type] = 3;
+        }
 
         public override void SetDefaults()
         {
@@ -70,7 +76,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
                     Main.dust[d].velocity *= 0.2f;
                     Main.dust[d].scale = 1.5f;
                 }*/
-
+                Projectile.rotation += 0.2f * Projectile.localAI[2] * (float)Math.Sin(Projectile.localAI[0] / 60 * MathHelper.Pi + Projectile.localAI[2]);
                 if (++Projectile.localAI[1] > 25)
                 {
                     Projectile.localAI[1] = -1;
@@ -110,16 +116,16 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
             else
             {
                 Projectile.tileCollide = true;
-
                 Projectile.localAI[0]--;
-                if (Projectile.localAI[0] >= -30) //delay
-                {
-                    Projectile.scale = 1f;
-                }
                 if (Projectile.localAI[0] < -30 && Projectile.localAI[0] > -120)
                 {
-                    Projectile.scale += 0.06f;
-                    Projectile.rotation += 0.2f * Projectile.localAI[2] * (float)Math.Sin(Projectile.localAI[0] / 60 * MathHelper.Pi + Projectile.localAI[2]);
+                    if (++Projectile.frameCounter >= 30)
+                    {
+                        Projectile.frameCounter = 0;
+                        if (++Projectile.frame >= Main.projFrames[Type])
+                            Projectile.frame = 2;
+                    }
+                    //Projectile.rotation += 0.2f * Projectile.localAI[2] * (float)Math.Sin(Projectile.localAI[0] / 60 * MathHelper.Pi + Projectile.localAI[2]);
                 }
                 else if (Projectile.localAI[0] == -120)
                 {
@@ -151,7 +157,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
                     Projectile.netUpdate = true;
 
                     SoundEngine.PlaySound(SoundID.Item14, Projectile.Center); //spray
-
+                 
                     if (FargoSoulsUtil.HostCheck)
                     {
                         bool planteraAlive = NPC.plantBoss > -1 && NPC.plantBoss < Main.maxNPCs && Main.npc[NPC.plantBoss].active && Main.npc[NPC.plantBoss].type == NPCID.Plantera;
@@ -174,8 +180,10 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
                                 if (p != Main.maxProjectiles)
                                     Main.projectile[p].timeLeft = (int)time;
                             }
+                            Projectile.frame = 0;
                         }
 
+                        
                         if (Projectile.localAI[1]-- < -3)
                             Projectile.Kill();
                     }
@@ -195,7 +203,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Texture2D texture2D13 = Terraria.GameContent.TextureAssets.Projectile[ProjectileID.ThornBall].Value;
+            Texture2D texture2D13 = Terraria.GameContent.TextureAssets.Projectile[Type].Value;
             int num156 = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value.Height / Main.projFrames[Projectile.type]; //ypos of lower right corner of sprite to draw
             int y3 = num156 * Projectile.frame; //ypos of upper left corner of sprite to draw
             Rectangle rectangle = new(0, y3, texture2D13.Width, num156);
@@ -203,8 +211,14 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
 
             SpriteEffects spriteEffects = SpriteEffects.None;
 
-            Color color26 = lightColor;
+            Color color26 = Color.White;
             color26 = Projectile.GetAlpha(color26);
+
+            if ((Projectile.localAI[0] <= -100 && Projectile.localAI[0] >= -110) || (Projectile.localAI[0] <= -130 && Projectile.localAI[0] >= -140))
+            {
+                color26.A = 0;
+                color26 = Color.HotPink;
+            } 
 
             Main.EntitySpriteDraw(texture2D13, Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY), new Rectangle?(rectangle), color26, Projectile.rotation, origin2, Projectile.scale, spriteEffects, 0);
             /*if (Projectile.localAI[0] < -120)
