@@ -1,11 +1,14 @@
-﻿using FargowiltasSouls.Assets.Textures;
+﻿using System.Collections.Generic;
+using FargowiltasSouls.Assets.Textures;
 using FargowiltasSouls.Content.Buffs.Eternity;
 using FargowiltasSouls.Content.Buffs.Minions;
+using FargowiltasSouls.Content.Patreon.DanielTheRobot;
 using FargowiltasSouls.Core.AccessoryEffectSystem;
 using FargowiltasSouls.Core.Toggler.Content;
+using FargowiltasSouls.Content.Projectiles.Accessories.ChaliceOfTheMoon;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -16,7 +19,6 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
     {
         public override string Texture => FargoAssets.GetAssetString("Content/Items/Accessories/Eternity", Name);
         public override bool Eternity => true;
-
         public override void SetStaticDefaults()
         {
             Terraria.GameContent.Creative.CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
@@ -30,7 +32,71 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
             //Item.defense = 10;
             Item.rare = ItemRarityID.Purple;
             Item.value = Item.sellPrice(0, 8);
+            Item.useStyle = ItemUseStyleID.Shoot;
+            Item.noUseGraphic = true;
+            Item.shoot = ModContent.ProjectileType<MoonChaliceCup>();
+            Item.UseSound = null;
+            Item.useTime = 180;
+            Item.useAnimation = 180;
         }
+        /* public override bool? UseItem(Player player)
+        {
+            if (player.itemAnimation > 0 && player.itemTime == 0)
+            {
+                if (!Main.dedServ)
+                {
+                    int i;
+                    if (player.itemAnimation >= 61)
+                    {
+                        player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, MathHelper.Pi);
+                        player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, MathHelper.Pi);
+                    }
+                    else if (player.itemAnimation <= 30)
+                    {
+                        player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, MathHelper.Pi);
+                        player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, MathHelper.Pi);
+                    }
+                    else
+                    {
+                        player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, MathHelper.Pi);
+                        player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, MathHelper.Pi);
+                    }
+
+                    if (player.itemAnimation == 90)
+                    {
+                        for (i = 0; i < ChalicePotionEffect.ChaliceBuffsUse.Count; i += 3)
+                        {
+                            int buff = ChalicePotionEffect.ChaliceBuffsUse[i];
+                            int duration = 108000; //buff == BuffID.Lucky ? 60 * 60 * 15 : 60 * 60 * 8;
+                            player.AddBuff(buff, duration);
+                        }
+                        SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Item_3") { Pitch = -0.6f });
+                    }
+                    else if (player.itemAnimation == 60)
+                    {
+                        for (i = 1; i < ChalicePotionEffect.ChaliceBuffsUse.Count; i += 3)
+                        {
+                            int buff = ChalicePotionEffect.ChaliceBuffsUse[i];
+                            int duration = 108000; //buff == BuffID.Lucky ? 60 * 60 * 15 : 60 * 60 * 8;
+                            player.AddBuff(buff, duration);
+                        }
+                        SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Item_3") { Pitch = -0.4f });
+                    }
+                    else if (player.itemAnimation == 30)
+                    {
+                        for (i = 2; i < ChalicePotionEffect.ChaliceBuffsUse.Count; i += 3)
+                        {
+                            int buff = ChalicePotionEffect.ChaliceBuffsUse[i];
+                            int duration = 108000; //buff == BuffID.Lucky ? 60 * 60 * 15 : 60 * 60 * 8;
+                            player.AddBuff(buff, duration);
+                        }
+                        SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Item_3") { Pitch = -0.2f });
+                    }
+                }
+            }
+            return base.UseItem(player);
+        }
+        */
         public override void UpdateInventory(Player player)
         {
             player.AddEffect<ChalicePotionEffect>(Item);
@@ -102,6 +168,53 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
             BuffID.Bewitched,
             BuffID.WarTable
            // BuffID.Honey
+        ];
+        public static List<int> ChaliceBuffsUse =
+        [
+            BuffID.AmmoReservation,
+            BuffID.Archery,
+            BuffID.Battle,
+            BuffID.Builder,
+            BuffID.BiomeSight,
+            BuffID.Calm,
+            BuffID.Crate,
+            BuffID.Dangersense,
+            BuffID.Endurance,
+            BuffID.WellFed3,
+            BuffID.Featherfall,
+            BuffID.Fishing,
+            BuffID.Flipper,
+            BuffID.Gills,
+            BuffID.Gravitation,
+            BuffID.Heartreach,
+            BuffID.Hunter,
+            BuffID.Inferno,
+            BuffID.Invisibility,
+            BuffID.Ironskin,
+            BuffID.Lifeforce,
+            BuffID.Lucky,
+            BuffID.MagicPower,
+            BuffID.ManaRegeneration,
+            BuffID.Mining,
+            BuffID.NightOwl,
+            BuffID.ObsidianSkin,
+            BuffID.Rage,
+            BuffID.Regeneration,
+            BuffID.Shine,
+            BuffID.Sonar,
+            BuffID.Spelunker,
+            BuffID.Summoning,
+            BuffID.Swiftness,
+            BuffID.Thorns,
+            BuffID.Titan,
+            BuffID.Warmth,
+            BuffID.WaterWalking,
+            BuffID.Wrath,
+            BuffID.AmmoBox,
+            BuffID.Bewitched,
+            BuffID.Clairvoyance,
+            BuffID.Sharpened,
+            BuffID.WarTable,
         ];
         public override void PostUpdateEquips(Player player)
         {
