@@ -71,7 +71,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
         public override void AI()
         {
             NPC parent = Main.npc[npc];
-            if (parent.active)
+            if (parent.active && (parent.type == NPCID.DD2WitherBeastT2 || parent.type == NPCID.DD2WitherBeastT3))
             {
                 Projectile.timeLeft++;
                 Projectile.Center = parent.Center - 10 * Vector2.UnitY;
