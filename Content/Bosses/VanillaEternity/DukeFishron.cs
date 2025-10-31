@@ -528,7 +528,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                             }
                             if (npc.ai[2] == delayForTornadoSpawn)
                             {
-                                int max = WorldSavingSystem.MasochistModeReal ? 7 : 5;
+                                int max = WorldSavingSystem.MasochistModeReal ? 5 : 5;
                                 for (int i = 0; i < max; i++)
                                 {
                                     if (FargoSoulsUtil.HostCheck)
