@@ -1,5 +1,6 @@
 ﻿using Fargowiltas.Common.Configs;
 using FargowiltasSouls.Assets.Textures;
+using FargowiltasSouls.Content.Buffs.Eternity;
 using FargowiltasSouls.Content.Items.Accessories.Enchantments;
 using FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA;
 using FargowiltasSouls.Core.AccessoryEffectSystem;
@@ -18,6 +19,7 @@ using Terraria.GameContent;
 using Terraria.GameContent.Events;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static FargowiltasSouls.FargoSoulsSets;
 
 namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
 {
@@ -37,6 +39,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
         public override void AI()
         {
             int maxRadius = 2000;
+            int auraFalloff = 4000;
 
             Projectile.timeLeft++;
 
@@ -64,7 +67,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
             foreach (var p in Main.ActivePlayers)
             {
                 float dist = p.Distance(Projectile.Center);
-                if (dist > maxRadius)
+                if (dist > maxRadius && dist < auraFalloff)
                 {
                     float count = dist / 10;
                     for (int i = 0; i < count; i++)
@@ -80,6 +83,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
                     }
 
                     Lighting.AddLight(p.Center, TorchID.Purple);
+                    FargoSoulsUtil.AddDebuffFixedDuration(p, ModContent.BuffType<ShadowflameBuff>(), 2);
 
                     if (Projectile.ai[2] <= 0) // damage the crystal
                     {

@@ -886,15 +886,14 @@ EmpressRitual.DisplayName: 女皇结界
 // EelChum.DisplayName: Eel Chum
 // EelChumBucket.DisplayName: Eel Chum Bucket
 // EelDrippler.DisplayName: Eel Drippler
-// DD2CrystalAura.DisplayName: D D2 Crystal Aura
-// BetsyCurveFireball.DisplayName: Betsy Curve Fireball
-// BetsyCurveFireBreath.DisplayName: Betsy Curve Fire Breath
-// BetsySpawnPortal.DisplayName: Betsy Spawn Portal
-// BetsyWyvernClone.DisplayName: Betsy Wyvern Clone
-// BetsyWindVortex.DisplayName: Betsy Wind Vortex
-// FlyingDragonHostile.DisplayName: Flying Dragon Hostile
-// BetsyFusedSigil.DisplayName: Betsy Fused Sigil
-// BetsyFusedSigilProj.DisplayName: Betsy Fused Sigil Proj
-// DD2CrystalDeathray.DisplayName: D D2 Crystal Deathray
+// DD2CrystalAura.DisplayName: Crystal Aura
+// BetsySpawnPortal.DisplayName: Mini Etherian Portal
+// BetsyWyvernClone.DisplayName: Wyvern
+// BetsyWindVortex.DisplayName: Wind Vortex
+// FlyingDragonHostile.DisplayName: Flying Dragon
+// BetsyFusedSigil.DisplayName: Fused Sigil
+// BetsyFusedSigilProj.DisplayName: Kobold Explosion
+// DD2CrystalDeathray.DisplayName: Crystal Deathray
+// BetsyKoboldClone.DisplayName: Kobold Glider
 // LacBeetleCloud.DisplayName: Lac Beetle Cloud
 // ChloroBomb.DisplayName: Chloro Bomb
