@@ -248,9 +248,13 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             Vector2 targetPos = crystal.Center - 250 * Vector2.UnitY;
             if (Timer == 1)
                 SoundEngine.PlaySound(SoundID.DD2_BetsyScream, npc.Center);
+            float dist = npc.Distance(targetPos);
 
-            if (npc.Distance(targetPos) > 20)
+            if (dist > 20)
             {
+                if (targetPos.X == npc.Center.X) // gets stuck on perfect veritcals??
+                    npc.Center += float.Epsilon * Vector2.UnitX;
+
                 npc.direction = (int)npc.HorizontalDirectionTo(targetPos);
                 Movement(npc, targetPos, traction: 0.6f, maxSpeed: 50);
                 Timer = 1;
@@ -683,7 +687,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                             float r = 300;
                             float minR = 40;
                             Vector2 offset = new Vector2((Main.rand.NextBool() ? -1 : 1) * Main.rand.NextFloat(minR, r), (Main.rand.NextBool() ? -1 : 1) * Main.rand.NextFloat(minR, r));
-                            Projectile.NewProjectile(npc.GetSource_FromThis(), target.Center + offset, Vector2.Zero, ModContent.ProjectileType<BetsyFusedSigil>(), FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 0.8f), 0f);
+                            Projectile.NewProjectile(npc.GetSource_FromThis(), target.Center + offset, Vector2.Zero, ModContent.ProjectileType<BetsyFusedSigil>(), FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 0.8f), 0f, ai0: -1);
                         }
                     }
 

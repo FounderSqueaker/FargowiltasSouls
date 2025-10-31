@@ -37,7 +37,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
             ref float target = ref Projectile.ai[1];
             ref float type = ref Projectile.ai[0];
 
-            if (type == 0 || !Main.player[(int)target].Alive())
+            if (type == 0 || (type == NPCID.DD2WyvernT3 && !Main.player[(int)target].Alive()))
             {
                 Projectile.Kill();
                 return;
@@ -68,7 +68,14 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
                     case NPCID.DD2WyvernT3:
                         SoundEngine.PlaySound(SoundID.DD2_WyvernScream, Projectile.Center);
                         if (FargoSoulsUtil.HostCheck)
-                            Projectile.NewProjectile(Projectile.InheritSource(Projectile), Projectile.Center + Vector2.UnitY * 30, Vector2.Zero, ModContent.ProjectileType<BetsyWyvernClone>(), Projectile.damage, 1f, ai0: target);
+                            Projectile.NewProjectile(Projectile.InheritSource(Projectile), Projectile.Center + Vector2.UnitY * 30, Vector2.Zero,
+                                ModContent.ProjectileType<BetsyWyvernClone>(), Projectile.damage, 1f, ai0: target);
+                        break;
+                    case NPCID.DD2KoboldFlyerT3:
+                        SoundEngine.PlaySound(SoundID.DD2_KoboldFlyerChargeScream, Projectile.Center);
+                        if (FargoSoulsUtil.HostCheck)
+                            Projectile.NewProjectile(Projectile.InheritSource(Projectile), Projectile.Center + Vector2.UnitY * 30, Vector2.Zero,
+                                ModContent.ProjectileType<BetsyKoboldClone>(), Projectile.damage, 1f, ai0: target);
                         break;
                     default:
                         Projectile.Kill();
