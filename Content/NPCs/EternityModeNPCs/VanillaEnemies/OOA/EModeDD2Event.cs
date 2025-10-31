@@ -736,7 +736,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
             => Sets.BelongsToInvasionOldOnesArmy[entity.type] && entity.type != NPCID.DD2EterniaCrystal && entity.type != ModContent.NPCType<TavernkeepPortal>();
 
-        public static bool IsInstance(NPC npc) => Sets.BelongsToInvasionOldOnesArmy[npc.type] && npc.type != NPCID.DD2EterniaCrystal;
+        public static bool IsInstance(NPC npc) => Sets.BelongsToInvasionOldOnesArmy[npc.type] && npc.type != NPCID.DD2EterniaCrystal && npc.type != NPCID.DD2LanePortal;
 
         public bool DrakinBuff;
         public int SpitBall = -1;
