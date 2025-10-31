@@ -1335,13 +1335,19 @@ namespace FargowiltasSouls.Content.Projectiles
                                     projectile.localAI[0] = 1;
                                     projectile.velocity.Normalize();
 
+                                    /*
                                     if (FargoSoulsUtil.HostCheck && !WorldSavingSystem.MasochistModeReal)
                                     {
                                         Projectile.NewProjectile(Entity.InheritSource(projectile), projectile.Center, projectile.velocity, ModContent.ProjectileType<PhantasmalSphereDeathray>(),
                                             0, 0f, Main.myPlayer, 0f, projectile.identity);
                                     }
+                                    */
 
                                     projectile.netUpdate = true;
+                                }
+                               if (projectile.localAI[0] != 0 && projectile.velocity.Length() > 9)
+                                {
+                                    projectile.velocity = projectile.velocity.ClampLength(0, 9);
                                 }
                             }
                         }
@@ -1363,7 +1369,7 @@ namespace FargowiltasSouls.Content.Projectiles
                             : Main.rand.NextFloat(4f, 6f);
 
                         if (!Main.dedServ && Main.LocalPlayer.active)
-                            FargoSoulsUtil.ScreenshakeRumble(6);
+                            FargoSoulsUtil.ScreenshakeRumble(4);
                     }
                     break;
 

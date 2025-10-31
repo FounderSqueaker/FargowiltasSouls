@@ -510,7 +510,7 @@ namespace FargowiltasSouls.Core.ModPlayers
                 DamageOverTime(2);
 
             if (CurseoftheMoon)
-                DamageOverTime(20);
+                DamageOverTime(10);
 
             if (MutantPresence)
             {
