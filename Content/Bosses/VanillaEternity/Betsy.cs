@@ -31,6 +31,7 @@ using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Default;
 using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 using static FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA.DD2Ogre;
@@ -66,7 +67,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             FireballRain,
             DirectDashes,
             WindVortex,
-            FusedSigils
+            FusedSigils,
+            LightningAura
 
 
         }
@@ -214,6 +216,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 case States.FusedSigils:
                     FusedSigils(npc);
                     break;
+                case States.LightningAura:
+                    LightningAura(npc);
+                    break;
                 default:
                     break;
             }
@@ -250,7 +255,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 SoundEngine.PlaySound(SoundID.DD2_BetsyScream, npc.Center);
             float dist = npc.Distance(targetPos);
 
-            if (dist > 20)
+            if (dist > 30)
             {
                 if (targetPos.X == npc.Center.X) // gets stuck on perfect veritcals??
                     npc.Center += float.Epsilon * Vector2.UnitX;
@@ -263,9 +268,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             {
                 npc.velocity *= 0.8f;
 
-                frameY = Math.Min(3, (int)Math.Floor(Timer / 6f));
+                RoarFrame();
 
-                if (frameY == 3)
+                if (frameY == 4)
                 {
                     isStunning = true;
 
@@ -451,14 +456,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 if (condition)
                 {
                     SoundEngine.PlaySound(SoundID.DD2_BetsySummon, npc.Center);
-                    if (FargoSoulsUtil.HostCheck)
-                    {
-                        for (int i = 0; i < 1; i++)
-                        {
-                            Projectile.NewProjectileDirect(npc.GetSource_FromThis(), npc.Center,
-                            Vector2.Zero, ModContent.ProjectileType<BetsySpawnPortal>(), FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 0.8f), 1f, ai0: NPCID.DD2WyvernT3, ai1: npc.target);
-                        }
-                    }
+                    SpawnPortal(npc, NPCID.DD2WyvernT3, npc.target);
                 }
 
                 if (Timer > 60)
@@ -740,6 +738,174 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
         }
 
+        private void LightningAura(NPC npc)
+        {
+
+            Player player = Main.player[npc.target];
+            Vector2 targetPos = player.Center + new Vector2(-200 * npc.HorizontalDirectionTo(player.Center), -200);
+            float dist = npc.Distance(targetPos);
+            if (SubState <= 2)
+                npc.direction = (int)npc.HorizontalDirectionTo(player.Center);
+
+            if (SubState == 0)
+            {
+                Movement(npc, targetPos);
+
+                if (dist < 30)
+                {
+                    Timer = 0;
+                    SubState = 1;
+                }
+            }
+            else if (SubState == 1)
+            {
+                if (Timer == 20)
+                {
+                    SoundEngine.PlaySound(SoundID.DD2_BetsyScream, npc.Center);
+                    if (FargoSoulsUtil.HostCheck)
+                    {
+                        heldProj = Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Center, Vector2.Zero, ModContent.ProjectileType<BetsyLightningAura>(),
+                            FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 0.8f), 1f, ai0: npc.whoAmI);
+                        float initRot = npc.AngleTo(player.Center);
+                        float count = 20;
+                        for (int i = 0; i < count; i++)
+                        {
+                            float portalRot = MathHelper.TwoPi * i / count;
+                            SpawnPortal(npc, NPCID.DD2LightningBugT3, heldProj, initRot + MathHelper.TwoPi * (i / count), 
+                                pos: npc.Center + 800 * Vector2.UnitX.RotatedBy(portalRot));
+                        }
+                    }
+                    npc.netUpdate = true;
+                }
+
+                npc.velocity *= 0.9f;
+
+                if (Timer >= 20 && Timer % 5 == 0)
+                {
+                    SoundEngine.PlaySound(SoundID.DD2_SkyDragonsFuryShot with { Pitch = -0.2f, Volume = 2f }, npc.Center);
+                    SoundEngine.PlaySound(SoundID.DD2_SkyDragonsFuryShot with { Pitch = -0.2f, Volume = 2f }, npc.Center);
+                    for (int i = 0; i < 10; i++)
+                    {
+                        float scale = Main.rand.NextFloat(1f, 3f);
+                        float randRot = Main.rand.NextFloat(0, MathHelper.TwoPi);
+                        new ElectricSpark(npc.Center + 60 * Vector2.UnitX.RotatedBy(randRot), (4 - scale) * 15 * Vector2.UnitX.RotatedBy(randRot),
+                            Color.Purple, scale, 35).Spawn();
+                    }
+                }
+
+                if (Timer > 120)
+                {
+                    RoarFrame(120, true);
+                    if (frameY == 0)
+                    {
+                        Timer = 0;
+                        SubState = 2;
+                    }
+                }
+                else
+                {
+                    RoarFrame();
+                }
+            }
+            else if (SubState == 2)
+            {
+                if (Timer == 1)
+                {
+                    SpawnPortal(npc, NPCID.DD2DarkMageT3, npc.target, pos: npc.Center + 70 * Vector2.UnitY);
+                }
+
+                if (heldProj == Main.maxProjectiles)
+                {
+                    ResetToIdle(npc);
+                    return;
+                }
+                Projectile p = Main.projectile[heldProj];
+
+                targetPos = p.Center + new Vector2(-400 * npc.direction, 0);
+                Movement(npc, targetPos);
+
+                if (npc.Distance(targetPos) < 40)
+                {
+                    npc.velocity *= 0;
+                    SoundEngine.PlaySound(SoundID.DD2_BetsyScream with { Pitch = -0.2f }, npc.Center);
+                    SubState = npc.direction == 1 ? 3 : 4;
+                    Timer = 0;
+                }
+            }
+            else if (SubState == 3 || SubState == 4)
+            {
+                int dir = SubState == 3 ? 1 : -1;
+                float rotDir = SubState == 3 ? MathHelper.Pi : MathHelper.Pi;
+
+                Projectile p = Main.projectile[heldProj];
+                if (!p.Alive() || p.type != ModContent.ProjectileType<BetsyLightningAura>())
+                {
+                    npc.rotation = 0;
+                    ResetToIdle(npc);
+                    return;
+                }
+
+                float npcDist = npc.Distance(p.Center);
+                float pDist = npc.Distance(Main.player[npc.target].Center);
+
+                float period = 60f;
+
+                float rot = MathHelper.TwoPi / period;
+
+                npc.Center = npc.Center.RotatedBy(rot, p.Center);
+                npc.rotation = Timer * rot + rotDir + MathHelper.PiOver2;
+
+                if (Timer % period == period / 2)
+                {
+                    if (FargoSoulsUtil.HostCheck)
+                    {
+                        for (int i = 0; i < 5; i++)
+                        {
+                            Vector2 vel = new Vector2(-npc.direction, -1.7f) * 9;
+                            vel.X += Main.rand.NextFloat(-1, 1) * 1.4f;
+                            vel.Y -= Main.rand.NextFloat(0, 1) * 3.7f * 5;
+                            vel.X -= (i - 2) * 5;
+                            vel /= 1.6f;
+                            int proj = Projectile.NewProjectile(npc.GetSource_FromAI(), breathPos(npc), vel, ProjectileID.DD2BetsyFireball, FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 0.8f), 1f);
+                        }
+                    }
+                }
+
+                float endTime = 400 + Main.rand.Next(0, (int)period);
+                if (Timer > endTime && npc.Distance(player.Center) > 200 && !Collision.SolidCollision(npc.position, npc.width, npc.height))
+                {
+                    npc.rotation = 0;
+                    Timer = 0;
+                    SubState = 5;
+                    p.ai[1] = 1; // start detonate
+                    SoundEngine.PlaySound(SoundID.Roar, npc.Center);
+                    ContactDamage = false;
+                }
+            }
+            else if (SubState == 5)
+            {
+                Projectile p = Main.projectile[heldProj];
+                if (!p.Alive() || p.type != ModContent.ProjectileType<BetsyLightningAura>())
+                {
+                    npc.rotation = 0;
+                    ResetToIdle(npc);
+                    ContactDamage = true;
+                    return;
+                }
+
+                npc.direction = (int)npc.HorizontalDirectionTo(p.Center);
+                npc.rotation = MathHelper.PiOver2 - npc.direction * MathHelper.PiOver2 + npc.AngleTo(p.Center);
+
+                float count = 50;
+                for (int i = 0; i < count; i++)
+                {
+                    Dust d = Dust.NewDustPerfect(npc.Center + 200 * Vector2.UnitX.RotatedBy(- MathHelper.PiOver4 + npc.AngleTo(p.Center) + MathHelper.PiOver2 * i / count), DustID.PurpleTorch, Scale: 2f);
+                    d.noGravity = true;
+                    d.velocity *= 0;
+                }
+            }
+        }
+
         private void HarassCrystal(NPC npc)
         {
             // no players around go beat up the crystal
@@ -828,9 +994,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 else
                 {
                     npc.velocity *= 0.9f;
-                    frameY = Math.Min(3, (int)Math.Floor(Timer / 6f));
+                    RoarFrame();
 
-                    if (frameY == 3)
+                    if (frameY == 4)
                     {
                         isStunning = true;
                         if (Timer == 30)
@@ -880,6 +1046,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                             npc.dontTakeDamage = false;
                             npc.chaseable = true;
                             ResetToIdle(npc);
+                            // clear state queue
+                            AvailableStates = new List<States>();
+                            PreviousState = (int)States.Idle;
                         }
                     }
                 }
@@ -1174,7 +1343,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             ResetState(npc);
             if (AvailableStates.Count == 0)
             {
-                for (int i = 5; i <= 8; i++)
+                int max = InPhase2 ? 9 : 8;
+                for (int i = 5; i <= max; i++)
                 {
                     if (PreviousState != i)
                     {
@@ -1212,6 +1382,22 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         }
 
         private Vector2 breathPos(NPC npc) => npc.Center + new Vector2(npc.direction * npc.width / 1.75f, npc.height / 3);
+
+        private int SpawnPortal(NPC npc, int spawnType, float ai0 = 0, float ai1 = 0, float damageMult = 0.8f, Vector2? pos = null)
+        {
+            if (!FargoSoulsUtil.HostCheck)
+                return Main.maxNPCs;
+
+            pos ??= npc.Center;
+
+            return Projectile.NewProjectile(npc.GetSource_FromThis(), pos.Value, Vector2.Zero, ModContent.ProjectileType<BetsySpawnPortal>(), 
+                FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, damageMult), 1f, ai0: spawnType, ai1: ai0, ai2: ai1);
+        }
+
+        private void RoarFrame(int timeOffset = 0, bool end = false)
+        {
+            frameY = end ? Math.Max(0, (int)Math.Floor((timeOffset + (4 * 6) - Timer) / 6f)) : Math.Min(4, (int)Math.Floor(Timer - timeOffset / 6f));
+        }
         #endregion
 
         public override void HitEffect(NPC npc, NPC.HitInfo hit)

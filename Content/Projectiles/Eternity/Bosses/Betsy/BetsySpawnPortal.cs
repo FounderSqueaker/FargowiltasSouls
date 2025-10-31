@@ -32,6 +32,8 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
             Projectile.light = 1f;
         }
 
+        int timer = 0;
+
         public override void AI()
         {
             ref float target = ref Projectile.ai[1];
@@ -43,25 +45,25 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
                 return;
             }
 
-            if (Projectile.ai[2] == 0)
+            if (timer == 0)
             {
                 SoundEngine.PlaySound(SoundID.Item104, Projectile.Center);
                 FargoSoulsUtil.DustRing(Projectile.Center, 20, DustID.Shadowflame, 5f);
             }
 
-            if (Projectile.ai[2] <= 60)
+            if (timer <= 60)
             {
-                Projectile.scale = MathHelper.SmoothStep(0f, 1f, Projectile.ai[2] / 60f);
-                Projectile.Opacity = LumUtils.Saturate(MathHelper.Lerp(0f, 1f, Projectile.ai[2] / 30f));
+                Projectile.scale = MathHelper.SmoothStep(0f, 1f, timer / 60f);
+                Projectile.Opacity = LumUtils.Saturate(MathHelper.Lerp(0f, 1f, timer / 30f));
             }
             else
             {
-                Projectile.scale = MathHelper.SmoothStep(1f, 0f, (Projectile.ai[2] - 60f) / 90f);
-                Projectile.Opacity = LumUtils.Saturate(MathHelper.Lerp(1f, 0f, (Projectile.ai[2] - 60f) / 90f));
+                Projectile.scale = MathHelper.SmoothStep(1f, 0f, (timer - 60f) / 90f);
+                Projectile.Opacity = LumUtils.Saturate(MathHelper.Lerp(1f, 0f, (timer - 60f) / 90f));
             }
 
 
-            if (++Projectile.ai[2] == 60f)
+            if (++timer == 60f)
             {
                 switch (type)
                 {
@@ -77,13 +79,25 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
                             Projectile.NewProjectile(Projectile.InheritSource(Projectile), Projectile.Center + Vector2.UnitY * 30, Vector2.Zero,
                                 ModContent.ProjectileType<BetsyKoboldClone>(), Projectile.damage, 1f, ai0: target);
                         break;
+                    case NPCID.DD2LightningBugT3:
+                        SoundEngine.PlaySound(SoundID.DD2_LightningBugHurt, Projectile.Center);
+                        if (FargoSoulsUtil.HostCheck)
+                            Projectile.NewProjectile(Projectile.InheritSource(Projectile), Projectile.Center + Vector2.UnitY * 30, Vector2.Zero,
+                                ModContent.ProjectileType<BetsyLightningBugClone>(), Projectile.damage, 1f, ai0: target, ai1: Projectile.ai[2]);
+                        break;
+                    case NPCID.DD2DarkMageT3:
+                        SoundEngine.PlaySound(SoundID.DD2_DarkMageHurt, Projectile.Center);
+                        if (FargoSoulsUtil.HostCheck)
+                            Projectile.NewProjectile(Projectile.InheritSource(Projectile), Projectile.Center + Vector2.UnitY * 30, Vector2.Zero,
+                                ModContent.ProjectileType<BetsyDarkMageClone>(), Projectile.damage, 1f, ai0: target, ai1: Projectile.ai[2]);
+                        break;
                     default:
                         Projectile.Kill();
                         return;
                 }
             }
 
-            if (Projectile.ai[2] >= 60 + 90)
+            if (timer >= 60 + 90)
             {
                 Projectile.Kill();
                 return;
