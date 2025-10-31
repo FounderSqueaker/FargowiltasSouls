@@ -209,7 +209,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                     {
                         int duration = WorldSavingSystem.MasochistModeReal ? 16 : 30;
                         if (EModeGlobalNPC.cultBoss.IsWithinBounds(Main.maxNPCs) && FargoSoulsUtil.NPCExists(EModeGlobalNPC.cultBoss, NPCID.CultistBoss) is NPC cultist && cultist.GetGlobalNPC<LunaticCultist>().Phase == 3)
-                            duration = WorldSavingSystem.MasochistModeReal ? 40 : 60;
+                            duration = WorldSavingSystem.MasochistModeReal ? 50 : 65;
                         if (alone)
                             duration = WorldSavingSystem.MasochistModeReal ? 8 : 30;
                         animation = (int)Animation.Float;
@@ -557,10 +557,15 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         }
         public static void GetAttack(NPC npc, ref int timer, ref int state, ref int oldAttack)
         {
-            List<States> randAttacks = [States.SolarCircle, States.IceShatter, States.Lightning, States.Shadow, States.AncientLight];
+            List<States> randAttacks = [States.SolarCircle, States.IceShatter, /*States.Lightning, */States.Shadow, States.AncientLight];
             randAttacks.Remove((States)oldAttack);
+            // no repeat my own attack
             if (AttackRepeat >= 1)
                 randAttacks.Remove((States)LastAttack);
+            // no repeat solar attack
+            if (LastAttack == (int)States.SolarCircle)
+                randAttacks.Remove(States.SolarCircle);
+
             state = (int)Main.rand.NextFromCollection(randAttacks);
             timer = 0;
             npc.netUpdate = true;

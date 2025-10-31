@@ -112,6 +112,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.LunarEve
                 }
 
             }
+            /*
             if (NPC.CountNPCS(NPCID.CultistDragonHead) <= 0 && WorldSavingSystem.MasochistModeReal && DragonTimer <= 0) //spawn james in maso
             {
                 if (FargoSoulsUtil.HostCheck)
@@ -128,6 +129,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.LunarEve
                 DragonTimer = 0;
             }
             DragonTimer++;
+            */
             if (bigCells > 0)
             {
                 //The pillar is purposefully not immune because it's meant to bait aggro, this is a mechanic you need to deal with. Same goes for the dragon.

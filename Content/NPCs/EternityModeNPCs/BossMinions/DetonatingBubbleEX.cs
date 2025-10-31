@@ -87,8 +87,6 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.BossMinions
             if (target.hurtCooldowns[1] == 0)
             {
                 target.AddBuff(BuffID.Wet, 420);
-                if (WorldSavingSystem.MasochistModeReal)
-                    target.AddBuff(ModContent.BuffType<SqueakyToyBuff>(), 120);
                 target.AddBuff(ModContent.BuffType<DefenselessBuff>(), 600);
                 target.AddBuff(ModContent.BuffType<OceanicMaulBuff>(), 10 * 60);
                 target.FargoSouls().MaxLifeReduction += FargoSoulsUtil.BossIsAlive(ref EModeGlobalNPC.fishBossEX, NPCID.DukeFishron) ? 100 : 15;
