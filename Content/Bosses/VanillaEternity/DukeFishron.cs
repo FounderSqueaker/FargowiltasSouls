@@ -412,6 +412,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                         break;
 
                     case 1: //p1 dash
+                        /*
                         if (++GeneralTimer > 5)
                         {
                             GeneralTimer = 0;
@@ -422,6 +423,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                                 FargoSoulsUtil.NewNPCEasy(npc.GetSource_FromThis(), spawnPos, NPCID.DetonatingBubble);
                             }
                         }
+                        */
                         break;
 
                     case 2: //p1 bubbles
