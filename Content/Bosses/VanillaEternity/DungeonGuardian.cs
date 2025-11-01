@@ -46,7 +46,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SetDefaults(npc);
 
-            npc.lifeMax /= 8;
+            npc.SetLifeMaxByMode(1000, 1000, 1000);
         }
 
         public override void LoadSprites(NPC npc, bool recolor)
@@ -69,6 +69,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             EModeGlobalNPC.guardBoss = npc.whoAmI;
             npc.damage = npc.defDamage;
             npc.defense = npc.defDefense;
+            npc.lifeMax = 1000;
+            if (npc.life > npc.lifeMax)
+                npc.life = npc.lifeMax;
 
             while (npc.buffType[0] != 0)
             {

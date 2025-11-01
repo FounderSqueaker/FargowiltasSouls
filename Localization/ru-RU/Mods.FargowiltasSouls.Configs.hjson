@@ -203,14 +203,38 @@ SoulConfig: {
 
 RespawnPreventionSetting: {
 	Tooltip: ""
-	Eternity.Label: Вечность
-	Masochist.Label: Мазохист
-	Disabled.Label: выключено
+
+	Eternity: {
+		Label: Вечность
+		// Tooltip: ""
+	}
+
+	Masochist: {
+		Label: Мазохист
+		// Tooltip: ""
+	}
+
+	Disabled: {
+		Label: выключено
+		// Tooltip: ""
+	}
 }
 
 BalanceTooltipSetting: {
 	Tooltip: ""
-	All.Label: все
-	Reworks.Label: переработки
-	None.Label: ничего
+
+	All: {
+		Label: все
+		// Tooltip: ""
+	}
+
+	Reworks: {
+		Label: переработки
+		// Tooltip: ""
+	}
+
+	None: {
+		Label: ничего
+		// Tooltip: ""
+	}
 }
