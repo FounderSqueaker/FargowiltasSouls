@@ -102,7 +102,7 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
                 Asset<Texture2D> line = TextureAssets.Extra[178];
                 float opacity = 1f;
                 Main.EntitySpriteDraw(line.Value, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Color.Cyan * opacity, Projectile.velocity.ToRotation(), new Vector2(0, line.Height() * 0.5f), 
-                    new Vector2(0.3f, Projectile.scale * 7), SpriteEffects.None);
+                    new Vector2(0.4f, Projectile.scale * 7), SpriteEffects.None);
             }
 
             for (int i = 0; i < ProjectileID.Sets.TrailCacheLength[Projectile.type]; i++) //reused betsy fireball scaling trail thing

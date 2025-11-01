@@ -1279,7 +1279,7 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
             {
                 ShouldMoveArena = false;
                 NPC.velocity *= 0.8f;
-                int freq = WorldSavingSystem.MasochistModeReal ? 3 : 4;
+                int freq = WorldSavingSystem.MasochistModeReal ? 4 : 5;
                 if (NPC.ai[1] % freq == 0)
                 {
                     SoundEngine.PlaySound(SoundID.Item12, NPC.Center);
@@ -2582,7 +2582,7 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
             if (WorldSavingSystem.MasochistModeReal)
                 waitTime += 300 * endTimeVariance;
 
-            float xWallStopOffset = WorldSavingSystem.MasochistModeReal ? 420 : 500;
+            float xWallStopOffset = WorldSavingSystem.MasochistModeReal ? 450 : 500;
 
             NPC.ai[3] = xWallStopOffset; //for wof eyes to know
             
@@ -3174,7 +3174,7 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
                         const int flip = 1;
                         Vector2 spawnPos = pos + off * Vector2.UnitY * flip;
                         float ai0 = FargoSoulsUtil.ProjectileExists(ritualProj, ModContent.ProjectileType<MutantRitual>()) == null ? 0f : NPC.Distance(Main.projectile[ritualProj].Center);
-                        Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPos, vel * flip, ModContent.ProjectileType<MutantSlimeSpike>(), FargoSoulsUtil.ScaledProjectileDamage(NPC.defDamage), 0f, Main.myPlayer, ai0, ai2: Main.rand.Next(3));
+                        Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPos, vel * flip, ModContent.ProjectileType<MutantSlimeSpike>(), FargoSoulsUtil.ScaledProjectileDamage(NPC.defDamage), 0f, Main.myPlayer, ai0);
                     }
 
                     Vector2 basePos = NPC.Center;

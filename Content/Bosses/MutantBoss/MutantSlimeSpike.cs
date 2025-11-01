@@ -38,7 +38,12 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
 
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
-            Projectile.frame = (int)Projectile.ai[2];
+            if (Projectile.localAI[2] == 0)
+            {
+                Projectile.localAI[2] = 1;
+                Projectile.frame = Main.rand.Next(3);
+            }
+            Projectile.frame = (int)MathHelper.Clamp(Projectile.frame, 0, 2);
         }
 
         public override bool PreDraw(ref Color lightColor)
