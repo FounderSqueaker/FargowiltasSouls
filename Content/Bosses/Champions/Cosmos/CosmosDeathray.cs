@@ -189,16 +189,16 @@ namespace FargowiltasSouls.Content.Bosses.Champions.Cosmos
             for (int i = 0; i < baseDrawPoints.Length; i++)
             {
                 baseDrawPoints[i] = Vector2.Lerp(initialDrawPoint, laserEnd, i / (float)(baseDrawPoints.Length - 1f));
+                float dif = Projectile.localAI[1] * 1.1f / baseDrawPoints.Length;
                 if (offsets[i] == Vector2.Zero)
                 {
-                    float dif = Projectile.localAI[1] * 1.1f / baseDrawPoints.Length;
                     offsets[i] = Main.rand.NextVector2Circular(dif * 0.5f, dif * 0.5f);
                 }
                 Vector2 offsetDir = offsets[i] - baseDrawPoints[i];
                 offsetDir.Normalize();
                 Vector2 spinny = Vector2.UnitX.RotatedBy(MathF.Tau * Main.GlobalTimeWrappedHourly * 60f / 57);
                 spinny *= MathF.Sin(MathF.Tau * (i % 4) * Main.GlobalTimeWrappedHourly * 60f / 67);
-                baseDrawPoints[i] += offsets[i] + 17 * spinny;
+                baseDrawPoints[i] += offsets[i] + 0.1f * dif * spinny;
             }
                
 
