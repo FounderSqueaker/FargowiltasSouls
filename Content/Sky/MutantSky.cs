@@ -163,7 +163,7 @@ namespace FargowiltasSouls.Content.Sky
 
         private Color ColorToUse(ref float opacity)
         {
-            Color color = FargoSoulsUtil.AprilFools ? Color.OrangeRed : new(40, 200, 150);
+            Color color = FargoSoulsUtil.AprilFools ? Color.OrangeRed : new(50, 255, 200);
             opacity = intensity * 1f;
 
             if (specialColorLerp > 0 && specialColor != null)
@@ -172,6 +172,8 @@ namespace FargowiltasSouls.Content.Sky
                 if (specialColor == Color.Black)
                     opacity = System.Math.Min(1f, opacity + System.Math.Min(intensity, lifeIntensity) * 0.5f);
             }
+
+            color = Color.Lerp(color, Color.Black, 0.3f);
 
             return color;
         }
