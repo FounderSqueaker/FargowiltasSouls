@@ -27,6 +27,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Forces
             Enchants[Type] =
             [
                 ModContent.ItemType<NinjaEnchant>(),
+                ModContent.ItemType<ShadowEnchant>(),
                 ModContent.ItemType<AncientShadowEnchant>(),
                 ModContent.ItemType<CrystalAssassinEnchant>(),
                 ModContent.ItemType<SpookyEnchant>(),
@@ -65,9 +66,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Forces
                 player.AddEffect<DarkArtistMinion>(Item);
                 player.AddEffect<NecroEffect>(Item);
                 //shadow orbs
-                modPlayer.AncientShadowEnchantActive = true;
-                //darkness debuff
-                player.AddEffect<AncientShadowDarkness>(Item);
+                player.AddEffect<AncientShadowBolt>(Item);
                 //shinobi and monk effects
                 ShinobiEnchant.AddEffects(player, Item);
                 //smoke bomb nonsense

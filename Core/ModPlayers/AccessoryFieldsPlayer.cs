@@ -60,6 +60,8 @@ namespace FargowiltasSouls.Core.ModPlayers
         public bool LifeForceActive;
         public float AuraSizeBonus;
         public int TerrariaSoulProcCD;
+        public int AncientShadowCD;
+        public int AncientShadowCounter;
 
         public int TimeSinceHurt;
 
@@ -105,8 +107,6 @@ namespace FargowiltasSouls.Core.ModPlayers
         public Item SquireEnchantItem;
         public bool ValhallaEnchantActive = false;
 
-        public bool AncientShadowEnchantActive = false;
-        public int AncientShadowFlameCooldown;
         public int ShadowOrbRespawnTimer;
         public float NinjaCounter;
         public int NinjaDecrementCD;

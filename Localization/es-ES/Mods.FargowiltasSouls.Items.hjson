@@ -38,9 +38,9 @@ AncientShadowEnchant: {
 	// DisplayName: Ancient Shadow Enchantment
 	/* Tooltip:
 		'''
-		Your attacks may inflict Darkness on enemies
-		Darkened enemies fire shadowflame tentacles at other enemies, dealing damage based on their own damage
-		Three Shadow Orbs will orbit around you
+		Your critical strikes unleash a powerful shadowbolt helix
+		Every critical strike increases the power of the next shadowbolt helix
+		4 second cooldown 
 		'But what if it could get darker than dark?'
 		''' */
 }
