@@ -633,11 +633,11 @@ namespace FargowiltasSouls.Core.ModPlayers
 
             if (Main.myPlayer == Player.whoAmI)
             {
-                if (WorldSavingSystem.MasochistModeReal && FargoSoulsUtil.BossIsAlive(ref EModeGlobalNPC.mutantBoss, ModContent.NPCType<MutantBoss>()) && EModeGlobalNPC.mutantBoss.IsWithinBounds(Main.maxNPCs))
+                if (WorldSavingSystem.MasochistModeReal && Main.getGoodWorld && FargoSoulsUtil.BossIsAlive(ref EModeGlobalNPC.mutantBoss, ModContent.NPCType<MutantBoss>()) && EModeGlobalNPC.mutantBoss.IsWithinBounds(Main.maxNPCs))
                 {
                     if (!Player.HasBuff(ModContent.BuffType<TimeFrozenBuff>()))
                     {
-                        The22Incident += Main.getGoodWorld ? 2 : 1;
+                        The22Incident += 1;
                         Rectangle rect = new Rectangle((int)Player.Center.X - 111, (int)Player.Center.Y, 222, 222);
                         for (int i = 0; i < The22Incident; i++)
                             CombatText.NewText(rect, Color.DarkOrange, The22Incident, true);
