@@ -2582,7 +2582,7 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
             if (WorldSavingSystem.MasochistModeReal)
                 waitTime += 300 * endTimeVariance;
 
-            float xWallStopOffset = WorldSavingSystem.MasochistModeReal ? 400 : 500;
+            float xWallStopOffset = WorldSavingSystem.MasochistModeReal ? 420 : 500;
 
             NPC.ai[3] = xWallStopOffset; //for wof eyes to know
             
