@@ -60,8 +60,7 @@ RainUmbrellaEffect: Umbrella Shield
 RainInnerTubeEffect: Inner Tube
 RainFeatherfallEffect: Umbrella Featherfall
 SnowEffect: Freezing Snowballs
-JungleJump: Jungle Jump and Spores
-JungleDashEffect: Jungle Dash
+JungleJumpEffect: Jungle Jump and Spores
 MoltenEffect: Molten Inferno
 ShroomiteHealEffect: Shroomite Consumption Buff
 ShroomiteMushroomPriority: Mushrooms Take Potion Priority
