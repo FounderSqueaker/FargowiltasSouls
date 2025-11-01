@@ -174,7 +174,11 @@ namespace FargowiltasSouls.Content.Bosses.Champions.Cosmos
                     float dif = Projectile.localAI[1] * 1.1f / baseDrawPoints.Length;
                     offsets[i] = Main.rand.NextVector2Circular(dif * 0.5f, dif * 0.5f);
                 }
-                baseDrawPoints[i] += offsets[i];
+                Vector2 offsetDir = offsets[i] - baseDrawPoints[i];
+                offsetDir.Normalize();
+                Vector2 spinny = Vector2.UnitX.RotatedBy(MathF.Tau * Main.GlobalTimeWrappedHourly * 60f / 57);
+                spinny *= MathF.Sin(MathF.Tau * (i % 4) * Main.GlobalTimeWrappedHourly * 60f / 67);
+                baseDrawPoints[i] += offsets[i] + 17 * spinny;
             }
 
             FargoSoulsUtil.SetTexture1(FargoAssets.CracksNoise.Value);
