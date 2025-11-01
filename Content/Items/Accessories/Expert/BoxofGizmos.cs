@@ -32,7 +32,6 @@ namespace FargowiltasSouls.Content.Items.Accessories.Expert
                 GetItemTuple(ModContent.ItemType<IronEnchant>()),
                 GetItemTuple(ModContent.ItemType<RainEnchant>()),
                 GetItemTuple(ModContent.ItemType<WoodEnchant>()),
-                GetItemTuple(ModContent.ItemType<CactusEnchant>()),
                 GetItemTuple(ModContent.ItemType<TerraForce>()),
                 GetItemTuple(ModContent.ItemType<TimberForce>()),
                 GetItemTuple(ModContent.ItemType<LifeForce>()),
