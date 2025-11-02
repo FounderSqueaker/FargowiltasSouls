@@ -296,6 +296,7 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
                 case 1: SpheresAndDiveP1(); break;
 
                 case 2: PrepareDiagonalSpearThrow(); break;
+
                 case 3: DiagonalSpearThrow(); break;
 
                 case 4: PrepareSpearDashDirectP1(); break;
@@ -1024,16 +1025,18 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
             if (PhaseState > 0) //dont begin proper ai timer until in range to begin fight
                 NPC.ai[1]++;
 
-            if (NPC.ai[1] < 145) //track player up until just before attack
+            int attackTime = WorldSavingSystem.MasochistModeReal ? 150 : 180;
+
+            if (NPC.ai[1] < attackTime - 5) //track player up until just before attack
             {
                 NPC.localAI[0] = NPC.SafeDirectionTo(player.Center + player.velocity * 30f).ToRotation();
             }
 
-            if (NPC.ai[1] > 150) //120)
+            if (NPC.ai[1] > attackTime)
             {
                 NPC.netUpdate = true;
                 //NPC.TargetClosest();
-                NPC.ai[1] = WorldSavingSystem.MasochistModeReal ? 60 : 30;
+                NPC.ai[1] = attackTime - (WorldSavingSystem.MasochistModeReal ? 90 : 120);
                 if (++NPC.ai[2] > NPC.ai[3])
                 {
                     P1NextAttackOrMasoOptions(AttackChoice);
@@ -1051,7 +1054,7 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
                 }
                 NPC.localAI[0] = 0;
             }
-            else if (NPC.ai[1] == 61 && NPC.ai[2] < NPC.ai[3] && FargoSoulsUtil.HostCheck)
+            else if (NPC.ai[1] == attackTime - 90 + 1 && NPC.ai[2] < NPC.ai[3] && FargoSoulsUtil.HostCheck)
             {
                 Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.SafeDirectionTo(player.Center + player.velocity * 30f), ModContent.ProjectileType<MutantDeathrayAim>(), 0, 0f, Main.myPlayer, 85f, NPC.whoAmI);
                 Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<MutantSpearAim>(), FargoSoulsUtil.ScaledProjectileDamage(NPC.defDamage), 0f, Main.myPlayer, NPC.whoAmI, 3);
@@ -1165,7 +1168,8 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
                 else
                 {
                     NPC.velocity = Vector2.Zero;
-                    if (timer >= sphereTime + divePrepTime + diveTime)
+                    int extraEndlag = WorldSavingSystem.MasochistModeReal ? 0 : 30;
+                    if (timer >= sphereTime + divePrepTime + diveTime + extraEndlag)
                     {
                         P1NextAttackOrMasoOptions(AttackChoice);
                     }
@@ -1214,16 +1218,18 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
 
             NPC.ai[1]++;
 
-            if (NPC.ai[1] < 145) //track player up until just before attack
+            int attackTime = WorldSavingSystem.MasochistModeReal ? 150 : 180;
+
+            if (NPC.ai[1] < attackTime - 5) //track player up until just before attack
             {
                 NPC.localAI[0] = NPC.SafeDirectionTo(player.Center + player.velocity * 30f).ToRotation();
             }
 
-            if (NPC.ai[1] > 150) //120)
+            if (NPC.ai[1] > attackTime)
             {
                 NPC.netUpdate = true;
                 //NPC.TargetClosest();
-                NPC.ai[1] = WorldSavingSystem.MasochistModeReal ? 60 : 30;
+                NPC.ai[1] = attackTime - (WorldSavingSystem.MasochistModeReal ? 90 : 120);
                 if (++NPC.ai[2] > NPC.ai[3])
                 {
                     P1NextAttackOrMasoOptions(AttackChoice);
@@ -1242,7 +1248,7 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
                 NPC.localAI[0] = 0;
             }
 
-            if (NPC.ai[1] == 61 && NPC.ai[2] < NPC.ai[3] && FargoSoulsUtil.HostCheck)
+            if (NPC.ai[1] == attackTime - 90 + 1 && NPC.ai[2] < NPC.ai[3] && FargoSoulsUtil.HostCheck)
             {
                 Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.SafeDirectionTo(player.Center + player.velocity * 30f), ModContent.ProjectileType<MutantDeathrayAim>(), 0, 0f, Main.myPlayer, 85f, NPC.whoAmI);
                 Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<MutantSpearAim>(), FargoSoulsUtil.ScaledProjectileDamage(NPC.defDamage), 0f, Main.myPlayer, NPC.whoAmI, 3);
@@ -1740,6 +1746,10 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
                 }
                 NPC.ai[1] = 0;
                 NPC.ai[2] = 0;
+                NPC.ai[3] = 0;
+                NPC.localAI[0] = 0;
+                NPC.localAI[1] = 0;
+                NPC.localAI[2] = 0;
                 //NPC.TargetClosest();
                 NPC.netUpdate = true;
 
