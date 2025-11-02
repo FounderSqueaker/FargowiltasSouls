@@ -691,7 +691,7 @@ namespace FargowiltasSouls.Content.Projectiles
             switch (projectile.type)
             {
                 case ProjectileID.ChlorophyteBullet:
-                    if (PerformSafetyChecks(projectile, ItemID.ChlorophyteBullet, out _, "ChlorophyteBullet"))
+                    if (projectile.owner.IsWithinBounds(Main.maxPlayers) && EmodeItemBalance.HasEmodeChange(Main.player[projectile.owner], ItemID.ChlorophyteBullet).Contains("ChlorophyteBullet"))
                     {
                         // vanilla Chlorophyte Bullet AI imitation to apply more elaborate tweaks.
                         if (projectile.alpha < 170)
