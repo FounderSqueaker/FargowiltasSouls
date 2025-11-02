@@ -686,7 +686,7 @@ namespace FargowiltasSouls
         }
         private void StatusPlayer(On_Projectile.orig_StatusPlayer orig, Projectile self, int playerIndex)
         {
-            if (self.type == ProjectileID.DeerclopsIceSpike && WorldSavingSystem.EternityMode && self.GetSourceNPC().type == NPCID.Deerclops)
+            if (self.type == ProjectileID.DeerclopsIceSpike && WorldSavingSystem.EternityMode && self.GetSourceNPC()?.type == NPCID.Deerclops)
                 return; // Remove annoying Frozen debuff from EMode+ Deer spikes
             orig(self, playerIndex);
         }
