@@ -169,6 +169,8 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Night
         public override void AI(NPC npc)
         {
             npc.position += npc.velocity;
+
+            Lighting.AddLight(npc.Center, 0.75f / 3, 1.35f / 3, 1.5f / 3);
         }
 
         public override void OnHitPlayer(NPC npc, Player target, Player.HurtInfo hurtInfo)
