@@ -439,7 +439,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             {
                 if (Timer < fadeTime / 6)
                 {
-                    teleX = Target.Bottom.X + NPC.HorizontalDirectionTo(Target.Center) * 350;
+                    teleX = Target.Bottom.X + NPC.HorizontalDirectionTo(Target.Center) * 400;
                     teleY = Target.Bottom.Y;
                     bool InTerrain(float x, float y) => Collision.SolidCollision(new Vector2(x - NPC.width / 2, y - NPC.height), NPC.width, NPC.height);
                     for (int i = 0; i < 40; i++)
@@ -481,7 +481,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 NPC.scale *= lerp;
                 if (Timer > fadeTime * 2)
                 {
-                    TeleportCD = 4;
+                    TeleportCD = 2;
                     ResetToJumps();
                     return;
                 }
