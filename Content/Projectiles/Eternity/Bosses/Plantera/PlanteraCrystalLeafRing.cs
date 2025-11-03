@@ -1,4 +1,5 @@
-﻿using FargowiltasSouls.Common.Graphics.Particles;
+﻿using FargowiltasSouls.Assets.Textures;
+using FargowiltasSouls.Common.Graphics.Particles;
 using FargowiltasSouls.Content.Bosses.MutantBoss;
 using FargowiltasSouls.Content.Buffs.Eternity;
 using FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera;
@@ -16,8 +17,13 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity
 {
     public class PlanteraCrystalLeafRing : MutantCrystalLeaf
     {
-        public override string Texture => "Terraria/Images/Projectile_226";
+        public override string Texture => FargoAssets.GetAssetString("Content/NPCs/EternityModeNPCs/BossMinions", "CrystalLeaf");
 
+        public override void SetStaticDefaults()
+        {
+            Main.projFrames[Type] = 2;
+            base.SetStaticDefaults();
+        }
         public override void SetDefaults()
         {
             base.SetDefaults();
@@ -28,6 +34,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity
 
         public override void AI()
         {
+            Projectile.frame = 1;
             bool recolor = SoulConfig.Instance.BossRecolors && WorldSavingSystem.EternityMode;
             if (++Projectile.localAI[0] == 0)
             {
@@ -91,7 +98,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity
         public override bool PreDraw(ref Color lightColor)
         {
             bool recolor = SoulConfig.Instance.BossRecolors && WorldSavingSystem.EternityMode;
-            Texture2D texture2D13 = recolor ? ModContent.Request<Texture2D>("FargowiltasSouls/Content/NPCs/EternityModeNPCs/BossMinions/CrystalLeaf").Value : Terraria.GameContent.TextureAssets.Projectile[Type].Value;
+            Texture2D texture2D13 = recolor ? Terraria.GameContent.TextureAssets.Projectile[Type].Value : FargoAssets.GetTexture2D("Content/NPCs/EternityModeNPCs/BossMinions", "CrystalLeafVanilla").Value;
 
             int num156 = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value.Height / Main.projFrames[Projectile.type]; //ypos of lower right corner of sprite to draw
             int y3 = num156 * Projectile.frame; //ypos of upper left corner of sprite to draw
@@ -112,9 +119,16 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity
                 Main.EntitySpriteDraw(texture2D13, value4 + Projectile.Size / 2f - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), new Microsoft.Xna.Framework.Rectangle?(rectangle), color27, num165, origin2, Projectile.scale, SpriteEffects.None, 0);
             }
 
+            for (int j = 0; j < 12; j++)
+            {
+                Vector2 afterimageOffset = (MathHelper.TwoPi * j / 12).ToRotationVector2() * 2f * Projectile.scale;
+                Color glowColor = recolor? Color.Blue : Color.IndianRed;
+
+                Main.EntitySpriteDraw(texture2D13, Projectile.Center - Main.screenPosition + afterimageOffset, rectangle, Projectile.GetAlpha(glowColor), Projectile.rotation, rectangle.Size() / 2, Projectile.scale, SpriteEffects.None);
+            }
             Main.spriteBatch.ResetToDefault();
 
-            Main.EntitySpriteDraw(texture2D13, Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY), new Microsoft.Xna.Framework.Rectangle?(rectangle), Projectile.GetAlpha(lightColor), Projectile.rotation, origin2, Projectile.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(texture2D13, Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY), new Microsoft.Xna.Framework.Rectangle?(rectangle), Color.White, Projectile.rotation, origin2, Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }
