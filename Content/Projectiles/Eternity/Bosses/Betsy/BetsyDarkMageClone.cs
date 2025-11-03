@@ -25,6 +25,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
             Projectile.width = 40;
             Projectile.height = 40;
             Projectile.tileCollide = false;
+            Projectile.light = 1f;
             Projectile.FargoSouls().DeletionImmuneRank = 1;
         }
 
@@ -57,7 +58,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
                     Projectile.frame = Projectile.frame == 6 ? 7 : 6;
                 }
 
-                Vector2 chargeCenter = Projectile.Center - 70 * Vector2.UnitY;
+                Vector2 chargeCenter = Projectile.Center - 100 * Vector2.UnitY;
                 float scale = MathHelper.Clamp(timer / 240f, 0f, 2f);
                 if (timer % 60 == 1)
                 {

@@ -1,48 +1,31 @@
-using FargowiltasSouls.Assets.Sounds;
 using FargowiltasSouls.Common.Graphics.Particles;
 using FargowiltasSouls.Common.Utilities;
-using FargowiltasSouls.Content.Buffs.Eternity;
+using FargowiltasSouls.Content.Bosses.Champions.Will;
 using FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA;
-using FargowiltasSouls.Content.Patreon.DanielTheRobot;
-using FargowiltasSouls.Content.Patreon.Duck;
-using FargowiltasSouls.Content.Patreon.Volknet.Projectiles;
-using FargowiltasSouls.Content.Projectiles;
-using FargowiltasSouls.Content.Projectiles.Deathrays;
 using FargowiltasSouls.Content.Projectiles.Eternity;
 using FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy;
-using FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.Hell;
 using FargowiltasSouls.Core.Globals;
 using FargowiltasSouls.Core.NPCMatching;
 using FargowiltasSouls.Core.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoMod.Core.Utils;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Metrics;
 using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Events;
-using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ModLoader.Default;
 using Terraria.ModLoader.IO;
-using Terraria.Utilities;
-using static FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA.DD2Ogre;
 
 namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 {
     public class Betsy : EModeNPCBehaviour
     {
         public override NPCMatcher CreateMatcher() => new NPCMatcher().MatchType(NPCID.DD2Betsy);
-
-        public int EntranceTimer = 0;
 
         public bool InPhase2 = false;
         public bool InPhase3 = false;
@@ -82,14 +65,30 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
+            bitWriter.WriteBit(ContactDamage);
+            bitWriter.WriteBit(isStunning);
             bitWriter.WriteBit(InPhase2);
-            bitWriter.WriteBit(TargetPlayer);
+            bitWriter.WriteBit(InPhase3);
+
+            binaryWriter.Write7BitEncodedInt(State);
+            binaryWriter.Write7BitEncodedInt(PreviousState);
+            binaryWriter.Write7BitEncodedInt(SubState);
+            binaryWriter.Write7BitEncodedInt(Timer);
+            binaryWriter.Write7BitEncodedInt(heldProj);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
+            ContactDamage = bitReader.ReadBit();
+            isStunning = bitReader.ReadBit();
             InPhase2 = bitReader.ReadBit();
-            TargetPlayer = bitReader.ReadBit();
+            InPhase3 = bitReader.ReadBit();
+
+            State = binaryReader.Read7BitEncodedInt();
+            PreviousState = binaryReader.Read7BitEncodedInt();
+            SubState = binaryReader.Read7BitEncodedInt();
+            Timer = binaryReader.Read7BitEncodedInt();
+            heldProj = binaryReader.Read7BitEncodedInt();
         }
 
         public override void SetDefaults(NPC npc)
@@ -761,6 +760,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             {
                 if (Timer == 20)
                 {
+                    RoarParticles(npc, Color.White);
                     SoundEngine.PlaySound(SoundID.DD2_BetsyScream, npc.Center);
                     if (FargoSoulsUtil.HostCheck)
                     {
@@ -778,24 +778,11 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                     npc.netUpdate = true;
                 }
 
-                npc.velocity *= 0.9f;
+                npc.velocity *= 0.8f;
 
-                if (Timer >= 20 && Timer % 5 == 0)
+                if (Timer > 60)
                 {
-                    SoundEngine.PlaySound(SoundID.DD2_SkyDragonsFuryShot with { Pitch = -0.2f, Volume = 2f }, npc.Center);
-                    SoundEngine.PlaySound(SoundID.DD2_SkyDragonsFuryShot with { Pitch = -0.2f, Volume = 2f }, npc.Center);
-                    for (int i = 0; i < 10; i++)
-                    {
-                        float scale = Main.rand.NextFloat(1f, 3f);
-                        float randRot = Main.rand.NextFloat(0, MathHelper.TwoPi);
-                        new ElectricSpark(npc.Center + 60 * Vector2.UnitX.RotatedBy(randRot), (4 - scale) * 15 * Vector2.UnitX.RotatedBy(randRot),
-                            Color.Purple, scale, 35).Spawn();
-                    }
-                }
-
-                if (Timer > 120)
-                {
-                    RoarFrame(120, true);
+                    RoarFrame(60, true);
                     if (frameY == 0)
                     {
                         Timer = 0;
@@ -834,6 +821,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             }
             else if (SubState == 3 || SubState == 4)
             {
+                ContactDamage = false;
                 int dir = SubState == 3 ? 1 : -1;
                 float rotDir = SubState == 3 ? MathHelper.Pi : MathHelper.Pi;
 
@@ -841,6 +829,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 if (!p.Alive() || p.type != ModContent.ProjectileType<BetsyLightningAura>())
                 {
                     npc.rotation = 0;
+                    ContactDamage = true;
                     ResetToIdle(npc);
                     return;
                 }
@@ -855,31 +844,31 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 npc.Center = npc.Center.RotatedBy(rot, p.Center);
                 npc.rotation = Timer * rot + rotDir + MathHelper.PiOver2;
 
-                if (Timer % period == period / 2)
+                if (Timer % (period / 2) == 0)
                 {
                     if (FargoSoulsUtil.HostCheck)
                     {
-                        for (int i = 0; i < 5; i++)
+                        for (int i = 2; i < 6; i++)
                         {
-                            Vector2 vel = new Vector2(-npc.direction, -1.7f) * 9;
+                            float d = npc.HorizontalDirectionTo(p.Center);
+                            Vector2 vel = new Vector2(d, -1.7f) * 11;
                             vel.X += Main.rand.NextFloat(-1, 1) * 1.4f;
-                            vel.Y -= Main.rand.NextFloat(0, 1) * 3.7f * 5;
-                            vel.X -= (i - 2) * 5;
+                            vel.Y -= Main.rand.NextFloat(0, 1) * 2.7f * 4;
+                            vel.X -= -d * (i - 2) * 5;
                             vel /= 1.6f;
-                            int proj = Projectile.NewProjectile(npc.GetSource_FromAI(), breathPos(npc), vel, ProjectileID.DD2BetsyFireball, FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 0.8f), 1f);
+                            Projectile.NewProjectile(npc.GetSource_FromAI(), breathPos(npc), vel, ProjectileID.DD2BetsyFireball, FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 0.8f), 1f);
                         }
                     }
                 }
 
-                float endTime = 400 + Main.rand.Next(0, (int)period);
-                if (Timer > endTime && npc.Distance(player.Center) > 200 && !Collision.SolidCollision(npc.position, npc.width, npc.height))
+                if (Timer > 400 && npc.Distance(player.Center) > 150 && !Collision.SolidCollision(npc.position, npc.width, npc.height) && Main.rand.NextBool(30))
                 {
                     npc.rotation = 0;
                     Timer = 0;
                     SubState = 5;
                     p.ai[1] = 1; // start detonate
                     SoundEngine.PlaySound(SoundID.Roar, npc.Center);
-                    ContactDamage = false;
+                    npc.netUpdate = true;
                 }
             }
             else if (SubState == 5)

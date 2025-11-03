@@ -1,5 +1,6 @@
 ﻿using FargowiltasSouls.Assets.Textures;
 using FargowiltasSouls.Common.Graphics.Particles;
+using FargowiltasSouls.Core.Systems;
 using Luminance.Core.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -63,7 +64,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
                 return;
             }
 
-            int timeToDet = 120;
+            int timeToDet = WorldSavingSystem.MasochistModeReal ? 120 : 180;
             if (Projectile.ai[1] == 1)
             {
                 timer++;
@@ -71,7 +72,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
                 {
                     foreach (var proj in Main.ActiveProjectiles)
                     {
-                        if (proj.type == ModContent.ProjectileType<BetsyDarkMageClone>() || proj.type == ModContent.ProjectileType<BetsyLightningBugClone>())
+                        if (proj.type == ModContent.ProjectileType<BetsyDarkMageClone>())
                             proj.Kill();
                     }
                 }
@@ -89,11 +90,13 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
                             new ElectricSpark(Projectile.Center, scale * 25 * Vector2.UnitX.RotatedBy(rot), Color.Purple, scale, 90).Spawn();
                         }
 
+
+                        // toward betsy
                         for (int i = 0; i < 5; i++)
                         {
                             float rot = Projectile.AngleTo(betsy.Center) - (safeRot / 2) + Main.rand.NextFloat(0f, safeRot);
                             float scale = Main._rand.NextFloat(0f, 2f);
-                            new ElectricSpark(Projectile.Center, scale * 8 * Vector2.UnitX.RotatedBy(rot), Color.Purple, scale, 90).Spawn();
+                            new ElectricSpark(Projectile.Center, scale * 6 * Vector2.UnitX.RotatedBy(rot), Color.Purple, scale, 90).Spawn();
                         }
                     }
                     
@@ -105,7 +108,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
 
                 }
 
-                if (timer > 300)
+                if (timer > timeToDet + 180)
                 {
                     Projectile.Kill();
                 }
@@ -121,39 +124,85 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Vector2 auraPos = Projectile.Center;
-            float radius = Projectile.width * 1.5f;
-            var blackTile = TextureAssets.MagicPixel;
-            var diagonalNoise = FargoAssets.CracksNoise;
-            if (!blackTile.IsLoaded || !diagonalNoise.IsLoaded)
+            NPC betsy = Main.npc[(int)Projectile.ai[0]];
+            if (!betsy.Alive() || betsy.type != NPCID.DD2Betsy)
+            {
+                Projectile.Kill();
                 return false;
-            float opac = Projectile.ai[0] <= 90 ? 0 : MathHelper.Min(1, (Projectile.ai[0] - 90f) / 120f);
-            var maxOpacity = 0.5f * Projectile.Opacity * opac;
+            }
 
-            Vector4 darkColor = Color.DarkViolet.ToVector4();
-            Vector4 midColor = Color.Black.ToVector4();
-            Vector4 lColor = Color.DarkViolet.ToVector4();
+            int timeToDet = WorldSavingSystem.MasochistModeReal ? 120 : 180;
+            float ai2 = Projectile.ai[2] > timeToDet ? 2f * (Projectile.ai[2] - timeToDet) : 0;
 
 
-            ManagedShader borderShader = ShaderManager.GetShader("FargowiltasSouls.NatureExplosionTelegraphShader");
-            borderShader.TrySetParameter("darkColor", darkColor);
-            borderShader.TrySetParameter("midColor", midColor);
-            borderShader.TrySetParameter("lightColor", lColor);
-            borderShader.TrySetParameter("time", Main.GlobalTimeWrappedHourly);
-            borderShader.TrySetParameter("radius", radius);
-            borderShader.TrySetParameter("anchorPoint", auraPos);
-            borderShader.TrySetParameter("screenPosition", Main.screenPosition);
-            borderShader.TrySetParameter("screenSize", Main.ScreenSize.ToVector2());
-            borderShader.TrySetParameter("maxOpacity", maxOpacity);
+            Color color = Color.Purple;
+            Vector2 pos = Projectile.Center;
 
-            Main.spriteBatch.GraphicsDevice.Textures[1] = diagonalNoise.Value;
+            // aimed to betsy
+
+            float radius = 20 * MathHelper.Min(15, ai2);
+            float arcWidth = 0.90f * MathHelper.PiOver4;
+            float arcAngle = Projectile.AngleTo(betsy.Center);
+
+            var blackTile = TextureAssets.MagicPixel;
+            var noise = FargoAssets.CracksNoise;
+            if (!blackTile.IsLoaded || !noise.IsLoaded)
+            {
+                return false;
+            }
+          
+
+            ManagedShader shader = ShaderManager.GetShader("FargowiltasSouls.DestroyerScanTelegraph");
+            shader.TrySetParameter("colorMult", 7.35f);
+            shader.TrySetParameter("time", Main.GlobalTimeWrappedHourly);
+            shader.TrySetParameter("radius", radius);
+            shader.TrySetParameter("arcAngle", arcAngle.ToRotationVector2());
+            shader.TrySetParameter("arcWidth", arcWidth);
+            shader.TrySetParameter("anchorPoint", pos);
+            shader.TrySetParameter("screenPosition", Main.screenPosition);
+            shader.TrySetParameter("screenSize", Main.ScreenSize.ToVector2());
+            shader.TrySetParameter("maxOpacity", 0.35f);
+            shader.TrySetParameter("color", color.ToVector4());
+            
+            // rest
+
+            float radius2 = 20 * MathHelper.Min(58, ai2);
+
+            float arcWidth2 = MathHelper.Pi - 0.25f * MathHelper.PiOver4;
+            float arcAngle2 = MathHelper.Pi + Projectile.AngleTo(betsy.Center);
+
+            Main.spriteBatch.GraphicsDevice.Textures[1] = noise.Value;
 
             Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap, DepthStencilState.None, Main.Rasterizer, borderShader.WrappedEffect, Main.GameViewMatrix.TransformationMatrix);
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap, DepthStencilState.None, Main.Rasterizer, shader.WrappedEffect, Main.GameViewMatrix.TransformationMatrix);
             Rectangle rekt = new(Main.screenWidth / 2, Main.screenHeight / 2, Main.screenWidth, Main.screenHeight);
             Main.spriteBatch.Draw(blackTile.Value, rekt, null, default, 0f, blackTile.Value.Size() * 0.5f, 0, 0f);
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+
+
+            ManagedShader shader2 = ShaderManager.GetShader("FargowiltasSouls.DestroyerScanTelegraph");
+            shader2.TrySetParameter("colorMult", 7.35f);
+            shader2.TrySetParameter("time", Main.GlobalTimeWrappedHourly);
+            shader2.TrySetParameter("radius", radius2);
+            shader2.TrySetParameter("arcAngle", arcAngle2.ToRotationVector2());
+            shader2.TrySetParameter("arcWidth", arcWidth2);
+            shader2.TrySetParameter("anchorPoint", pos);
+            shader2.TrySetParameter("screenPosition", Main.screenPosition);
+            shader2.TrySetParameter("screenSize", Main.ScreenSize.ToVector2());
+            shader2.TrySetParameter("maxOpacity", 0.5f);
+            shader2.TrySetParameter("color", color.ToVector4());
+
+
+            Main.spriteBatch.GraphicsDevice.Textures[1] = noise.Value;
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap, DepthStencilState.None, Main.Rasterizer, shader2.WrappedEffect, Main.GameViewMatrix.TransformationMatrix);
+            Rectangle rekt2 = new(Main.screenWidth / 2, Main.screenHeight / 2, Main.screenWidth, Main.screenHeight);
+            Main.spriteBatch.Draw(blackTile.Value, rekt2, null, default, 0f, blackTile.Value.Size() * 0.5f, 0, 0f);
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+
 
             return false;
         }
