@@ -89,8 +89,8 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
             //mutant antibodies
             player.buffImmune[ModContent.BuffType<OceanicMaulBuff>()] = true;
             fargoPlayer.MutantAntibodies = true;
-            //if (player.mount.Active && player.mount.Type == MountID.CuteFishron)
-                //player.dripping = true;
+            if (player.mount.Active && player.mount.Type == MountID.CuteFishron)
+                player.dripping = true;
 
             //chalice of the moon
             player.buffImmune[ModContent.BuffType<CurseoftheMoonBuff>()] = true;
