@@ -386,9 +386,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
                 offset = offset.RotateTowards(-Vector2.UnitY.ToRotation(), 0.09f);
                 pos += offset;
-                float speed = 1f;
+                float speed = 1.3f;
 
-                Movement(pos, speedMultiplier: speed);
+                Movement(pos, maxSpeed: 35, speedMultiplier: speed);
 
                 float rotationSpeed = MathHelper.Lerp(0, 0.8f, Timer / transitionTime);
                 int phaser = 90;
@@ -412,7 +412,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             }
             else
             {
-                int dashTime = WorldSavingSystem.MasochistModeReal ? 65 : 90;
+                int dashTime = WorldSavingSystem.MasochistModeReal ? 65 : 82;
                 int dashes = WorldSavingSystem.MasochistModeReal ? 5 : 3;
                 if ((Timer - transitionTime) % dashTime == 0)
                 {
@@ -422,7 +422,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                     SoundEngine.PlaySound(SoundID.ForceRoar);
                 }
                 DefaultRotation(rotLerp: 0.2f);
-                NPC.velocity *= 0.975f;
+                NPC.velocity *= 0.98f;
                 if ((Timer - transitionTime) % dashTime < 25)
                 {
                     for (int i = 0; i < 3; i++)
@@ -476,6 +476,17 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                     NPC.velocity = Forward * 18;
                     SoundEngine.PlaySound(SoundID.ForceRoarPitched);
 
+                    if (NPC.CountNPCS(NPCID.ServantofCthulhu) < 4 && FargoSoulsUtil.HostCheck)
+                    {
+                        int n = NPC.NewNPC(NPC.GetSource_FromAI(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCID.ServantofCthulhu);
+                        if (n != Main.maxNPCs)
+                        {
+                            Main.npc[n].velocity = -NPC.DirectionTo(Target.Center).RotatedByRandom(MathHelper.PiOver2 * 0.8f) * 1;
+                            if (Main.netMode == NetmodeID.Server)
+                                NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, n);
+                        }
+                    }
+
                     if (WorldSavingSystem.MasochistModeReal && FargoSoulsUtil.HostCheck)
                     {
                         Projectile[] projs = FargoSoulsUtil.XWay(XAmount, NPC.GetSource_FromThis(), NPC.Center, ModContent.ProjectileType<BloodScythe>(), 1.5f, FargoSoulsUtil.ScaledProjectileDamage(NPC.defDamage), 0);
@@ -495,6 +506,13 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                         Main.dust[index].velocity = -NPC.velocity / 2;
                     }
                 }
+
+                if (subTimer > dashTime - 5 && Math.Abs(FargoSoulsUtil.RotationDifference(NPC.velocity, NPC.DirectionTo(Target.Center))) < MathHelper.PiOver2)
+                {
+                    Timer--;
+                    if (NPC.velocity.LengthSquared() < 35 * 35)
+                        NPC.velocity *= 1.03f;
+                }
             }
             else // final dash
             {
@@ -510,6 +528,17 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 {
                     NPC.velocity = Forward * 18;
                     SoundEngine.PlaySound(SoundID.ForceRoarPitched);
+
+                    for (int i = -1; i <= 1; i += 2)
+                    {
+                        int n = NPC.NewNPC(NPC.GetSource_FromAI(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCID.ServantofCthulhu);
+                        if (n != Main.maxNPCs)
+                        {
+                            Main.npc[n].velocity = NPC.DirectionTo(Target.Center).RotatedBy(MathHelper.PiOver2 * 0.8f * i) * 5;
+                            if (Main.netMode == NetmodeID.Server)
+                                NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, n);
+                        }
+                    }
 
                     if (WorldSavingSystem.MasochistModeReal && FargoSoulsUtil.HostCheck)
                     {
@@ -555,6 +584,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             DefaultRotation(dir, 0.2f);
 
             float spd = MathHelper.Lerp(0.5f, 12f, LumUtils.Saturate(Timer / 70));
+            if (Timer == 70)
+                SoundEngine.PlaySound(SoundID.Roar, NPC.Center);
             Vector2 pos = Target.Center;
             Vector2 offset = Target.DirectionTo(NPC.Center) * 450;
             offset = offset.RotatedBy(MathF.Tau * 0.05f * AI3);
@@ -566,6 +597,17 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             if (Timer > endStart)
             {
                 spd *= MathHelper.Lerp(1, 0, (Timer - endStart) / endTime);
+            }
+            if (spd > 3)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    int index = Dust.NewDust(NPC.Center, 0, 0, DustType, 0.0f, 0.0f, 100, new Color(), 1f);
+                    Main.dust[index].position += Main.rand.NextVector2Circular(NPC.width / 2, NPC.height / 2);
+                    Main.dust[index].noLight = true;
+                    Main.dust[index].noGravity = true;
+                    Main.dust[index].velocity = -NPC.velocity / 2;
+                }
             }
             if (Timer < maxTime)
             {
@@ -602,7 +644,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             if (AI3 == 0) // startup
             {
                 npc.velocity *= 0.98f;
-                npc.alpha += 4;
+                npc.alpha += 8;
                 for (int i = 0; i < 3; i++)
                 {
                     int d = Dust.NewDust(npc.position, npc.width, npc.height, DustType, 0f, 0f, 0, default, 1.5f);
@@ -687,7 +729,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                     npc.netUpdate = true;
                     NetSync(npc);
 
-                    Timer = 40; //1.6.1 change: skip most of windup
+                    Timer = 50; //1.6.1 change: skip most of windup
 
                     if (npc.HasValidTarget) //1.6.1 change: telegraph with spectral EoC clone
                         Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Center, Vector2.Zero, ModContent.ProjectileType<SpectralEoC>(), 0, 0, Main.myPlayer, Timer + 20, npc.target);
