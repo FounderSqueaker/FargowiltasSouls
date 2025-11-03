@@ -20,6 +20,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
 
         private const float range = 160f;
 
+        public bool blingle;
         public override void SetStaticDefaults()
         {
             Main.projFrames[Type] = 3;
@@ -39,12 +40,14 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
         {
             writer.Write(Projectile.localAI[0]);
             writer.Write(Projectile.localAI[1]);
+            writer.Write(blingle);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
             Projectile.localAI[0] = reader.ReadSingle();
             Projectile.localAI[1] = reader.ReadSingle();
+            blingle = reader.ReadBoolean();
         }
 
         public override bool? CanDamage()
@@ -181,6 +184,9 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
                                     Main.projectile[p].timeLeft = (int)time;
                             }
                             Projectile.frame = 0;
+                            Projectile.ai[2] = 0;
+                            blingle = false;
+                            Projectile.rotation = Main.rand.Next(360);
                         }
 
                         
@@ -201,6 +207,8 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
             SoundEngine.PlaySound(SoundID.NPCDeath1, Projectile.Center);
         }
 
+        
+
         public override bool PreDraw(ref Color lightColor)
         {
             Texture2D texture2D13 = Terraria.GameContent.TextureAssets.Projectile[Type].Value;
@@ -214,18 +222,30 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
             Color color26 = Color.White;
             color26 = Projectile.GetAlpha(color26);
 
-            if ((Projectile.localAI[0] <= -100 && Projectile.localAI[0] >= -110) || (Projectile.localAI[0] <= -130 && Projectile.localAI[0] >= -140))
+            float scale = Projectile.scale;
+            
+            if (Projectile.frame == Main.projFrames[Type] - 1)
             {
-                color26.A = 0;
-                color26 = Color.HotPink;
-            } 
-
-            Main.EntitySpriteDraw(texture2D13, Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY), new Rectangle?(rectangle), color26, Projectile.rotation, origin2, Projectile.scale, spriteEffects, 0);
-            /*if (Projectile.localAI[0] < -120)
-            {
-                color26.A = 0;
-                Main.EntitySpriteDraw(texture2D13, Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY), new Microsoft.Xna.Framework.Rectangle?(rectangle), color26, Projectile.rotation, origin2, Projectile.scale, spriteEffects, 0);
-            }*/
+                if (!Main.gamePaused)
+                    ++Projectile.ai[2];
+                if (!blingle)
+                    scale = MathHelper.Lerp(Projectile.scale, 1.2f, Projectile.ai[2] * 0.3f);
+                else
+                    scale = MathHelper.Lerp(1.2f, Projectile.scale, Projectile.ai[2] * 0.3f);
+                if (scale >= 1.2f)
+                {
+                    blingle = true;
+                    Projectile.ai[2] = 0;
+                    scale = 1.2f;
+                    
+                }
+                if (scale <= 1)
+                    scale = 1;
+                    
+                Main.NewText(scale);
+            }
+            
+            Main.EntitySpriteDraw(texture2D13, Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY), new Rectangle?(rectangle), color26, Projectile.rotation, origin2, scale, spriteEffects, 0);
             return false;
         }
     }
