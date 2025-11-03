@@ -282,7 +282,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             DefaultRotation(rotLerp: 0.2f);
 
             int dashTime = WorldSavingSystem.MasochistModeReal ? 48 : 60;
-            int dashes = WorldSavingSystem.MasochistModeReal ? 5 : 3;
+            int dashes = WorldSavingSystem.MasochistModeReal ? 4 : 3;
             float endTime = dashTime * dashes - 2;
 
             if (Timer % dashTime == 0)
@@ -413,7 +413,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             else
             {
                 int dashTime = WorldSavingSystem.MasochistModeReal ? 65 : 82;
-                int dashes = WorldSavingSystem.MasochistModeReal ? 5 : 3;
+                int dashes = WorldSavingSystem.MasochistModeReal ? 4 : 3;
                 if ((Timer - transitionTime) % dashTime == 0)
                 {
                     int counter = (int)((Timer - transitionTime) / dashTime);
