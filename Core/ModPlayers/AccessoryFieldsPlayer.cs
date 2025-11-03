@@ -227,6 +227,7 @@ namespace FargowiltasSouls.Core.ModPlayers
         public bool SupersonicSoul;
         public bool WorldShaperSoul;
         public bool FlightMasterySoul;
+        public int FlightSoulWingFrameX;
         public bool BuilderMode;
         public bool DimensionSoul;
         public bool UniverseSoul;

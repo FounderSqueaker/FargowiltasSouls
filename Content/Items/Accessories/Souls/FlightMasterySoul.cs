@@ -86,6 +86,36 @@ namespace FargowiltasSouls.Content.Items.Accessories.Souls
             .AddTile(ModContent.Find<ModTile>("Fargowiltas", "CrucibleCosmosSheet"))
             .Register();
         }
+
+        public override bool WingUpdate(Player player, bool inUse)
+        {   
+            if (inUse)
+            {
+                int frameCount = 8;
+                player.FargoSouls().FlightSoulWingFrameX = 0;
+                if (++player.wingFrameCounter >= 4)
+                {
+                    player.wingFrameCounter = 0;
+                    if (++player.wingFrame >= frameCount)
+                    {
+                        player.wingFrame = 0;
+                    }
+                    
+                }
+                
+            }
+            else
+            {
+                player.FargoSouls().FlightSoulWingFrameX = 1;
+                player.wingFrameCounter = 0;
+                player.wingFrame = 0;
+                if (player.velocity.Y != 0)
+                {
+                    player.wingFrame = 1;
+                }
+            }
+            return true;
+        }
     }
     public class FlightMasteryInsignia : AccessoryEffect
     {
