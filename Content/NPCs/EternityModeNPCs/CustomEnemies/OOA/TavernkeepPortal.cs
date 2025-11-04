@@ -4,6 +4,7 @@ using FargowiltasSouls.Common.Graphics.Particles;
 using FargowiltasSouls.Core.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.Audio;
@@ -210,7 +211,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.CustomEnemies.OOA
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            Texture2D texture = TextureAssets.Npc[Type].Value;
+            Texture2D texture = TextureAssets.Npc[Type].Value; // modded textures are pre-loaded
             Rectangle frame;
             Vector2 origin2;
             Vector2 offset = Vector2.Zero;
@@ -235,7 +236,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.CustomEnemies.OOA
                 return false;
             }
 
-            texture = TextureAssets.Npc[NPCID.DD2LanePortal].Value;
+            texture = ModContent.Request<Texture2D>("Terraria/Images/NPC_549", AssetRequestMode.ImmediateLoad).Value;
             frameY = (int)Math.Floor(timer / 8) % 8;
             frame = texture.Frame(1, 8, 0, frameY);
             origin2 = frame.Size() / 2;
@@ -272,6 +273,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.CustomEnemies.OOA
         {
             float maxTime = 200f;
             int type = NPCID.DD2OgreT2;
+            Main.instance.LoadNPC(type);
             int frameY = (int)Math.Floor(timer / 8) % 11;
 
             if (timer >= 60 && timer <= 108)
