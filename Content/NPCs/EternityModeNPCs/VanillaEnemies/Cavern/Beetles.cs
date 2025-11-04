@@ -34,6 +34,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern
         public override void OnFirstTick(NPC npc)
         {
             npc.defense = npc.defDefense = 5; // originally 10
+            npc.knockBackResist = npc.FargoSouls().defKnockBackResist = 0.5f; // originally 0?
             npc.height = 32;
             npc.noGravity = true;
         }
@@ -46,7 +47,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern
             }
             npc.direction = npc.spriteDirection = Math.Sign(npc.velocity.X);
 
-            foreach (NPC n in Main.npc.Where(n => n.active && !n.friendly && n.type != npc.type))
+            foreach (NPC n in Main.npc.Where(n => n.Alive() && n.Hostile() && n.type != npc.type))
             {
                 if (n.Distance(npc.Center) < AuraSize)
                 {
@@ -68,7 +69,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern
             }
 
             MovingToTarget = false;
-            foreach (NPC n in Main.npc.Where(n => n.active && !n.friendly && n.type != npc.type))
+            foreach (NPC n in Main.npc.Where(n => n.Alive() && n.Hostile() && n.type != npc.type))
             {
                 //choose an enemy to follow, separate search so break works
                 if (Collision.CanHitLine(npc.position, npc.width, npc.height, n.position, n.width, n.height))
@@ -127,51 +128,14 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern
             //flying anim
             Vector2 pos = npc.Center - Main.screenPosition;
             string type = npc.type == NPCID.LacBeetle ? "lac" : npc.type == NPCID.CyanBeetle ? "cyan" : "cochineal";
-            Texture2D t = FargoAssets.GetTexture2D("FargowiltasSouls/Content/NPCs/EternityModeNPCs/VanillaEnemies/Cavern/" + type + "_beetle", Name, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+            Texture2D t = FargoAssets.GetTexture2D("Content/NPCs/EternityModeNPCs/VanillaEnemies/Cavern", type + "_beetle", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
             int frameHeight = t.Height / 3;
             int frame = frameHeight * Frame;
             Rectangle rectangle = new(0, frame, t.Width, frameHeight);
             SpriteEffects effects = npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
             spriteBatch.Draw(t, pos, rectangle, drawColor, npc.rotation, rectangle.Size() / 2f, npc.scale, effects, 0f);
-
-            //aura. javier HATES auras.
-            /*Color darkColor = Color.Lerp(AuraColor, Color.Black, 0.5f);
-            Color mediumColor = AuraColor;
-            Color lightColor2 = Color.Lerp(AuraColor, Color.White, 0.5f);
-
-            Vector2 auraPos = npc.Center;
-            var target = Main.LocalPlayer;
-            var blackTile = TextureAssets.MagicPixel;
-            var diagonalNoise = FargoAssets.WavyNoise;
-            if (!blackTile.IsLoaded || !diagonalNoise.IsLoaded)
-                return false;
-            var maxOpacity = ModContent.GetInstance<FargoClientConfig>().TransparentFriendlyProjectiles;
-
-            ManagedShader borderShader = ShaderManager.GetShader("FargowiltasSouls.GenericInnerAura");
-            borderShader.TrySetParameter("colorMult", 7.35f);
-            borderShader.TrySetParameter("time", Main.GlobalTimeWrappedHourly);
-            borderShader.TrySetParameter("radius", AuraSize);
-            borderShader.TrySetParameter("anchorPoint", auraPos);
-            borderShader.TrySetParameter("screenPosition", Main.screenPosition);
-            borderShader.TrySetParameter("screenSize", Main.ScreenSize.ToVector2());
-            borderShader.TrySetParameter("playerPosition", target.Center);
-            borderShader.TrySetParameter("maxOpacity", maxOpacity);
-            borderShader.TrySetParameter("darkColor", darkColor.ToVector4());
-            borderShader.TrySetParameter("midColor", mediumColor.ToVector4());
-            borderShader.TrySetParameter("lightColor", lightColor2.ToVector4());
-            borderShader.TrySetParameter("opacityAmp", 1f);
-
-            Main.spriteBatch.GraphicsDevice.Textures[1] = diagonalNoise.Value;
-
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap, DepthStencilState.None, Main.Rasterizer, borderShader.WrappedEffect, Main.GameViewMatrix.TransformationMatrix);
-            Rectangle rekt = new(Main.screenWidth / 2, Main.screenHeight / 2, Main.screenWidth, Main.screenHeight);
-            Main.spriteBatch.Draw(blackTile.Value, rekt, null, default, 0f, blackTile.Value.Size() * 0.5f, 0, 0f);
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-            */
-            return false;
+            return npc.IsABestiaryIconDummy && base.PreDraw(npc, spriteBatch, screenPos, drawColor);
         }
     }
 

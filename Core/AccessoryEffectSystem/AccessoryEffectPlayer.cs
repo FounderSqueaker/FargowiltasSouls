@@ -187,7 +187,7 @@ namespace FargowiltasSouls.Core.AccessoryEffectSystem
         private static List<AccessoryEffect> HookOnHitNPCWithProj = AddHook<Action<Player, Projectile, NPC, NPC.HitInfo, int>>(p => p.OnHitNPCWithProj);
         public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
         {
-            if (target.type == NPCID.TargetDummy || target.friendly)
+            if (!target.Hostile())
                 return;
 
             foreach (AccessoryEffect effect in HookOnHitNPCWithProj)
@@ -205,7 +205,7 @@ namespace FargowiltasSouls.Core.AccessoryEffectSystem
         private static List<AccessoryEffect> HookOnHitNPCWithItem = AddHook<Action<Player, Item, NPC, NPC.HitInfo, int>>(p => p.OnHitNPCWithItem);
         public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
         {
-            if (target.type == NPCID.TargetDummy || target.friendly)
+            if (!target.Hostile())
                 return;
 
             foreach (AccessoryEffect effect in HookOnHitNPCWithItem)

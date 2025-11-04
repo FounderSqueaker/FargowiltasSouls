@@ -278,11 +278,6 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
                 npc.frame.Y = (int)((Frame * frameHeight) - offset);
         }
 
-        public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-        {
-            return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
-        }
-
         private static Point FindSharpTearsSpot(Vector2 origin, Vector2 targetSpot)
         {
             targetSpot.ToTileCoordinates();

@@ -364,7 +364,7 @@ namespace FargowiltasSouls.Content.Items
                     break;
                 case ItemID.PalladiumSword:
                     {
-                        if (target.type != NPCID.TargetDummy && !target.friendly) //may add more checks here idk
+                        if (target.Hostile()) //may add more checks here idk
                         {
                             player.AddBuff(BuffID.RapidHealing, 60 * 5);
                             if (player.Eternity().PalladiumHealTimer <= 0)

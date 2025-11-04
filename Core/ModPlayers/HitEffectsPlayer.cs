@@ -167,7 +167,7 @@ namespace FargowiltasSouls.Core.ModPlayers
 
         public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)/* tModPorter If you don't need the Projectile, consider using OnHitNPC instead */
         {
-            if (target.type == NPCID.TargetDummy || target.friendly)
+            if (!target.Hostile())
                 return;
 
             //if (proj.minion)// && proj.type != ModContent.ProjectileType<CelestialRuneAncientVision>() && proj.type != ModContent.ProjectileType<SpookyScythe>())
@@ -202,7 +202,7 @@ namespace FargowiltasSouls.Core.ModPlayers
             if (StyxSet)
             {
                 StyxMeter += (int)(hitInfo.Damage * StyxCrown.StyxChargeMultiplier(Player, StyxCrown.ChargeContext.DealDamage));
-                if (StyxTimer <= 0 && !target.friendly && target.lifeMax > 5 && target.type != NPCID.TargetDummy)
+                if (StyxTimer <= 0 && target.Hostile())
                     StyxTimer = 60;
             }
 
@@ -291,7 +291,7 @@ namespace FargowiltasSouls.Core.ModPlayers
 
         public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
         {
-            if (target.type == NPCID.TargetDummy || target.friendly)
+            if (!target.Hostile())
                 return;
 
             OnHitNPCEither(target, hit, item.DamageType, item: item);

@@ -161,6 +161,8 @@ namespace FargowiltasSouls //lets everything access it without using
         public static bool TypeAlive(this NPC npc, int type) => npc.Alive() && npc.type == type;
         public static bool TypeAlive<T>(this NPC npc) where T : ModNPC => npc.Alive() && npc.type == ModContent.NPCType<T>();
 
+        public static bool Hostile(this NPC npc) => !npc.townNPC && !npc.CountsAsACritter && npc.life > 10 && npc.type != NPCID.TargetDummy;
+
         public static Texture2D GetTexture(this NPC npc) => TextureAssets.Npc[npc.type].Value;
         public static Texture2D GetTexture(this Projectile projectile) => TextureAssets.Projectile[projectile.type].Value;
         public static Vector2 GetDrawPosition(this NPC npc) => npc.Center - Main.screenPosition + Vector2.UnitY * npc.gfxOffY;
