@@ -126,7 +126,8 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern
         {
             //flying anim
             Vector2 pos = npc.Center - Main.screenPosition;
-            Texture2D t = ModContent.Request<Texture2D>("FargowiltasSouls/Content/NPCs/EternityModeNPCs/VanillaEnemies/Cavern/" + npc.TypeName.Underscore(), ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+            string type = npc.type == NPCID.LacBeetle ? "lac" : npc.type == NPCID.CyanBeetle ? "cyan" : "cochineal";
+            Texture2D t = FargoAssets.GetTexture2D("FargowiltasSouls/Content/NPCs/EternityModeNPCs/VanillaEnemies/Cavern/" + type + "_beetle", Name, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
             int frameHeight = t.Height / 3;
             int frame = frameHeight * Frame;
             Rectangle rectangle = new(0, frame, t.Width, frameHeight);
