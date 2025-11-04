@@ -13,12 +13,6 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern
     public class Ghost : EModeNPCBehaviour
     {
         public override NPCMatcher CreateMatcher() => new NPCMatcher().MatchType(NPCID.Ghost);
-        public override void SetDefaults(NPC npc)
-        {
-            npc.knockBackResist = 0f;
-            //if (Main.hardMode)
-                //npc.lifeMax = (int)(npc.lifeMax * 1.25f);
-        }
         public override void OnFirstTick(NPC npc)
         {
             base.OnFirstTick(npc);
