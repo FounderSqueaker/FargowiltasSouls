@@ -49,6 +49,8 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.BloodMoo
 
         public override void AI()
         {
+            DelegateMethods.v3_1 = new Vector3(0.8f, 0f, 0);
+            Utils.PlotTileLine(Projectile.Center, Projectile.Center + Projectile.velocity, 10, DelegateMethods.CastLight);
             Projectile.velocity.Y += 0.5f;
             if (Projectile.velocity.Y > 8f)
                 Projectile.velocity.Y = 8f;

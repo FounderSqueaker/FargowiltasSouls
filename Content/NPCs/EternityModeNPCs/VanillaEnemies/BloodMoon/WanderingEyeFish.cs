@@ -44,6 +44,8 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
             if (npc.HasPlayerTarget && Collision.CanHitLine(npc.Center, 0, 0, Main.player[npc.target].Center, 0, 0))
                 TeleDashTimer++;
             Player player = Main.player[npc.target];
+            DelegateMethods.v3_1 = new Vector3(0.8f, 0f, 0);
+            Utils.PlotTileLine(npc.Center, npc.Center + npc.velocity, 10, DelegateMethods.CastLight);
 
             if (TeleDashTimer == 360) //warning flashes
             {
@@ -74,11 +76,10 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
                 }
                 else if (TeleDashTimer == 360)
                     SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = 0.8f }, npc.Center);
-                //Dust.NewDustPerfect(Pos1, DustID.RedTorch); Dust.NewDustPerfect(Pos2, DustID.RedTorch); Dust.NewDustPerfect(Pos3, DustID.RedTorch);
                 if (TeleDashTimer < 390)
                 {
                     npc.velocity = Vector2.Zero;
-                    npc.rotation = FargoSoulsUtil.NPCRotateTowards(npc, Pos1, 10) * npc.spriteDirection;
+                    npc.rotation = FargoSoulsUtil.NPCRotateTowards(npc, Pos1, 10) * npc.direction;
                 }
                 if (TeleDashTimer >= 390)
                 {
@@ -97,7 +98,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
                         npc.velocity = FargoSoulsUtil.SmartAccel(npc.Center, Pos3, npc.velocity, 1f, 2f);
                         if (npc.Distance(Pos3) <= 16) SpawnScythes(npc);
                     }
-                    npc.rotation = npc.velocity.ToRotation() * npc.spriteDirection;
+                    npc.rotation = npc.velocity.ToRotation() * npc.direction;
                     for (int i = 0; i < 2; ++i)
                     {
                         int d = Dust.NewDust(npc.position, npc.width, npc.height, DustID.FireworksRGB, npc.velocity.X, npc.velocity.Y, 100, newColor: Color.DarkRed, Scale: 1.2f);

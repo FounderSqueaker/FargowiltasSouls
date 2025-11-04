@@ -165,6 +165,13 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
             NPCID.BloodEelTail
         );
 
+        public override bool SafePreAI(NPC npc)
+        {
+            DelegateMethods.v3_1 = new Vector3(0.8f, 0f, 0);
+            Utils.PlotTileLine(npc.Center, npc.Center + npc.velocity, 10, DelegateMethods.CastLight);
+            return base.SafePreAI(npc);
+        }
+
         //pierce resist
         public override void SafeModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
         {
