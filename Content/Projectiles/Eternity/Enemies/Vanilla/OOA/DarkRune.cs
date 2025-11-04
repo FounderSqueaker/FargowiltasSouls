@@ -38,7 +38,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
         public override void AI()
         {
             Projectile.Opacity += 1f / 45;
-            if (!NPC.AnyNPCs(NPCID.DD2DarkMageT1))
+            if (!NPC.AnyNPCs(NPCID.DD2DarkMageT1) && !NPC.AnyNPCs(NPCID.DD2DarkMageT3))
             {
                 Projectile.Kill();
                 return;
