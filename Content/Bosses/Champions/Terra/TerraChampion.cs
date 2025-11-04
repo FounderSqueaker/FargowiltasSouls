@@ -43,10 +43,10 @@ namespace FargowiltasSouls.Content.Bosses.Champions.Terra
             NPCID.Sets.NPCBestiaryDrawOffset.Add(NPC.type, new NPCID.Sets.NPCBestiaryDrawModifiers()
             {
                 CustomTexturePath = $"FargowiltasSouls/Content/Bosses/Champions/Terra/{Name}_Still",
-                Scale = 1.25f,
-                Position = new Vector2(16 * 10.5f * 1.25f, 0),
-                PortraitScale = 1.25f,
-                PortraitPositionXOverride = 16 * 8 * 1.25f
+                Scale = 1.5f,
+                Position = new Vector2(16 * 7 * 1.5f, 0),
+                PortraitScale = 1.5f,
+                PortraitPositionXOverride = 16 * 5 * 1.5f
             });
         }
 
