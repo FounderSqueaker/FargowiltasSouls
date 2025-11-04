@@ -135,7 +135,7 @@ namespace FargowiltasSouls.Core.Globals
                 }
             }
 
-            if (BeetleTimer > 0 && !npc.friendly)
+            if (BeetleTimer > 0 && npc.Hostile())
             {
                 Vector2 pos = npc.position + new Vector2(Main.rand.Next(0, npc.width), Main.rand.Next(0, npc.height));
                 float scale = Main.rand.NextFloat(0.4f, 0.8f);
@@ -162,6 +162,14 @@ namespace FargowiltasSouls.Core.Globals
                     Vector2 vel = new(Main.rand.NextFloat(-0.3f, 0.3f), -Main.rand.NextFloat(1.6f, 2.4f));
                     Particle p = new SmallSparkle(pos + npc.velocity, vel + npc.velocity, Color.DarkCyan, scale / 2, Main.rand.Next(20, 30));
                     if (Main.rand.NextBool(5)) p.Spawn();
+
+                    //knockback res up
+                    if (BeetleTimer != 1)
+                    {
+                        if (npc.knockBackResist > 0.1f)
+                            npc.knockBackResist = 0.1f;
+                    }
+                    else npc.knockBackResist = npc.FargoSouls().defKnockBackResist;
                 }
                 if (BeetleUtilAura)
                 {
@@ -1143,7 +1151,7 @@ namespace FargowiltasSouls.Core.Globals
             if (WorldSavingSystem.EternityMode)
             {
                 if (BeetleDefenseAura)
-                    modifiers.FinalDamage *= 0.6f;
+                    modifiers.FinalDamage *= 0.75f;
 
                 if (PaladinsShield)
                     modifiers.FinalDamage *= 0.5f;
