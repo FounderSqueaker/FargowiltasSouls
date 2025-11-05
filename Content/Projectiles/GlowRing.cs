@@ -2,6 +2,8 @@ using FargowiltasSouls.Assets.Textures;
 using FargowiltasSouls.Common.Graphics.Particles;
 using FargowiltasSouls.Content.Bosses.VanillaEternity;
 using FargowiltasSouls.Content.NPCs.EternityModeNPCs.BossMinions;
+using FargowiltasSouls.Core;
+using FargowiltasSouls.Core.Systems;
 using Luminance.Core.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -268,7 +270,7 @@ namespace FargowiltasSouls.Content.Projectiles
                     break;
 
                 case NPCID.EyeofCthulhu:
-                    color = new Color(51, 255, 191, 0);
+                    color = WorldSavingSystem.EternityMode && SoulConfig.Instance.BossRecolors ? new Color(51, 255, 191, 0) : new Color(255, 0, 0, 0);
                     maxTime = 45;
                     break;
 

@@ -49,6 +49,10 @@ float AuroraMesh(float2 uv : TEXCOORD0) : COLOR0
 
 float4 PixelShaderFunction(float4 sampleColor : COLOR0, float2 uv : TEXCOORD0) : COLOR0
 {
+    // pixelate
+    float pixelationLevel = screenSize * 0.5;
+    uv = floor(uv * pixelationLevel) / pixelationLevel;
+    
     float2 worldUV = screenPosition + screenSize * uv;
     float2 provUV = screenPosition / screenSize;
     float worldDistance = distance(worldUV, anchorPoint);
@@ -56,8 +60,6 @@ float4 PixelShaderFunction(float4 sampleColor : COLOR0, float2 uv : TEXCOORD0) :
     float opacity = 1;
 
     float2 pixelatedUV = worldUV / screenSize;
-    pixelatedUV.x -= worldUV.x % (0.5 / screenSize.x);
-    pixelatedUV.y -= worldUV.y % (0.5 / (screenSize.y / 2) * 2);
 
     float2 noiseUV = pixelatedUV - (screenPosition / screenSize) * 0.99;
     float4 textureMesh = tex2D(noise, frac(noiseUV * 1.47 + float2(0.000 , 1) * time * 0.003) * 1.4);

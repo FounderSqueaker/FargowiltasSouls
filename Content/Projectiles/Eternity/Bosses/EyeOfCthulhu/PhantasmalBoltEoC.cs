@@ -1,13 +1,18 @@
+using Fargowiltas.Common.Configs;
 using FargowiltasSouls.Content.Buffs.Eternity;
+using FargowiltasSouls.Core;
 using FargowiltasSouls.Core.Globals;
+using FargowiltasSouls.Core.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static FargowiltasSouls.Content.Bosses.VanillaEternity.EyeofCthulhu;
 
-namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.MoonLord
+namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.EyeOfCthulhu
 {
     public class PhantasmalBoltEoC : ModProjectile
     {
@@ -25,8 +30,8 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.MoonLord
             Projectile.height = 8;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.aiStyle = 1;
-            AIType = ProjectileID.PhantasmalBolt;
+            Projectile.aiStyle = -1;
+            //AIType = ProjectileID.PhantasmalBolt;
             Projectile.penetrate = -1;
             Projectile.alpha = 255;
             Projectile.hostile = true;
@@ -50,6 +55,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.MoonLord
                 if (++Projectile.frame >= 5)
                     Projectile.frame = 0;
             }
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
             if (Projectile.timeLeft % Projectile.MaxUpdates == 0) //only run once per tick
             {
@@ -89,7 +95,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.MoonLord
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Texture2D texture2D13 = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
+            Texture2D texture2D13 = WorldSavingSystem.EternityMode && SoulConfig.Instance.BossRecolors ? TextureAssets.Projectile[Projectile.type].Value : ModContent.Request<Texture2D>((GetType().Namespace + "." + Name + "_Vanilla").Replace('.', '/')).Value;
             int num156 = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value.Height / Main.projFrames[Projectile.type]; //ypos of lower right corner of sprite to draw
             int y3 = num156 * Projectile.frame; //ypos of upper left corner of sprite to draw
             Rectangle rectangle = new(0, y3, texture2D13.Width, num156);

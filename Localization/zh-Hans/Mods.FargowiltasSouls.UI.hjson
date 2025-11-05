@@ -73,4 +73,8 @@ ActiveSkills: 主动技能
 AvailableSkills: 可用技能
 SelectDifficulty: 选择难度
 NoRespawn: 禁止重生：在{0}多人模式中每个玩家每场Boss战只能重生一次！
-// TogglesEternity: Toggles the Eternity Mode, which overhauls many parts of the game.
+/* TogglesEternity:
+	'''
+	Toggles the Eternity Mode, which overhauls many parts of the game. 
+	If combined with Master Mode, toggles Masochist Mode.
+	''' */

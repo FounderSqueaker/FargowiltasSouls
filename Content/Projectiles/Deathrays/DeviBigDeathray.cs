@@ -304,6 +304,7 @@ namespace FargowiltasSouls.Content.Projectiles.Deathrays
                 if (inBackground)
                     opacity = 0.5f;
                 ring.TrySetParameter("opacity", opacity);
+                ring.TrySetParameter("screenSize", Main.ScreenSize.ToVector2());
                 PrimitiveRenderer.RenderTrail(ringDrawPoints, new(RingWidthFunction, RingColorFunction, Pixelate: true, Shader: ring), 30);
                 iterator++;
             }

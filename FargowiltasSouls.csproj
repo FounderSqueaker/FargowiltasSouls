@@ -65,6 +65,7 @@
     <None Remove="Content\Items\Armor\TrojanMask_Head.png" />
     <None Remove="Content\Items\Armor\WillMask.png" />
     <None Remove="Content\Items\Armor\WillMask_Head.png" />
+    <None Remove="Content\Projectiles\Eternity\Bosses\EyeOfCthulhu\PhantasmalBoltEoC_Vanilla.png" />
     <None Remove="Content\Projectiles\Weapons\BossWeapons\MechFlailEye.png" />
     <None Remove="Content\Projectiles\Weapons\BossWeapons\PhantasmalEyeLeashProj.png" />
     <None Remove="Content\Projectiles\Weapons\BossWeapons\PhantasmalFlailEye.png" />
