@@ -72,7 +72,7 @@ namespace FargowiltasSouls //lets everything access it without using
         /// </summary>
         public static bool TryFindTooltipLine(this List<TooltipLine> tooltips, string tooltipName, string tooltipMod, out TooltipLine tooltipLine)
         {
-            tooltipLine = tooltips.First(line => line.Name == tooltipName && line.Mod == tooltipMod);
+            tooltipLine = tooltips.FirstOrDefault(line => line.Name == tooltipName && line.Mod == tooltipMod);
 
             return tooltipLine != null;
         }
