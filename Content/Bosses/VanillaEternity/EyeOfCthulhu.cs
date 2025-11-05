@@ -131,7 +131,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         public Vector2 Forward => (NPC.rotation + MathHelper.PiOver2).ToRotationVector2();
         public Vector2 EyeCenter => NPC.Center + Forward * NPC.height * 0.5f;
         public static int XAmount => WorldSavingSystem.MasochistModeReal ? 8 : 8;
-        public static int DustType => recolor ? DustID.Vortex : DustID.BloodWater;
+        public static int DustType => recolor ? DustID.Vortex : DustID.RedTorch;
         public void DefaultRotation(Vector2? direction = null, float rotLerp = 0.05f)
         {
             if (direction == null)
@@ -367,7 +367,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         public void SpinScytheDashes()
         {
             // phase transition spin
-            int transitionTime = 60 * 3;
+            int transitionTime = 100;
             if (Timer < transitionTime)
             {
                 for (int i = 0; i < 3; i++)
@@ -392,9 +392,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 Movement(pos, maxSpeed: 35, speedMultiplier: speed);
 
                 float rotationSpeed = MathHelper.Lerp(0, 0.8f, Timer / transitionTime);
-                int phaser = 90;
+                int phaser = 45;
                 if (WorldSavingSystem.MasochistModeReal)
-                    phaser = 60;
+                    phaser = 30;
                 if (Timer % phaser == phaser - 1)
                 {
                     if (Phase < 2)
@@ -456,7 +456,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         }
         public void HorizontalDashes()
         {
-            int dashStart = 60;
+            int dashStart = 50;
             int dashDuration = 40;
             int dashTime = dashStart + dashDuration;
             int extraStartup = 15;
@@ -604,7 +604,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             offset = offset.RotatedBy(MathF.Tau * 0.05f * AI3);
             pos += offset;
 
-            int maxTime = 60 * 4;
+            int maxTime = 60 * 3;
             int endTime = 60;
             int endStart = maxTime - endTime;
             if (Timer > endStart)
@@ -626,7 +626,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             {
                 Movement(pos, maxSpeed: 32, speedMultiplier: spd);
 
-                int freq = WorldSavingSystem.MasochistModeReal ? 38 : 48;
+                int freq = WorldSavingSystem.MasochistModeReal ? 24 : 32;
                 if (Timer % freq == freq - 3)
                 {
                     if (FargoSoulsUtil.HostCheck)
