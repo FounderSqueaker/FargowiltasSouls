@@ -34,6 +34,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
     float4 color = input.Color;
     float2 coords = input.TextureCoordinates;
+    coords.y = (coords.y - 0.5) / input.TextureCoordinates.z + 0.5;
     
     // Get the pixel of the fade map. What coords.x is being multiplied by determines
     // how many times the uImage1 is copied to cover the entirety of the prim. 2, 2
