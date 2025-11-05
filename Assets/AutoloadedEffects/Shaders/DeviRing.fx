@@ -9,6 +9,7 @@ matrix uWorldViewProjection;
 float stretchAmount;
 float scrollSpeed;
 bool reverseDirection;
+float2 screenSize;
 
 struct VertexShaderInput
 {
@@ -40,6 +41,11 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
     float4 color = input.Color;
     float2 coords = input.TextureCoordinates;
+    
+    // pixelate
+    float pixelationLevel = screenSize * 0.5;
+    coords = floor(coords * pixelationLevel) / pixelationLevel;
+    
 	coords.y = (coords.y - 0.5) / input.TextureCoordinates.z + 0.5;
     
     float adjustedXposition = (sin(((coords.x * 2) - 1) * 1.57079) + 1) * 2;

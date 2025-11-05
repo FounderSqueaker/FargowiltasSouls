@@ -17,14 +17,16 @@ float InverseLerp(float a, float b, float t)
 
 float4 PixelShaderFunction(float4 sampleColor : COLOR0, float2 uv : TEXCOORD0) : COLOR0
 {
+        // pixelate
+    float pixelationLevel = screenSize * 0.5;
+    uv = floor(uv * pixelationLevel) / pixelationLevel;
+    
     float2 worldUV = screenPosition + screenSize * uv;
     float2 provUV = anchorPoint / screenSize;
     float worldDistance = distance(worldUV, anchorPoint);
     float adjustedTime = time * 0.17;
 
     float2 coords = uv;
-    float2 pixelationLevel = screenSize * 0.5;
-    coords = floor(coords * pixelationLevel) / pixelationLevel;
 
     float2 anchorCoords = (anchorPoint - screenPosition) / screenSize;
     float2 delta = coords - anchorCoords;
