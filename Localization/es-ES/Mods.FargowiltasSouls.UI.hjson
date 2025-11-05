@@ -77,4 +77,4 @@ TitleLinks: {
 // AvailableSkills: Available Skills
 // SelectDifficulty: Select Difficulty
 // NoRespawn: Respawn prevented: Only one respawn per boss in {0} multiplayer!
-// TogglesEternity: Toggles the Eternity Mode, which overhauls many parts of the game.
+// TogglesEternity: Toggles the Eternity Mode, which overhauls many parts of the game. If combined with Master Mode, toggles Masochist Mode.

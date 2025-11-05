@@ -221,7 +221,10 @@ namespace FargowiltasSouls.Core.ModPlayers
             if (WorldSavingSystem.QueueEnableEternityMode)
             {
                 WorldSavingSystem.QueueEnableEternityMode = false;
-                EternityDifficultyOption.EnableEternity();
+                if (Main.masterMode)
+                    MasoDifficultyOption.EnableMasochist();
+                else
+                    EternityDifficultyOption.EnableEternity();
             }
 
             if (ClientConfig.Instance.MusicModNotification && !ModLoader.TryGetMod("FargowiltasMusic", out Mod _))
