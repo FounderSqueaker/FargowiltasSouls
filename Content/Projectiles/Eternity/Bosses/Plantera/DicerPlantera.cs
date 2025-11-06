@@ -9,6 +9,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using UtfUnknown.Core.Probers;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
@@ -21,9 +22,10 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
         private const float range = 160f;
 
         public bool blingle;
+        public int lastFrame;
         public override void SetStaticDefaults()
         {
-            Main.projFrames[Type] = 3;
+            Main.projFrames[Type] = 5;
         }
 
         public override void SetDefaults()
@@ -40,6 +42,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
         {
             writer.Write(Projectile.localAI[0]);
             writer.Write(Projectile.localAI[1]);
+            writer.Write(lastFrame);
             writer.Write(blingle);
         }
 
@@ -47,6 +50,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
         {
             Projectile.localAI[0] = reader.ReadSingle();
             Projectile.localAI[1] = reader.ReadSingle();
+            lastFrame = reader.ReadInt32();
             blingle = reader.ReadBoolean();
         }
 
@@ -120,13 +124,21 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
             {
                 Projectile.tileCollide = true;
                 Projectile.localAI[0]--;
+
+                if (lastFrame != Projectile.frame)
+                {
+                    blingle = false;
+                    Projectile.ai[2] = 0;
+                    lastFrame = Projectile.frame;
+                }
+
                 if (Projectile.localAI[0] < -30 && Projectile.localAI[0] > -120)
                 {
-                    if (++Projectile.frameCounter >= 30)
+                    if (++Projectile.frameCounter >= 22)
                     {
                         Projectile.frameCounter = 0;
                         if (++Projectile.frame >= Main.projFrames[Type])
-                            Projectile.frame = 2;
+                            Projectile.frame = Main.projFrames[Type] - 1;
                     }
                     //Projectile.rotation += 0.2f * Projectile.localAI[2] * (float)Math.Sin(Projectile.localAI[0] / 60 * MathHelper.Pi + Projectile.localAI[2]);
                 }
@@ -184,8 +196,6 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
                                     Main.projectile[p].timeLeft = (int)time;
                             }
                             Projectile.frame = 0;
-                            Projectile.ai[2] = 0;
-                            blingle = false;
                             Projectile.rotation = Main.rand.Next(360);
                         }
 
@@ -223,26 +233,25 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
             color26 = Projectile.GetAlpha(color26);
 
             float scale = Projectile.scale;
-            
-            if (Projectile.frame == Main.projFrames[Type] - 1)
+           
+            if (lastFrame == Projectile.frame)
             {
                 if (!Main.gamePaused)
                     ++Projectile.ai[2];
                 if (!blingle)
-                    scale = MathHelper.Lerp(Projectile.scale, 1.2f, Projectile.ai[2] * 0.3f);
+                    scale = MathHelper.Lerp(Projectile.scale, 1.15f, Projectile.ai[2] * 0.3f);
                 else
-                    scale = MathHelper.Lerp(1.2f, Projectile.scale, Projectile.ai[2] * 0.3f);
-                if (scale >= 1.2f)
+                    scale = MathHelper.Lerp(1.15f, Projectile.scale, Projectile.ai[2] * 0.3f);
+                if (scale >= 1.15f)
                 {
                     blingle = true;
                     Projectile.ai[2] = 0;
-                    scale = 1.2f;
-                    
+                    scale = 1.15f;
+
                 }
                 if (scale <= 1)
                     scale = 1;
-                    
-                Main.NewText(scale);
+            
             }
             
             Main.EntitySpriteDraw(texture2D13, Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY), new Rectangle?(rectangle), color26, Projectile.rotation, origin2, scale, spriteEffects, 0);
