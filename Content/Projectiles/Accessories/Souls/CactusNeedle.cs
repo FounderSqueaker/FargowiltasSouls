@@ -46,18 +46,17 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.Souls
             if (Projectile.ai[2] == 1) //sticking
             {
                 int npc = (int)Projectile.ai[1];
-                Projectile.damage = 0;
+                //Projectile.damage = 0;
                 Projectile.aiStyle = -1;
                 Projectile.extraUpdates = 1;
                 Projectile.ignoreWater = true;
                 Projectile.tileCollide = false;
 
-                NPC stick = Main.npc[(int)Projectile.ai[1]];
-                if (stick.active)
+                if (Main.npc[npc].Alive())
                 {
                     Projectile.timeLeft++;
-                    Projectile.Center = stick.Center - Projectile.velocity * 2f;
-                    Projectile.gfxOffY = stick.gfxOffY;
+                    Projectile.Center = Main.npc[npc].Center - Projectile.velocity * 2f;
+                    Projectile.gfxOffY = Main.npc[npc].gfxOffY;
                 }
                 else Projectile.timeLeft = 0;
             }
@@ -88,7 +87,7 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.Souls
             }
         }
 
-        public override bool? CanHitNPC(NPC target) => Projectile.ai[2] != 1;
+        public override bool? CanHitNPC(NPC target) => Projectile.ai[2] == 1 ? false : base.CanHitNPC(target);
 
         public override bool PreDraw(ref Color lightColor)
         {
