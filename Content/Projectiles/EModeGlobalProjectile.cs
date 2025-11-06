@@ -1775,7 +1775,7 @@ namespace FargowiltasSouls.Content.Projectiles
                 case ProjectileID.PalladiumPike:
                     if (PerformSafetyChecks(projectile, ItemID.PalladiumPike, out Player pl, "PalladiumPikeRework"))
                     {
-                        if (target.type != NPCID.TargetDummy && !target.friendly) //may add more checks here idk
+                        if (target.Hostile()) //may add more checks here idk
                         {
                             pl.AddBuff(BuffID.RapidHealing, 60 * 5);
                             if (pl.Eternity().PalladiumHealTimer <= 0)

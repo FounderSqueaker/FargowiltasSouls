@@ -57,6 +57,8 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
         public override bool SafePreAI(NPC npc)
         {
             Player target = Main.player[npc.target];
+            DelegateMethods.v3_1 = new Vector3(0.8f, 0f, 0);
+            Utils.PlotTileLine(npc.Center, npc.Center + npc.velocity, 10, DelegateMethods.CastLight);
             if (npc.wet)
             {
                 State = 0;
@@ -276,11 +278,6 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
             float offset = (State == 2 && Frame >= 10) ? frameHeight / 5 : 0;
             if (State != 0)
                 npc.frame.Y = (int)((Frame * frameHeight) - offset);
-        }
-
-        public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-        {
-            return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
         }
 
         private static Point FindSharpTearsSpot(Vector2 origin, Vector2 targetSpot)

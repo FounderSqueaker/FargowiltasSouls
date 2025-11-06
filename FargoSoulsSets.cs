@@ -16,6 +16,7 @@ namespace FargowiltasSouls
         public class Items
         {
             public static bool[] AllowedSoulItemExceptions;
+            public static int[] MaterialOfImportantItem;
         }
         public class Projectiles
         {
@@ -56,6 +57,8 @@ namespace FargowiltasSouls
                 ItemID.SoulBottleNight,
                 ItemID.SoulBottleSight
             ]);
+
+            Items.MaterialOfImportantItem = itemFactory.CreateIntSet(0);
 
             List<int> sacrificePreHM = [
                 // squrl

@@ -12,13 +12,6 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Desert
     {
         public override NPCMatcher CreateMatcher() => new NPCMatcher().MatchType(NPCID.DesertBeast);
 
-        public override void SetDefaults(NPC npc)
-        {
-            base.SetDefaults(npc);
-
-            npc.knockBackResist /= 10f;
-        }
-
         public override void AI(NPC npc)
         {
             base.AI(npc);

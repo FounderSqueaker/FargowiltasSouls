@@ -35,7 +35,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies
                 }
                 float dukerotation = (float)(Math.PI * 2f / (120 / 2));
                 npc.velocity = npc.velocity.RotatedBy((0 - dukerotation) * npc.direction);
-                npc.knockBackResist = 0.9f;
+                npc.knockBackResist = 0.1f;
                 npc.noTileCollide = true;
                 realrotation -= dukerotation * npc.direction;
                 npc.rotation = realrotation;
@@ -49,7 +49,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies
             }
             else
             {
-                npc.knockBackResist = Main.hardMode ? 0.5f : 0.25f;
+                npc.knockBackResist = npc.FargoSouls().defKnockBackResist;
                 realrotation = npc.rotation;
                 return base.SafePreAI(npc);
             }

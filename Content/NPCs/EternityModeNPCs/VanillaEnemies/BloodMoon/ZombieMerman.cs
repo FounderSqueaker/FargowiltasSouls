@@ -69,6 +69,8 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
             bool result = base.SafePreAI(npc);
 
             const float gravity = 0.4f;
+            DelegateMethods.v3_1 = new Vector3(0.8f, 0f, 0);
+            Utils.PlotTileLine(npc.Center, npc.Center + npc.velocity, 10, DelegateMethods.CastLight);
             //Main.NewText($"{npc.ai[0]}, {npc.ai[1]}, {npc.ai[2]}, {npc.ai[3]}, ");
 
             if (npc.wet && npc.HasPlayerTarget) // water ai

@@ -72,7 +72,7 @@ namespace FargowiltasSouls //lets everything access it without using
         /// </summary>
         public static bool TryFindTooltipLine(this List<TooltipLine> tooltips, string tooltipName, string tooltipMod, out TooltipLine tooltipLine)
         {
-            tooltipLine = tooltips.First(line => line.Name == tooltipName && line.Mod == tooltipMod);
+            tooltipLine = tooltips.FirstOrDefault(line => line.Name == tooltipName && line.Mod == tooltipMod);
 
             return tooltipLine != null;
         }
@@ -160,6 +160,8 @@ namespace FargowiltasSouls //lets everything access it without using
         public static bool TypeAlive<T>(this Projectile projectile) where T : ModProjectile => projectile.Alive() && projectile.type == ModContent.ProjectileType<T>();
         public static bool TypeAlive(this NPC npc, int type) => npc.Alive() && npc.type == type;
         public static bool TypeAlive<T>(this NPC npc) where T : ModNPC => npc.Alive() && npc.type == ModContent.NPCType<T>();
+
+        public static bool Hostile(this NPC npc) => !npc.townNPC && !npc.CountsAsACritter && npc.life > 10 && npc.type != NPCID.TargetDummy;
 
         public static Texture2D GetTexture(this NPC npc) => TextureAssets.Npc[npc.type].Value;
         public static Texture2D GetTexture(this Projectile projectile) => TextureAssets.Projectile[projectile.type].Value;

@@ -146,7 +146,7 @@ namespace FargowiltasSouls.Core.ModPlayers
             // hallow lifelight sparks
             if (!WorldSavingSystem.DownedBoss[(int)WorldSavingSystem.Downed.Lifelight] && Player.ZoneHallow && Player.ZoneRockLayerHeight && !LumUtils.AnyBosses() && !fargoSoulsPlayer.PureHeart)
             {
-                LifelightSparkles();
+                //LifelightSparkles();
             }
 
             //other stuff not prevent by pure heart

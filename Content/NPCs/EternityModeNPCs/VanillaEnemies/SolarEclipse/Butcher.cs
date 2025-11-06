@@ -11,13 +11,6 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.SolarEcl
     {
         public override NPCMatcher CreateMatcher() => new NPCMatcher().MatchType(NPCID.Butcher);
 
-        public override void SetDefaults(NPC npc)
-        {
-            base.SetDefaults(npc);
-
-            npc.knockBackResist = 0;
-        }
-
         public override void AI(NPC npc)
         {
             base.AI(npc);

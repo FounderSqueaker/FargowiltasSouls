@@ -13,12 +13,6 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Desert
     {
         public override NPCMatcher CreateMatcher() => new NPCMatcher().MatchType(NPCID.Tumbleweed);
 
-        public override void SetDefaults(NPC npc)
-        {
-            base.SetDefaults(npc);
-
-            npc.knockBackResist /= 5;
-        }
         public int BlastTimer = 100;
         public override bool SafePreAI(NPC npc)
         {

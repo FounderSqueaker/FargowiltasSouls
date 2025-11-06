@@ -33,6 +33,15 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.BloodMoo
                 Main.dust[d].velocity *= 0;
                 Main.dust[d].velocity = new(Projectile.ai[0], Projectile.ai[1]);
             }
+            if (Main.rand.NextBool(5))
+            {
+                int d = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.RedStarfish);
+                Main.dust[d].scale = 2f;
+                Main.dust[d].noGravity = true;
+                Main.dust[d].velocity *= 0.5f;
+            }
+            DelegateMethods.v3_1 = new Vector3(0.8f, 0f, 0);
+            Utils.PlotTileLine(Projectile.Center, Projectile.Center + new Vector2(Projectile.ai[0], Projectile.ai[1]) * 10, 10, DelegateMethods.CastLight);
         }
         public override bool CanHitPlayer(Player target) => false;
         public override void OnKill(int timeLeft)

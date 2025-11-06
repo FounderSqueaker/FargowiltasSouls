@@ -747,7 +747,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             
             // Render the crown normally without the shader.
             var crownTexture = TextureAssets.Extra[39].Value;
-            var center = npc.Center;
+            var center = npc.IsABestiaryIconDummy ? npc.Bottom - screenPos + new Vector2(212f, 20f) : npc.Center;
 
             var yOffset = (npc.frame.Y / (ksTexture.Height / Main.npcFrameCount[NPCID.KingSlime])) switch
             {

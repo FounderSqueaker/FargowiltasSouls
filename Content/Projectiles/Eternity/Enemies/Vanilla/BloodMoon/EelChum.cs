@@ -1,24 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FargowiltasSouls.Assets.Sounds;
-using FargowiltasSouls.Common.Graphics.Particles;
-using FargowiltasSouls.Content.Buffs.Eternity;
-using FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Dungeon;
-using FargowiltasSouls.Content.Projectiles.Eternity.Environment;
-using Luminance.Core.Graphics;
+﻿using FargowiltasSouls.Content.Buffs.Eternity;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using Terraria;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static FargowiltasSouls.Content.Projectiles.EffectVisual;
 
 namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.BloodMoon
 {
@@ -43,6 +31,12 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.BloodMoo
         {
             Projectile.frame = Main.rand.Next(1, 4);
         }
+        public override bool PreAI()
+        {
+            DelegateMethods.v3_1 = new Vector3(0.8f, 0f, 0);
+            Utils.PlotTileLine(Projectile.Center, Projectile.Center + Projectile.velocity, 10, DelegateMethods.CastLight);
+            return base.PreAI();
+        }
         public override bool CanHitPlayer(Player target) => Projectile.velocity != Vector2.Zero;
         public override void OnHitPlayer(Player target, Player.HurtInfo info)
         {
@@ -51,7 +45,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.BloodMoo
         public override bool PreDraw(ref Color lightColor)
         {
             Asset<Texture2D> t = TextureAssets.Projectile[Type];
-            int num156 = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value.Height / Main.projFrames[Projectile.type];
+            int num156 = TextureAssets.Projectile[Projectile.type].Value.Height / Main.projFrames[Projectile.type];
             int frame = num156 * Projectile.frame;
             Rectangle rectangle = new(0, frame, t.Width(), num156);
             lightColor = Lighting.GetColor(Projectile.Center.ToTileCoordinates());

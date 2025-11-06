@@ -301,7 +301,13 @@ namespace FargowiltasSouls.Core.Systems
             {
                 //disable shimmer decrafts
                 if (recipe.createItem.ModItem != null && (recipe.createItem.ModItem is BaseEnchant || recipe.createItem.ModItem is BaseForce || recipe.createItem.ModItem is BaseSoul))
+                {
                     recipe.DisableDecraft();
+                    foreach (var item in recipe.requiredItem)
+                        FargoSoulsSets.Items.MaterialOfImportantItem[item.type] = recipe.createItem.type;
+                }
+                    
+
 
                 // disable pre-evil meteorite recipes
                 /*

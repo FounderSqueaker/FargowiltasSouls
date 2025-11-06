@@ -31,10 +31,14 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.BloodMoo
         }
         public override void AI()
         {
+            DelegateMethods.v3_1 = new Vector3(0.4f, 0f, 0);
+            Utils.PlotTileLine(Projectile.Center, Projectile.Center + Projectile.velocity, 5, DelegateMethods.CastLight);
+
             if (Projectile.ai[0] == 0)
             {
                 Projectile.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
                 Projectile.timeLeft += Main.rand.Next(0, 100);
+                Projectile.ai[0] += Main.rand.Next(11);
             }
             Projectile.ai[0]++;
             Projectile.rotation = Projectile.velocity.ToRotation();
