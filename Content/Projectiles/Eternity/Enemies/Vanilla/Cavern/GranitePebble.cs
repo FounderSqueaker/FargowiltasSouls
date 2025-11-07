@@ -32,15 +32,15 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.Cavern
         public override void SendExtraAI(BinaryWriter writer)
         {
             base.SendExtraAI(writer);
-            writer.Write7BitEncodedInt(State);
-            writer.Write7BitEncodedInt(Timer);
+            writer.Write(State);
+            writer.Write(Timer);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
             base.ReceiveExtraAI(reader);
-            State = reader.Read7BitEncodedInt();
-            Timer = reader.Read7BitEncodedInt();
+            State = reader.ReadInt32();
+            Timer = reader.ReadInt32();
         }
 
         public override void AI()

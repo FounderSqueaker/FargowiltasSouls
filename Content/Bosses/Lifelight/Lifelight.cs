@@ -275,8 +275,8 @@ namespace FargowiltasSouls.Content.Bosses.Lifelight
 
         public override void SendExtraAI(BinaryWriter writer)
         {
-            writer.Write7BitEncodedInt(State);
-            writer.Write7BitEncodedInt(AttackCount);
+            writer.Write(State);
+            writer.Write(AttackCount);
 
             writer.Write(rotspeed);
 
@@ -285,13 +285,13 @@ namespace FargowiltasSouls.Content.Bosses.Lifelight
             writer.WriteVector2(LockVector1);
             writer.WriteVector2(LockVector2);
 
-            writer.Write7BitEncodedInt(PyramidPhase);
-            writer.Write7BitEncodedInt(PyramidTimer);
-            writer.Write7BitEncodedInt(RuneFormation);
-            writer.Write7BitEncodedInt(RuneFormationTimer);
+            writer.Write(PyramidPhase);
+            writer.Write(PyramidTimer);
+            writer.Write(RuneFormation);
+            writer.Write(RuneFormationTimer);
 
             for (int i = 0; i < LastAttack.Length; i++)
-                writer.Write7BitEncodedInt(LastAttack[i]);
+                writer.Write(LastAttack[i]);
 
             for (int i = 0; i < CustomRunePositions.Length; i++)
                 writer.WriteVector2(CustomRunePositions[i]);
@@ -299,8 +299,8 @@ namespace FargowiltasSouls.Content.Bosses.Lifelight
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
-            State = reader.Read7BitEncodedInt();
-            AttackCount = reader.Read7BitEncodedInt();
+            State = reader.ReadInt32();
+            AttackCount = reader.ReadInt32();
 
             rotspeed = reader.ReadDouble();
 
@@ -309,13 +309,13 @@ namespace FargowiltasSouls.Content.Bosses.Lifelight
             LockVector1 = reader.ReadVector2();
             LockVector2 = reader.ReadVector2();
 
-            PyramidPhase = reader.Read7BitEncodedInt();
-            PyramidTimer = reader.Read7BitEncodedInt();
-            RuneFormation = reader.Read7BitEncodedInt();
-            RuneFormationTimer = reader.Read7BitEncodedInt();
+            PyramidPhase = reader.ReadInt32();
+            PyramidTimer = reader.ReadInt32();
+            RuneFormation = reader.ReadInt32();
+            RuneFormationTimer = reader.ReadInt32();
 
             for (int i = 0; i < LastAttack.Length; i++)
-                LastAttack[i] = reader.Read7BitEncodedInt();
+                LastAttack[i] = reader.ReadInt32();
 
             for (int i = 0; i < CustomRunePositions.Length; i++)
                 CustomRunePositions[i] = reader.ReadVector2();

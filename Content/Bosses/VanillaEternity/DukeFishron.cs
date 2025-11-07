@@ -40,9 +40,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(GeneralTimer);
-            binaryWriter.Write7BitEncodedInt(P3Timer);
-            binaryWriter.Write7BitEncodedInt(EXTornadoTimer);
+            binaryWriter.Write(GeneralTimer);
+            binaryWriter.Write(P3Timer);
+            binaryWriter.Write(EXTornadoTimer);
             bitWriter.WriteBit(RemovedInvincibility);
             bitWriter.WriteBit(TakeNoDamageOnHit);
             bitWriter.WriteBit(IsEX);
@@ -52,9 +52,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            GeneralTimer = binaryReader.Read7BitEncodedInt();
-            P3Timer = binaryReader.Read7BitEncodedInt();
-            EXTornadoTimer = binaryReader.Read7BitEncodedInt();
+            GeneralTimer = binaryReader.ReadInt32();
+            P3Timer = binaryReader.ReadInt32();
+            EXTornadoTimer = binaryReader.ReadInt32();
             RemovedInvincibility = bitReader.ReadBit();
             TakeNoDamageOnHit = bitReader.ReadBit();
             IsEX = bitReader.ReadBit();

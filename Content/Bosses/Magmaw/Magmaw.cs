@@ -171,9 +171,9 @@ namespace FargowiltasSouls.Content.Bosses.Magmaw
             writer.Write(NPC.localAI[1]);
             writer.Write(NPC.localAI[2]);
             writer.Write(NPC.localAI[3]);
-            writer.Write7BitEncodedInt(Phase);
-            writer.Write7BitEncodedInt(ChainDepth);
-            writer.Write7BitEncodedInt(MaxChainDepth);
+            writer.Write(Phase);
+            writer.Write(ChainDepth);
+            writer.Write(MaxChainDepth);
             writer.Write(IdleReposition);
             writer.WriteVector2(LockVector1);
             writer.WriteVector2(LockVector2);
@@ -186,9 +186,9 @@ namespace FargowiltasSouls.Content.Bosses.Magmaw
             NPC.localAI[1] = reader.ReadSingle();
             NPC.localAI[2] = reader.ReadSingle();
             NPC.localAI[3] = reader.ReadSingle();
-            Phase = reader.Read7BitEncodedInt();
-            ChainDepth = reader.Read7BitEncodedInt();
-            MaxChainDepth = reader.Read7BitEncodedInt();
+            Phase = reader.ReadInt32();
+            ChainDepth = reader.ReadInt32();
+            MaxChainDepth = reader.ReadInt32();
             IdleReposition = reader.ReadBoolean();
             LockVector1 = reader.ReadVector2();
             LockVector2 = reader.ReadVector2();

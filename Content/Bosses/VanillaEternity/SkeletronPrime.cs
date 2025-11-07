@@ -46,32 +46,32 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(DungeonGuardianStartup);
-            binaryWriter.Write7BitEncodedInt(MemorizedTarget);
-            binaryWriter.Write7BitEncodedInt(limbTimer);
+            binaryWriter.Write(DungeonGuardianStartup);
+            binaryWriter.Write(MemorizedTarget);
+            binaryWriter.Write(limbTimer);
             bitWriter.WriteBit(FullySpawnedLimbs);
             bitWriter.WriteBit(HaveShotGuardians);
             bitWriter.WriteBit(EndSpin);
 
             bitWriter.WriteBit(Spinning);
             bitWriter.WriteBit(SpecialAttack);
-            binaryWriter.Write7BitEncodedInt(AttackTimer);
+            binaryWriter.Write(AttackTimer);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            DungeonGuardianStartup = binaryReader.Read7BitEncodedInt();
-            MemorizedTarget = binaryReader.Read7BitEncodedInt();
-            limbTimer = binaryReader.Read7BitEncodedInt();
+            DungeonGuardianStartup = binaryReader.ReadInt32();
+            MemorizedTarget = binaryReader.ReadInt32();
+            limbTimer = binaryReader.ReadInt32();
             FullySpawnedLimbs = bitReader.ReadBit();
             HaveShotGuardians = bitReader.ReadBit();
             EndSpin = bitReader.ReadBit();
 
             Spinning = bitReader.ReadBit();
             SpecialAttack = bitReader.ReadBit();
-            AttackTimer = binaryReader.Read7BitEncodedInt();
+            AttackTimer = binaryReader.ReadInt32();
         }
 
         public override void SetDefaults(NPC npc)
@@ -506,10 +506,10 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(IdleOffsetX);
-            binaryWriter.Write7BitEncodedInt(IdleOffsetY);
-            binaryWriter.Write7BitEncodedInt(AttackTimer);
-            binaryWriter.Write7BitEncodedInt(NoContactDamageTimer);
+            binaryWriter.Write(IdleOffsetX);
+            binaryWriter.Write(IdleOffsetY);
+            binaryWriter.Write(AttackTimer);
+            binaryWriter.Write(NoContactDamageTimer);
             binaryWriter.Write(SpinRotation);
             bitWriter.WriteBit(RangedAttackMode);
             bitWriter.WriteBit(IsSwipeLimb);
@@ -522,10 +522,10 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            IdleOffsetX = binaryReader.Read7BitEncodedInt();
-            IdleOffsetY = binaryReader.Read7BitEncodedInt();
-            AttackTimer = binaryReader.Read7BitEncodedInt();
-            NoContactDamageTimer = binaryReader.Read7BitEncodedInt();
+            IdleOffsetX = binaryReader.ReadInt32();
+            IdleOffsetY = binaryReader.ReadInt32();
+            AttackTimer = binaryReader.ReadInt32();
+            NoContactDamageTimer = binaryReader.ReadInt32();
             SpinRotation = binaryReader.ReadSingle();
             RangedAttackMode = bitReader.ReadBit();
             IsSwipeLimb = bitReader.ReadBit();

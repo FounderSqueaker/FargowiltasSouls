@@ -1066,11 +1066,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             if (!PhaseTwoHP)
             {
-                if (FargoSoulsUtil.HostCheck)
-                {
-                    PreviousState = State;
-                    State = (int)States.Hops;
-                }
+                PreviousState = State;
+                State = (int)States.Hops;
             }
             else
             {
@@ -1114,11 +1111,6 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
             NetSync(NPC);
             NPC.netUpdate = true;
-
-            if (Main.netMode == NetmodeID.Server)
-                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("server chose attack: " + State.ToString()), Color.White);
-            else
-                Main.NewText("client chose attack: " + State.ToString());
 
             // debug
             //State = (int)States.QuickHops;

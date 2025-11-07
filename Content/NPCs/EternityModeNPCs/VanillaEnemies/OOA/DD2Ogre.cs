@@ -60,24 +60,24 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
-            binaryWriter.Write7BitEncodedInt(AnimState);
-            binaryWriter.Write7BitEncodedInt(AnimStartTime);
-            binaryWriter.Write7BitEncodedInt(LastFrame);
-            binaryWriter.Write7BitEncodedInt(Timer);
-            binaryWriter.Write7BitEncodedInt(State);
-            binaryWriter.Write7BitEncodedInt(PreviousState);
+            binaryWriter.Write(AnimState);
+            binaryWriter.Write(AnimStartTime);
+            binaryWriter.Write(LastFrame);
+            binaryWriter.Write(Timer);
+            binaryWriter.Write(State);
+            binaryWriter.Write(PreviousState);
             binaryWriter.Write(NormalAI);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-            AnimState = binaryReader.Read7BitEncodedInt();
-            AnimStartTime = binaryReader.Read7BitEncodedInt();
-            LastFrame = binaryReader.Read7BitEncodedInt();
-            Timer = binaryReader.Read7BitEncodedInt();
-            State = binaryReader.Read7BitEncodedInt();
-            PreviousState = binaryReader.Read7BitEncodedInt();
+            AnimState = binaryReader.ReadInt32();
+            AnimStartTime = binaryReader.ReadInt32();
+            LastFrame = binaryReader.ReadInt32();
+            Timer = binaryReader.ReadInt32();
+            State = binaryReader.ReadInt32();
+            PreviousState = binaryReader.ReadInt32();
             NormalAI = binaryReader.ReadBoolean();
         }
 
@@ -270,7 +270,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                 else if (npc.velocity.Y != 0)
                 {
                     npc.velocity.Y -= -0.1f;
-                    if (Timer % 10 == 0)
+                    if (Timer % 10 == 0 && !Main.dedServ)
                     {
                         for (int i = 0; i < 3; i++)
                         {
@@ -306,10 +306,13 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                         for (int i = 0; i < 12; i++)
                             Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Bottom, speed * Vector2.UnitX.RotatedBy(3 * MathHelper.PiOver2 - Main.rand.NextFloat(MathHelper.PiOver4 / 2, 1.5f * MathHelper.PiOver4)), ModContent.ProjectileType<SnotBaseballSplit>(), (int)(npc.damage / 4f), 2f);
                     }
-                    for (int i = 0; i < 40; i++)
+                    if (!Main.dedServ)
                     {
-                        int snotType = Main.rand.NextFromList(GoreID.OgreSpit1, GoreID.OgreSpit2, GoreID.OgreSpit3);
-                        Gore.NewGore(npc.GetSource_FromThis(), npc.Bottom, 5 * Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi), snotType);
+                        for (int i = 0; i < 40; i++)
+                        {
+                            int snotType = Main.rand.NextFromList(GoreID.OgreSpit1, GoreID.OgreSpit2, GoreID.OgreSpit3);
+                            Gore.NewGore(npc.GetSource_FromThis(), npc.Bottom, 5 * Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi), snotType);
+                        }
                     }
                 }
             }
@@ -444,15 +447,18 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
         {
             ResetState(npc);
             ResetAnimation(npc);
-            List<AttackStates> states = [];
-            for (int i = 1; i <= 4; i++)
+            if (FargoSoulsUtil.HostCheck)
             {
-                if (PreviousState != i)
+                List<AttackStates> states = [];
+                for (int i = 1; i <= 4; i++)
                 {
-                    states.Add((AttackStates)i);
+                    if (PreviousState != i)
+                    {
+                        states.Add((AttackStates)i);
+                    }
                 }
+                State = (int)Main.rand.NextFromCollection(states);
             }
-            State = (int)Main.rand.NextFromCollection(states);
             NetSync(npc);
         }
 

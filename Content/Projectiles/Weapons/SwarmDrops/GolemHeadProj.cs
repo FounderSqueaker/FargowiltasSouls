@@ -44,9 +44,9 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.SwarmDrops
 
         public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => behindProjectiles.Add(index);
 
-        public override void SendExtraAI(BinaryWriter writer) => writer.Write7BitEncodedInt(headsStacked);
+        public override void SendExtraAI(BinaryWriter writer) => writer.Write(headsStacked);
 
-        public override void ReceiveExtraAI(BinaryReader reader) => headsStacked = reader.Read7BitEncodedInt();
+        public override void ReceiveExtraAI(BinaryReader reader) => headsStacked = reader.ReadInt32();
 
         public override void AI()
         {

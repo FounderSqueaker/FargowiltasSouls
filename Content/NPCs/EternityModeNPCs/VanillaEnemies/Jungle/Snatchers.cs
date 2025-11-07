@@ -47,24 +47,24 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Jungle
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(DashTimer);
-            binaryWriter.Write7BitEncodedInt(BiteTimer);
-            binaryWriter.Write7BitEncodedInt(BittenPlayer);
-            binaryWriter.Write7BitEncodedInt(ItemHeld);
-            binaryWriter.Write7BitEncodedInt((int)EatingState);
-            binaryWriter.Write7BitEncodedInt(EatTimer);
+            binaryWriter.Write(DashTimer);
+            binaryWriter.Write(BiteTimer);
+            binaryWriter.Write(BittenPlayer);
+            binaryWriter.Write(ItemHeld);
+            binaryWriter.Write((int)EatingState);
+            binaryWriter.Write(EatTimer);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            DashTimer = binaryReader.Read7BitEncodedInt();
-            BiteTimer = binaryReader.Read7BitEncodedInt();
-            BittenPlayer = binaryReader.Read7BitEncodedInt();
-            ItemHeld = binaryReader.Read7BitEncodedInt();
-            EatingState = (EatingStates)binaryReader.Read7BitEncodedInt();
-            EatTimer = binaryReader.Read7BitEncodedInt();
+            DashTimer = binaryReader.ReadInt32();
+            BiteTimer = binaryReader.ReadInt32();
+            BittenPlayer = binaryReader.ReadInt32();
+            ItemHeld = binaryReader.ReadInt32();
+            EatingState = (EatingStates)binaryReader.ReadInt32();
+            EatTimer = binaryReader.ReadInt32();
         }
 
         public override void SetDefaults(NPC npc)

@@ -35,17 +35,17 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
-            binaryWriter.Write7BitEncodedInt(Timer);
-            binaryWriter.Write7BitEncodedInt(State);
-            binaryWriter.Write7BitEncodedInt(SpawnTimer);
+            binaryWriter.Write(Timer);
+            binaryWriter.Write(State);
+            binaryWriter.Write(SpawnTimer);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-            Timer = binaryReader.Read7BitEncodedInt();
-            State = binaryReader.Read7BitEncodedInt();
-            SpawnTimer = binaryReader.Read7BitEncodedInt();
+            Timer = binaryReader.ReadInt32();
+            State = binaryReader.ReadInt32();
+            SpawnTimer = binaryReader.ReadInt32();
         }
 
         public override void ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers)

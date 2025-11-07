@@ -40,15 +40,15 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
-            binaryWriter.Write7BitEncodedInt(State);
-            binaryWriter.Write7BitEncodedInt(Timer);
+            binaryWriter.Write(State);
+            binaryWriter.Write(Timer);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-            State = binaryReader.Read7BitEncodedInt();
-            Timer = binaryReader.Read7BitEncodedInt();
+            State = binaryReader.ReadInt32();
+            Timer = binaryReader.ReadInt32();
         }
 
         public override bool SafePreAI(NPC npc)

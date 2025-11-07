@@ -48,9 +48,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(HiveThrowTimer);
-            binaryWriter.Write7BitEncodedInt(StingerRingTimer);
-            binaryWriter.Write7BitEncodedInt(BeeSwarmTimer);
+            binaryWriter.Write(HiveThrowTimer);
+            binaryWriter.Write(StingerRingTimer);
+            binaryWriter.Write(BeeSwarmTimer);
             binaryWriter.WriteVector2(LockVector1);
             bitWriter.WriteBit(SpawnedRoyalSubjectWave1);
             bitWriter.WriteBit(SpawnedRoyalSubjectWave2);
@@ -62,9 +62,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            HiveThrowTimer = binaryReader.Read7BitEncodedInt();
-            StingerRingTimer = binaryReader.Read7BitEncodedInt();
-            BeeSwarmTimer = binaryReader.Read7BitEncodedInt();
+            HiveThrowTimer = binaryReader.ReadInt32();
+            StingerRingTimer = binaryReader.ReadInt32();
+            BeeSwarmTimer = binaryReader.ReadInt32();
             LockVector1 = binaryReader.ReadVector2();
             SpawnedRoyalSubjectWave1 = bitReader.ReadBit();
             SpawnedRoyalSubjectWave2 = bitReader.ReadBit();

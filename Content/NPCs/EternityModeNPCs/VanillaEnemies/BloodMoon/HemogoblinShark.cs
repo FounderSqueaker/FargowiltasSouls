@@ -34,11 +34,11 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(AttackTimer);
-            binaryWriter.Write7BitEncodedInt(VanillaAttackCycles);
-            binaryWriter.Write7BitEncodedInt(State);
-            binaryWriter.Write7BitEncodedInt(Frame);
-            binaryWriter.Write7BitEncodedInt(Jumps);
+            binaryWriter.Write(AttackTimer);
+            binaryWriter.Write(VanillaAttackCycles);
+            binaryWriter.Write(State);
+            binaryWriter.Write(Frame);
+            binaryWriter.Write(Jumps);
             binaryWriter.Write(Jumped);
         }
 
@@ -46,11 +46,11 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            AttackTimer = binaryReader.Read7BitEncodedInt();
-            VanillaAttackCycles = binaryReader.Read7BitEncodedInt();
-            State = binaryReader.Read7BitEncodedInt();
-            Frame = binaryReader.Read7BitEncodedInt();
-            Jumps = binaryReader.Read7BitEncodedInt();
+            AttackTimer = binaryReader.ReadInt32();
+            VanillaAttackCycles = binaryReader.ReadInt32();
+            State = binaryReader.ReadInt32();
+            Frame = binaryReader.ReadInt32();
+            Jumps = binaryReader.ReadInt32();
             Jumped = binaryReader.ReadBoolean();
         }
 

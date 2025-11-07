@@ -45,14 +45,14 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.MechanicalBosses
 
         public override void SendExtraAI(BinaryWriter writer)
         {
-            writer.Write7BitEncodedInt(npc);
+            writer.Write(npc);
             writer.Write(Projectile.localAI[1]);
             writer.Write(Projectile.localAI[2]);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
-            npc = reader.Read7BitEncodedInt();
+            npc = reader.ReadInt32();
             Projectile.localAI[1] = reader.ReadSingle();
             Projectile.localAI[2] = reader.ReadSingle();
         }

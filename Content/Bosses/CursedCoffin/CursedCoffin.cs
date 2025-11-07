@@ -196,8 +196,8 @@ namespace FargowiltasSouls.Content.Bosses.CursedCoffin
             writer.Write(NPC.localAI[1]);
             writer.Write(NPC.localAI[2]);
             writer.Write(NPC.localAI[3]);
-            writer.Write7BitEncodedInt(LastAttackChoice);
-            writer.Write7BitEncodedInt(Phase);
+            writer.Write(LastAttackChoice);
+            writer.Write(Phase);
             writer.Write(Timer);
             writer.WriteVector2(LockVector1);
 
@@ -213,8 +213,8 @@ namespace FargowiltasSouls.Content.Bosses.CursedCoffin
 			NPC.localAI[1] = reader.ReadSingle();
 			NPC.localAI[2] = reader.ReadSingle();
 			NPC.localAI[3] = reader.ReadSingle();
-			LastAttackChoice = reader.Read7BitEncodedInt();
-            Phase = reader.Read7BitEncodedInt();
+			LastAttackChoice = reader.ReadInt32();
+            Phase = reader.ReadInt32();
 			Timer = reader.ReadSingle();
             LockVector1 = reader.ReadVector2();
 

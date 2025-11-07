@@ -66,10 +66,10 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
             binaryWriter.Write(RitualRotation);
-            binaryWriter.Write7BitEncodedInt(MeleeDamageCounter);
-            binaryWriter.Write7BitEncodedInt(RangedDamageCounter);
-            binaryWriter.Write7BitEncodedInt(MagicDamageCounter);
-            binaryWriter.Write7BitEncodedInt(MinionDamageCounter);
+            binaryWriter.Write(MeleeDamageCounter);
+            binaryWriter.Write(RangedDamageCounter);
+            binaryWriter.Write(MagicDamageCounter);
+            binaryWriter.Write(MinionDamageCounter);
             bitWriter.WriteBit(EnteredPhase2);
 
             binaryWriter.Write(Timer);
@@ -84,10 +84,10 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
             RitualRotation = binaryReader.ReadSingle();
-            MeleeDamageCounter = binaryReader.Read7BitEncodedInt();
-            RangedDamageCounter = binaryReader.Read7BitEncodedInt();
-            MagicDamageCounter = binaryReader.Read7BitEncodedInt();
-            MinionDamageCounter = binaryReader.Read7BitEncodedInt();
+            MeleeDamageCounter = binaryReader.ReadInt32();
+            RangedDamageCounter = binaryReader.ReadInt32();
+            MagicDamageCounter = binaryReader.ReadInt32();
+            MinionDamageCounter = binaryReader.ReadInt32();
             EnteredPhase2 = bitReader.ReadBit();
 
             Timer = binaryReader.ReadInt32();
@@ -734,8 +734,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(TotalCultistCount);
-            binaryWriter.Write7BitEncodedInt(MyRitualPosition);
+            binaryWriter.Write(TotalCultistCount);
+            binaryWriter.Write(MyRitualPosition);
 
             binaryWriter.Write(Timer);
             binaryWriter.Write(State);
@@ -748,8 +748,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            TotalCultistCount = binaryReader.Read7BitEncodedInt();
-            MyRitualPosition = binaryReader.Read7BitEncodedInt();
+            TotalCultistCount = binaryReader.ReadInt32();
+            MyRitualPosition = binaryReader.ReadInt32();
 
             Timer = binaryReader.ReadInt32();
             State = binaryReader.ReadInt32();

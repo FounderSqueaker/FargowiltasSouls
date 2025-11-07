@@ -137,9 +137,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(StompAttackCounter);
-            binaryWriter.Write7BitEncodedInt(SpikyBallTimer);
-            //binaryWriter.Write7BitEncodedInt(AntiAirTimer);
+            binaryWriter.Write(StompAttackCounter);
+            binaryWriter.Write(SpikyBallTimer);
+            //binaryWriter.Write(AntiAirTimer);
             bitWriter.WriteBit(DoStompBehaviour);
             bitWriter.WriteBit(HaveBoostedJumpHeight);
             bitWriter.WriteBit(IsInTemple);
@@ -149,9 +149,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            StompAttackCounter = binaryReader.Read7BitEncodedInt();
-            SpikyBallTimer = binaryReader.Read7BitEncodedInt();
-            //AntiAirTimer = binaryReader.Read7BitEncodedInt();
+            StompAttackCounter = binaryReader.ReadInt32();
+            SpikyBallTimer = binaryReader.ReadInt32();
+            //AntiAirTimer = binaryReader.ReadInt32();
             DoStompBehaviour = bitReader.ReadBit();
             HaveBoostedJumpHeight = bitReader.ReadBit();
             IsInTemple = bitReader.ReadBit();
@@ -482,7 +482,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(FistAttackRateSlowdownTimer);
+            binaryWriter.Write(FistAttackRateSlowdownTimer);
             bitWriter.WriteBit(DoAttackOnFistImpact);
         }
 
@@ -490,7 +490,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            FistAttackRateSlowdownTimer = binaryReader.Read7BitEncodedInt();
+            FistAttackRateSlowdownTimer = binaryReader.ReadInt32();
             DoAttackOnFistImpact = bitReader.ReadBit();
         }
 
@@ -603,8 +603,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(AttackTimer);
-            binaryWriter.Write7BitEncodedInt(DeathraySweepTargetHeight);
+            binaryWriter.Write(AttackTimer);
+            binaryWriter.Write(DeathraySweepTargetHeight);
             binaryWriter.Write(SuppressedAi1);
             binaryWriter.Write(SuppressedAi2);
             bitWriter.WriteBit(DoAttack);
@@ -618,8 +618,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            AttackTimer = binaryReader.Read7BitEncodedInt();
-            DeathraySweepTargetHeight = binaryReader.Read7BitEncodedInt();
+            AttackTimer = binaryReader.ReadInt32();
+            DeathraySweepTargetHeight = binaryReader.ReadInt32();
             SuppressedAi1 = binaryReader.ReadSingle();
             SuppressedAi2 = binaryReader.ReadSingle();
             DoAttack = bitReader.ReadBit();

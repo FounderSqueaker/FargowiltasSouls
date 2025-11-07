@@ -54,22 +54,22 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(ReticleTarget);
-            binaryWriter.Write7BitEncodedInt(BabyGuardianTimer);
-            binaryWriter.Write7BitEncodedInt(DGSpeedRampup);
+            binaryWriter.Write(ReticleTarget);
+            binaryWriter.Write(BabyGuardianTimer);
+            binaryWriter.Write(DGSpeedRampup);
             bitWriter.WriteBit(InPhase2);
-            binaryWriter.Write7BitEncodedInt(SpawnGrace);
+            binaryWriter.Write(SpawnGrace);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            ReticleTarget = binaryReader.Read7BitEncodedInt();
-            BabyGuardianTimer = binaryReader.Read7BitEncodedInt();
-            DGSpeedRampup = binaryReader.Read7BitEncodedInt();
+            ReticleTarget = binaryReader.ReadInt32();
+            BabyGuardianTimer = binaryReader.ReadInt32();
+            DGSpeedRampup = binaryReader.ReadInt32();
             InPhase2 = bitReader.ReadBit();
-            SpawnGrace = binaryReader.Read7BitEncodedInt();
+            SpawnGrace = binaryReader.ReadInt32();
         }
 
         public override void OnSpawn(NPC npc, IEntitySource source)
@@ -577,9 +577,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(AttackTimer);
-            binaryWriter.Write7BitEncodedInt(AI_Timer);
-            binaryWriter.Write7BitEncodedInt(collisionCooldown);
+            binaryWriter.Write(AttackTimer);
+            binaryWriter.Write(AI_Timer);
+            binaryWriter.Write(collisionCooldown);
             binaryWriter.Write(npc.localAI[0]);
             binaryWriter.Write(npc.localAI[1]);
             binaryWriter.Write(npc.localAI[2]);
@@ -592,9 +592,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            AttackTimer = binaryReader.Read7BitEncodedInt();
-            AI_Timer = binaryReader.Read7BitEncodedInt();
-            collisionCooldown = binaryReader.Read7BitEncodedInt();
+            AttackTimer = binaryReader.ReadInt32();
+            AI_Timer = binaryReader.ReadInt32();
+            collisionCooldown = binaryReader.ReadInt32();
             npc.localAI[0] = binaryReader.ReadSingle();
             npc.localAI[1] = binaryReader.ReadSingle();
             npc.localAI[2] = binaryReader.ReadSingle();

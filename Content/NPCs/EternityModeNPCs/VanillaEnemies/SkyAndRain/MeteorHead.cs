@@ -21,15 +21,15 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
-            binaryWriter.Write7BitEncodedInt(Counter);
-            binaryWriter.Write7BitEncodedInt(ParticleTimer);
+            binaryWriter.Write(Counter);
+            binaryWriter.Write(ParticleTimer);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-            Counter = binaryReader.Read7BitEncodedInt();
-            ParticleTimer = binaryReader.Read7BitEncodedInt();
+            Counter = binaryReader.ReadInt32();
+            ParticleTimer = binaryReader.ReadInt32();
         }
 
         public override void OnFirstTick(NPC npc)

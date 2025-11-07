@@ -31,18 +31,18 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(JumpTimer);
-            binaryWriter.Write7BitEncodedInt(AnchorSlamStartup);
-            binaryWriter.Write7BitEncodedInt(ShortHopAerialTimer);
+            binaryWriter.Write(JumpTimer);
+            binaryWriter.Write(AnchorSlamStartup);
+            binaryWriter.Write(ShortHopAerialTimer);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            JumpTimer = binaryReader.Read7BitEncodedInt();
-            AnchorSlamStartup = binaryReader.Read7BitEncodedInt();
-            ShortHopAerialTimer = binaryReader.Read7BitEncodedInt();
+            JumpTimer = binaryReader.ReadInt32();
+            AnchorSlamStartup = binaryReader.ReadInt32();
+            ShortHopAerialTimer = binaryReader.ReadInt32();
         }
 
         public override void OnFirstTick(NPC npc)

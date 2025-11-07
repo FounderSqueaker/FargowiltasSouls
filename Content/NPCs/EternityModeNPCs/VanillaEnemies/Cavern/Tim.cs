@@ -52,22 +52,22 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
-            binaryWriter.Write7BitEncodedInt(State);
-            binaryWriter.Write7BitEncodedInt(PreviousState);
-            binaryWriter.Write7BitEncodedInt(Timer);
-            binaryWriter.Write7BitEncodedInt(DrinkType);
-            binaryWriter.Write7BitEncodedInt(DrinkStart);
-            binaryWriter.Write7BitEncodedInt(HeldProj);
+            binaryWriter.Write(State);
+            binaryWriter.Write(PreviousState);
+            binaryWriter.Write(Timer);
+            binaryWriter.Write(DrinkType);
+            binaryWriter.Write(DrinkStart);
+            binaryWriter.Write(HeldProj);
         }
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-            State = binaryReader.Read7BitEncodedInt();
-            PreviousState = binaryReader.Read7BitEncodedInt();
-            Timer = binaryReader.Read7BitEncodedInt();
-            DrinkType = binaryReader.Read7BitEncodedInt();
-            DrinkStart = binaryReader.Read7BitEncodedInt();
-            HeldProj = binaryReader.Read7BitEncodedInt();
+            State = binaryReader.ReadInt32();
+            PreviousState = binaryReader.ReadInt32();
+            Timer = binaryReader.ReadInt32();
+            DrinkType = binaryReader.ReadInt32();
+            DrinkStart = binaryReader.ReadInt32();
+            HeldProj = binaryReader.ReadInt32();
         }
 
         public override void AI(NPC npc)
