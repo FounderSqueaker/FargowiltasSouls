@@ -27,5 +27,9 @@ namespace FargowiltasSouls.Content.Items.Vanity.SoulGuyVanity
             Item.rare = ItemRarityID.Cyan;
             Item.vanity = true;
         }
+        public override void AddRecipes()
+        {
+            CreateRecipe().AddIngredient(ModContent.ItemType<Masochist>(), 5).AddTile(TileID.WorkBenches).Register();
+        }
     }
 }
