@@ -3859,3 +3859,18 @@ DraconicCrystal: {
 		The event will instantly begin on the strongest tier at Wave 7
 		''' */
 }
+
+SoulGuyBody: {
+	// DisplayName: Soul Guy Body
+	// Tooltip: ""
+}
+
+SoulGuyHead: {
+	// DisplayName: Soul Guy Head
+	// Tooltip: ""
+}
+
+SoulGuyLegs: {
+	// DisplayName: Soul Guy Legs
+	// Tooltip: ""
+}

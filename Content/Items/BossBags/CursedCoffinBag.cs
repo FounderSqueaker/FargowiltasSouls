@@ -1,7 +1,7 @@
 ﻿using FargowiltasSouls.Content.Bosses.CursedCoffin;
 using FargowiltasSouls.Content.Items.Accessories;
 using FargowiltasSouls.Content.Items.Accessories.Expert;
-using FargowiltasSouls.Content.Items.Armor.Masks;
+using FargowiltasSouls.Content.Items.Vanity.Masks;
 using FargowiltasSouls.Content.Items.Weapons.Challengers;
 using System.Data;
 using Terraria.GameContent.ItemDropRules;

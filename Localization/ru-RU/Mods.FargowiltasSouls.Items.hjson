@@ -3879,3 +3879,18 @@ DraconicCrystal: {
 		Нашествие начнётся сразу на 7-й волне наивысшего доступного уровня
 		'''
 }
+
+SoulGuyBody: {
+	// DisplayName: Soul Guy Body
+	// Tooltip: ""
+}
+
+SoulGuyHead: {
+	// DisplayName: Soul Guy Head
+	// Tooltip: ""
+}
+
+SoulGuyLegs: {
+	// DisplayName: Soul Guy Legs
+	// Tooltip: ""
+}

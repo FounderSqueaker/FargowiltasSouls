@@ -1,6 +1,6 @@
 ﻿using FargowiltasSouls.Content.Bosses.Lifelight;
-using FargowiltasSouls.Content.Items.Armor.Masks;
 using FargowiltasSouls.Content.Items.Placables;
+using FargowiltasSouls.Content.Items.Vanity.Masks;
 using FargowiltasSouls.Content.Items.Weapons.Challengers;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
