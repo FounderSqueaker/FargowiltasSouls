@@ -3881,16 +3881,16 @@ DraconicCrystal: {
 }
 
 SoulGuyBody: {
-	// DisplayName: Soul Body
+	// DisplayName: T Shirt
 	// Tooltip: "[i:FargowiltasSouls/Masochist]"
 }
 
 SoulGuyHead: {
-	// DisplayName: Soul Head
+	// DisplayName: W Mask
 	// Tooltip: "[i:FargowiltasSouls/Masochist]"
 }
 
 SoulGuyLegs: {
-	// DisplayName: Soul Legs
+	// DisplayName: F Legs
 	// Tooltip: "[i:FargowiltasSouls/Masochist]"
 }
