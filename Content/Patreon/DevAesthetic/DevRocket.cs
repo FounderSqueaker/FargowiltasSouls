@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FargowiltasSouls.Common.Graphics.Particles;
+using Luminance.Core.Graphics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -83,22 +85,12 @@ namespace FargowiltasSouls.Content.Patreon.DevAesthetic
 
         public override void OnKill(int timeLeft)
         {
-            /*if (Projectile.owner == Main.myPlayer && Projectile.localAI[1] == 1)
-            {
-                Projectile[] projs = FargoSoulsUtil.XWay(Main.rand.Next(3, 7), Terraria.Entity.InheritSource(Projectile), Projectile.Center, Projectile.type, 6, Projectile.damage, Projectile.knockBack);
-                foreach (Projectile proj in projs)
-                {
-                    if (proj != null)
-                        proj.localAI[1] = 2;
-                }
-            }*/
-
             Color dustColor = color;
             dustColor.A = 100;
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 10; i++)
             {
                 int d = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Snow, Projectile.velocity.X, Projectile.velocity.Y, 100, dustColor, 2f);
-                Main.dust[d].velocity *= 2f;
+                Main.dust[d].velocity *= Main.rand.NextFloat(2f);
                 Main.dust[d].noGravity = true;
             }
         }
