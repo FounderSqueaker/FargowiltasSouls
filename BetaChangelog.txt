@@ -256,3 +256,4 @@ tried fixing an extremely obscure edge case that caused mutant to do p2 boundary
 nano core mage does 1.1x more damage, nobody uses this lol
 nano core summon probes inflict the kaleidoscope debuff (does anyone unironically use this?)
 dev aesth can have a little dust spam, as a treat
+nuke fishron does 3x damage, fires 3x slower, is bigger, nerfed homing detection range a lot, and screenshakes (diversifying it from ddemise and the best on tier takes SOME effort to use now)
