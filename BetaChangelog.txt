@@ -252,3 +252,5 @@ you can now consume the moon chalice (it doesnt do anything)
 
 slowed down emode mutant p1 a bit, longer window between some attacks
 tried fixing an extremely obscure edge case that caused mutant to do p2 boundary with no spin???
+
+nano core mage does 1.1x more damage, nobody uses this lol
