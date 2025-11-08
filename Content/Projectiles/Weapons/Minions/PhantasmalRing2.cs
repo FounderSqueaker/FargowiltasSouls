@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FargowiltasSouls.Content.Items.Accessories.Eternity;
+using FargowiltasSouls.Core.AccessoryEffectSystem;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
@@ -38,7 +40,7 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.Minions
             if (Main.player[Projectile.owner].active && !Main.player[Projectile.owner].dead && !Main.player[Projectile.owner].ghost
                 && Main.player[Projectile.owner].FargoSouls().MutantEyeItem != null
                 && Main.player[Projectile.owner].FargoSouls().MutantEyeVisual
-                && Main.player[Projectile.owner].FargoSouls().MutantEyeCD <= 0)
+                && Main.player[Projectile.owner].GetCooldown<BombKeyEffect>() <= 0)
             {
                 Projectile.alpha = 0;
             }

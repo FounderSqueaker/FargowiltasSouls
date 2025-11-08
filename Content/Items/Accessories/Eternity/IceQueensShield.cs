@@ -72,9 +72,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
         public static int BaseDamage(Player player) => (int)(330 * player.ActualClassDamage(DamageClass.Magic));
         public override void PostUpdateEquips(Player player)
         {
-            FargoSoulsPlayer modPlayer = player.FargoSouls();
-            if (modPlayer.IceQueenCrownCD > 0)
-                modPlayer.IceQueenCrownCD--;
+            player.IncrementCooldownTowards<IceShieldEffect>(-1, 0);
         }
         public override void ActiveSkillJustPressed(Player player, bool stunned)
         {
@@ -88,7 +86,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
                 if (player.ownedProjectileCounts[shield] > 0)
                     return;
 
-                if (modPlayer.IceQueenCrownCD <= 0)
+                if (player.GetCooldown<IceShieldEffect>() <= 0)
                 {
                     SoundEngine.PlaySound(SoundID.Item30, player.Center);
                     Projectile.NewProjectile(player.GetSource_EffectItem<IceShieldEffect>(), player.Center, Vector2.Zero, shield, BaseDamage(player), 1f, player.whoAmI);

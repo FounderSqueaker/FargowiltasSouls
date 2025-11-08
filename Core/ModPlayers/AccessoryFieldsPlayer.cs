@@ -133,8 +133,6 @@ namespace FargowiltasSouls.Core.ModPlayers
         public int IcicleCount;
         public int icicleCD;
         public int GladiatorCD;
-        public int GladiatorStandardCD;
-        public int IceQueenCrownCD;
         public bool GoldEnchMoveCoins;
         public bool GoldShell;
         private int goldHP;
@@ -159,7 +157,6 @@ namespace FargowiltasSouls.Core.ModPlayers
         public int Beetles;
         public float BeetleCharge;
         public int BeetleHitCD;
-        public int SpookyCD;
         public int BorealCD;
         public int PalmWoodForceCD;
         public bool CrystalEnchantActive = false;
@@ -189,7 +186,6 @@ namespace FargowiltasSouls.Core.ModPlayers
         public bool SnowVisual;
         public int SpectreCD;
         public int SpectreGhostTime;
-        public int ForbiddenCD;
         public bool MinionCrits;
         public int SpiderCD;
         //public bool squireReduceIframes;
@@ -269,7 +265,6 @@ namespace FargowiltasSouls.Core.ModPlayers
         public bool DubiousCircuitry;
         public bool Supercharged;
         public bool TwinsInstall;
-        public int RemoteCD;
         public bool SuperInstall;
         public bool Probes;
         public bool MagicalBulb;
@@ -280,7 +275,6 @@ namespace FargowiltasSouls.Core.ModPlayers
         public int GroundPound;
         public Item BetsysHeartItem;
         public bool BetsyDashing;
-        public int SpecialDashCD;
         public bool MutantAntibodies;
         public Item GravityGlobeEXItem;
         public int AdditionalAttacksTimer;
@@ -294,7 +288,6 @@ namespace FargowiltasSouls.Core.ModPlayers
         public bool MasochistHeart;
         public bool SandsofTime;
         public bool SecurityWallet;
-        public int FrigidGemstoneCD;
         public float WretchedPouchCD;
         public bool NymphsPerfume;
         public bool NymphsPerfumeRespawn;
@@ -313,7 +306,6 @@ namespace FargowiltasSouls.Core.ModPlayers
         public bool TwinsEX;
         public bool TimsConcoction;
         public bool TimsInspect;
-        public int TimsInspectCD;
         public bool ReceivedMasoGift;
         public bool DeviGraze;
         public bool Graze;
@@ -325,7 +317,6 @@ namespace FargowiltasSouls.Core.ModPlayers
         public int DevianttHeartsCD;
         public Item MutantEyeItem;
         public bool MutantEyeVisual;
-        public int MutantEyeCD;
         public bool AbominableWandRevived;
         public bool AbomRebirth;
         public bool WasHurtBySomething;

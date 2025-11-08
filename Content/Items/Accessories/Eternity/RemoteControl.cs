@@ -163,9 +163,13 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
         public override int ToggleItemType => ModContent.ItemType<RemoteControl>();
         public override bool ActiveSkill => Main.LocalPlayer.HasEffect<RemoteLightningEffect>();
         public static int BaseDamage (Player player) => (int)(800 * player.ActualClassDamage(DamageClass.Ranged));
+        public override void PostUpdateEquips(Player player)
+        {
+            player.IncrementCooldownTowards<RemoteLightningEffect>(-1, 0);
+        }
         public override void ActiveSkillJustPressed(Player player, bool stunned)
         {
-            if (player.FargoSouls().RemoteCD > 0 || stunned)
+            if (player.GetCooldown<RemoteLightningEffect>() > 0 || stunned)
                 return;
             if (Main.myPlayer == player.whoAmI && FargoSoulsUtil.HostCheck)
             {
@@ -173,8 +177,8 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
                 float angle = MathHelper.Pi * 0.7f;
                 Projectile.NewProjectile(GetSource_EffectItem(player), pos, Vector2.Zero, ModContent.ProjectileType<RemoteScanTelegraph>(), BaseDamage(player), 0f, Main.myPlayer, 0, angle, 1000);
             }
-            player.FargoSouls().RemoteCD = 720;
-            CooldownBarManager.Activate("RemoteCD", FargoAssets.GetTexture2D("Content/Items/Accessories/Eternity", "RemoteControl").Value, Color.Lerp(Color.Gray, Color.DarkOliveGreen, 0.25f), () => Main.LocalPlayer.FargoSouls().RemoteCD / 720f, activeFunction: null);
+            player.SetCooldown<RemoteLightningEffect>(720);
+            CooldownBarManager.Activate("RemoteCD", FargoAssets.GetTexture2D("Content/Items/Accessories/Eternity", "RemoteControl").Value, Color.Lerp(Color.Gray, Color.DarkOliveGreen, 0.25f), () => Main.LocalPlayer.GetCooldown<RemoteLightningEffect>() / 720f, activeFunction: null);
         }
     }
 }

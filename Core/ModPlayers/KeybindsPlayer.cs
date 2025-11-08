@@ -137,8 +137,7 @@ namespace FargowiltasSouls.Core.ModPlayers
 
             if (Player.HasEffect<FrigidGraspKeyEffect>())
             {
-                if (FrigidGemstoneCD > 0)
-                    FrigidGemstoneCD--;
+                Player.IncrementCooldownTowards<FrigidGraspKeyEffect>(-1, 0);
             }
 
             #endregion

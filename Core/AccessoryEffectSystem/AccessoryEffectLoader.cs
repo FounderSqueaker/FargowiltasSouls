@@ -1,6 +1,7 @@
 ﻿using FargowiltasSouls.Content.Items;
 using FargowiltasSouls.Content.Items.Accessories.Enchantments;
 using FargowiltasSouls.Content.UI;
+using Steamworks;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -100,6 +101,51 @@ namespace FargowiltasSouls.Core.AccessoryEffectSystem
                 }
             }
             return keybind;
+        }
+        /// <summary>
+        /// Gets the value of the cooldown tied to this accessory effect.
+        /// </summary>
+        public static float GetCooldown<T>(this Player player) where T : AccessoryEffect => player.AccessoryEffects().Cooldowns[ModContent.GetInstance<T>().Index];
+        /// <summary>
+        /// Sets the value of the cooldown tied to this accessory effect.
+        /// </summary>
+        public static void SetCooldown<T>(this Player player, float value) where T : AccessoryEffect => player.AccessoryEffects().Cooldowns[ModContent.GetInstance<T>().Index] = value;
+        /// <summary>
+        /// Adds the value amount to the cooldown tied to this accessory effect. Can be positive or negative.
+        /// </summary>
+        public static void IncrementCooldown<T>(this Player player, float value) where T : AccessoryEffect => player.AccessoryEffects().Cooldowns[ModContent.GetInstance<T>().Index] += value;
+        /// <summary>
+        /// Adds the value amount to the cooldown tied to this accessory effect, until it reaches a goal value. <br></br>
+        /// Most commonly used to decrement the cooldown to 0. <br></br>
+        /// Returns true if the value was incremented, and false if it has reached the goal.
+        /// </summary>
+        public static bool IncrementCooldownTowards<T>(this Player player, float value, float goalValue) where T : AccessoryEffect
+        {
+            if (value == 0) // why are we here
+                return false;
+            var accs = player.AccessoryEffects();
+            var index = ModContent.GetInstance<T>().Index;
+            if (value > 0) // increment
+            {
+                if (accs.Cooldowns[index] < goalValue)
+                {
+                    accs.Cooldowns[index] += value;
+                    return true;
+                } 
+                else
+                    accs.Cooldowns[index] = goalValue;
+            }
+            else // decrement
+            {
+                if (accs.Cooldowns[index] > goalValue)
+                {
+                    accs.Cooldowns[index] += value;
+                    return true;
+                }
+                else
+                    accs.Cooldowns[index] = goalValue;
+            }
+            return false;
         }
     }
 }

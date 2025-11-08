@@ -61,10 +61,10 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
 
         public override void ActiveSkillJustPressed(Player player, bool stunned)
         {
-            if (player.FargoSouls().TimsInspectCD > 0 || stunned)
+            if (player.GetCooldown<TimsInspectEffect>() > 0 || stunned)
                 return;
 
-            player.FargoSouls().TimsInspectCD = 90;
+            player.SetCooldown<TimsInspectEffect>(90);
             player.FargoSouls().TimsInspect = !player.FargoSouls().TimsInspect;
             SoundEngine.PlaySound(SoundID.Item130, player.Center);
             if (player.ownedProjectileCounts[ModContent.ProjectileType<TimsInspectProjectile>()] == 0)

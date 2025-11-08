@@ -162,13 +162,13 @@ namespace FargowiltasSouls.Core.ModPlayers
 
         public void FrigidGraspKey()
         {
-            if (FrigidGemstoneCD > 0)
+            if (Player.GetCooldown<FrigidGraspKeyEffect>() > 0)
                 return;
 
             if (!Player.CheckMana(6, true))
                 return;
 
-            FrigidGemstoneCD = 20;
+            Player.SetCooldown<FrigidGraspKeyEffect>(20);
             Player.manaRegenDelay = Math.Max(Player.manaRegenDelay, 30);
 
             SoundEngine.PlaySound(SoundID.Item28, Player.Center);
@@ -179,9 +179,9 @@ namespace FargowiltasSouls.Core.ModPlayers
         public void SpecialDashKey(int type)
         {
             Player player = Main.player[Main.myPlayer];
-            if (SpecialDashCD <= 0)
+            if (Player.GetCooldown<SpecialDashEffect>() <= 0)
             {
-                SpecialDashCD = LumUtils.SecondsToFrames(5);
+                Player.SetCooldown<SpecialDashEffect>(LumUtils.SecondsToFrames(5));
 
                 if (Player.whoAmI == Main.myPlayer)
                 {
@@ -211,27 +211,27 @@ namespace FargowiltasSouls.Core.ModPlayers
                         Player.hurtCooldowns[1] = Math.Max(Player.hurtCooldowns[1], 2);
 
                         CooldownBarManager.Activate("SpecialDashCooldown", FargoAssets.GetTexture2D("Content/Items/Accessories/Eternity","BetsysHeart").Value, Color.OrangeRed, 
-                            () => 1 - (float)SpecialDashCD / LumUtils.SecondsToFrames(5), activeFunction: () => BetsysHeartItem != null);
+                            () => 1 - Main.LocalPlayer.GetCooldown<SpecialDashEffect>() / LumUtils.SecondsToFrames(5), activeFunction: () => BetsysHeartItem != null);
                     }
                     else if (player.HasEffect<SupremeDashEffect>() && type == 1)
                     {
-                        SpecialDashCD += LumUtils.SecondsToFrames(1);
+                        Player.IncrementCooldown<SpecialDashEffect>(LumUtils.SecondsToFrames(1));
 
                         Vector2 vel = Player.SafeDirectionTo(Main.MouseWorld) * 25;
                         Projectile.NewProjectile(Player.GetSource_Accessory(QueenStingerItem), Player.Center, vel, ModContent.ProjectileType<SupremeDash>(), SupremeDashEffect.BaseDamage(player) * 3, 6f, Player.whoAmI);
 
                         CooldownBarManager.Activate("SpecialDashCooldown", FargoAssets.GetTexture2D("Content/Items/Accessories/Eternity", "SupremeDeathbringerFairy").Value, Color.LightGray,
-                            () => 1 - (float)SpecialDashCD / LumUtils.SecondsToFrames(6), activeFunction: () => QueenStingerItem != null);
+                            () => 1 - Main.LocalPlayer.GetCooldown<SpecialDashEffect>() / LumUtils.SecondsToFrames(6), activeFunction: () => QueenStingerItem != null);
                     }
                     else if (player.HasEffect<SpecialDashEffect>() && type == 0)
                     {
-                        SpecialDashCD += LumUtils.SecondsToFrames(1);
+                        Player.IncrementCooldown<SpecialDashEffect>(LumUtils.SecondsToFrames(1));
 
                         Vector2 vel = Player.SafeDirectionTo(Main.MouseWorld) * 20;
                         Projectile.NewProjectile(Player.GetSource_Accessory(QueenStingerItem), Player.Center, vel, ModContent.ProjectileType<BeeDash>(), (int)(44 * Player.ActualClassDamage(DamageClass.Melee)), 6f, Player.whoAmI);
 
                         CooldownBarManager.Activate("SpecialDashCooldown", FargoAssets.GetTexture2D("Content/Items/Accessories/Eternity", "QueenStinger").Value, Color.Yellow, 
-                            () => 1 - (float)SpecialDashCD / LumUtils.SecondsToFrames(6), activeFunction: () => QueenStingerItem != null);
+                            () => 1 - Main.LocalPlayer.GetCooldown<SpecialDashEffect>() / LumUtils.SecondsToFrames(6), activeFunction: () => QueenStingerItem != null);
                     }
                     Player.AddBuff(ModContent.BuffType<BetsyDashBuff>(), 20);
                 }
@@ -317,9 +317,9 @@ namespace FargowiltasSouls.Core.ModPlayers
 
         public void BombKey()
         {
-            if (MutantEyeItem != null && MutantEyeCD <= 0)
+            if (MutantEyeItem != null && Player.GetCooldown<BombKeyEffect>() <= 0)
             {
-                MutantEyeCD = 3600;
+                Player.SetCooldown<BombKeyEffect>(3600);
 
                 if (!Main.dedServ && Main.LocalPlayer.active)
                     ScreenShakeSystem.StartShake(10, shakeStrengthDissipationIncrement: 10f / 30);

@@ -105,7 +105,7 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.Souls
                 {
                     if (Main.myPlayer == Projectile.owner)
                         CooldownBarManager.Activate("ForbiddenTornadoCharge", FargoAssets.GetTexture2D("Content/Items/Accessories/Enchantments", "ForbiddenEnchant").Value, new(231, 178, 28),
-                            () => (Projectile.scale - 1), activeFunction: () => Projectile != null && Projectile.active && Main.LocalPlayer.FargoSouls().ForbiddenCD <= 0, displayAtFull: false);
+                            () => (Projectile.scale - 1), activeFunction: () => Projectile != null && Projectile.active && Main.LocalPlayer.GetCooldown<ForbiddenEffect>() <= 0, displayAtFull: false);
                 }
                 Projectile.localNPCHitCooldown = 30;
                 // MOVEMENT CODE, HOME ON MOUSE
@@ -250,7 +250,7 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.Souls
             Projectile.ai[2] = -1;
             Projectile.ai[1] = -1;
             Projectile.netUpdate = true;
-            Main.player[Projectile.owner].FargoSouls().ForbiddenCD = (60 * 10);
+            Main.player[Projectile.owner].SetCooldown<ForbiddenEffect>(60 * 10);
         }
         public void UnleashedMovement(Player player)
         {

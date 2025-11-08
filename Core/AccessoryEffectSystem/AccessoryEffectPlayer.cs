@@ -19,6 +19,7 @@ namespace FargowiltasSouls.Core.AccessoryEffectSystem
         public bool[] DeactivatedEffects = [];
         public bool[] EquippedEffects = [];
         public Item[] EffectItems = [];
+        public float[] Cooldowns = [];
 
         private static readonly Dictionary<Expression<Func<AccessoryEffect, Delegate>>, List<AccessoryEffect>> Hooks = [];
 
@@ -39,6 +40,7 @@ namespace FargowiltasSouls.Core.AccessoryEffectSystem
             DeactivatedEffects = new bool[effectCount];
             EquippedEffects = new bool[effectCount];
             EffectItems = new Item[effectCount];
+            Cooldowns = new float[effectCount];
         }
         #region Overrides
 

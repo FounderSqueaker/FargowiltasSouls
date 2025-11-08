@@ -99,8 +99,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
                     proj.netUpdate = true;
                 }
             }
-            if (modPlayer.GladiatorStandardCD > 0)
-                modPlayer.GladiatorStandardCD--;
+            player.IncrementCooldownTowards<GladiatorBanner>(-1, 0);
             if (player.HasBuff<GladiatorBuff>())
             {
                 float stats = 0.08f;
@@ -126,18 +125,18 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
                 int GladiatorStandard = ModContent.ProjectileType<GladiatorStandard>();
 
                 if (player.ownedProjectileCounts[GladiatorStandard] <= 0)
-                    modPlayer.GladiatorStandardCD = 0;
+                    player.SetCooldown<GladiatorBanner>(0);
 
-                if (modPlayer.GladiatorStandardCD <= 0)
+                if (player.GetCooldown<GladiatorBanner>() <= 0)
                 {
                     foreach (Projectile p in Main.projectile.Where(p => p.TypeAlive(GladiatorStandard) && p.owner == player.whoAmI))
                         p.Kill();
                     Projectile.NewProjectile(player.GetSource_EffectItem<GladiatorBanner>(), player.Top, Vector2.UnitY * 25, GladiatorStandard, modPlayer.ForceEffect<GladiatorEnchant>() ? 200 : 50, 3f, player.whoAmI);
-                    modPlayer.GladiatorStandardCD = LumUtils.SecondsToFrames(15);
+                    player.SetCooldown<GladiatorBanner>(LumUtils.SecondsToFrames(15));
 
                     if (player.whoAmI == Main.myPlayer)
                         CooldownBarManager.Activate("GladiatorStandardCooldown", FargoAssets.GetTexture2D("Content/Items/Accessories/Enchantments", "GladiatorEnchant").Value, new(156, 146, 78), 
-                            () => 1f - (float)Main.LocalPlayer.FargoSouls().GladiatorStandardCD / LumUtils.SecondsToFrames(15), activeFunction: () => player.HasEffect<GladiatorBanner>());
+                            () => 1f - (float)Main.LocalPlayer.GetCooldown<GladiatorBanner>() / LumUtils.SecondsToFrames(15), activeFunction: () => player.HasEffect<GladiatorBanner>());
                 }
             }
         }
