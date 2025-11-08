@@ -56,6 +56,7 @@ namespace FargowiltasSouls.Content.Patreon.Volknet.Projectiles
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.AddBuff(BuffID.Electrified, 600);
+            target.AddBuff(BuffID.RainbowWhipNPCDebuff, 60);
         }
 
         public override bool PreDraw(ref Color lightColor)
