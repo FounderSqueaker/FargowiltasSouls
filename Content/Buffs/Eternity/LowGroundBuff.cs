@@ -28,7 +28,7 @@ namespace FargowiltasSouls.Content.Buffs.Eternity
             if (player.grapCount > 0)
                 player.RemoveAllGrapplingHooks();
 
-            if (player.mount.Active)
+            if (player.mount.Active && player.mount.CanFly())
                 player.mount.Dismount(player);
 
             player.slowFall = false;

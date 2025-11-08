@@ -441,7 +441,7 @@ PlatinumEnchant: {
 	// DisplayName: Platinum Enchantment
 	/* Tooltip:
 		'''
-		20% chance for enemies to drop loot 4 more times when defeated by you
+		20% chance for non-boss enemies to drop loot 4 more times when defeated by you
 		'Its value is immeasurable'
 		''' */
 }
