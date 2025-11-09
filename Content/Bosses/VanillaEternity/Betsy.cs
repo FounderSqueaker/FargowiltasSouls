@@ -1,3 +1,5 @@
+using Fargowiltas.Common.Configs;
+using FargowiltasSouls.Assets.Textures;
 using FargowiltasSouls.Common.Graphics.Particles;
 using FargowiltasSouls.Common.Utilities;
 using FargowiltasSouls.Content.Bosses.Champions.Will;
@@ -7,6 +9,7 @@ using FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy;
 using FargowiltasSouls.Core.Globals;
 using FargowiltasSouls.Core.NPCMatching;
 using FargowiltasSouls.Core.Systems;
+using Luminance.Core.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -877,21 +880,17 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 if (!p.Alive() || p.type != ModContent.ProjectileType<BetsyLightningAura>())
                 {
                     npc.rotation = 0;
+                    frameY = 0;
                     ResetToIdle(npc);
                     ContactDamage = true;
                     return;
                 }
 
-                npc.direction = (int)npc.HorizontalDirectionTo(p.Center);
-                npc.rotation = MathHelper.PiOver2 - npc.direction * MathHelper.PiOver2 + npc.AngleTo(p.Center);
+                Vector2 heldPos = p.Center;
 
-                float count = 50;
-                for (int i = 0; i < count; i++)
-                {
-                    Dust d = Dust.NewDustPerfect(npc.Center + 200 * Vector2.UnitX.RotatedBy(- MathHelper.PiOver4 + npc.AngleTo(p.Center) + MathHelper.PiOver2 * i / count), DustID.PurpleTorch, Scale: 2f);
-                    d.noGravity = true;
-                    d.velocity *= 0;
-                }
+                wingRate = 1;
+                npc.direction = (int)npc.HorizontalDirectionTo(heldPos);
+                npc.rotation = MathHelper.PiOver2 - npc.direction * MathHelper.PiOver2 + npc.AngleTo(heldPos);
             }
         }
 
@@ -1343,8 +1342,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             }
             if (FargoSoulsUtil.HostCheck)
             {
-                State = (int)Main.rand.NextFromCollection(AvailableStates);
-                AvailableStates.Remove((States)State);
+                State = (int)States.LightningAura; //Main.rand.NextFromCollection(AvailableStates);
+                //AvailableStates.Remove((States)State);
             }
             NetSync(npc);
         }
@@ -1473,7 +1472,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             npc.frame.Y = npc.frame.Height * frameY;
             float invOpac = npc.dontTakeDamage && !InPhase3 && State != (int)States.Spawn ? 0.1f : 1f;
 
-            // evil ass vanilla draw code
+            # region evil ass vanilla draw code
             Texture2D bodyTexture = TextureAssets.Npc[npc.type].Value;
             Vector2 npcToScreen = npc.Center - screenPos;
             Rectangle frame = npc.frame;
@@ -1539,6 +1538,65 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             Main.EntitySpriteDraw(bodyTexture, npcToScreen, frame, color9 * invOpac, rotation8, vector12, 1f, spriteEffects2, 0f);
             Main.EntitySpriteDraw(TextureAssets.GlowMask[226].Value, npcToScreen, frame, color10 * (0.7f + 0.3f * lerpValue), rotation8, vector12, 1f, spriteEffects2, 0f);
             Main.EntitySpriteDraw(frontWingTexture, npcToScreen + spinningpoint.RotatedBy(rotation8), fwFrame, color9 * invOpac, rotation8, origin2, 1f, spriteEffects2, 0f);
+            #endregion
+
+
+            // betsy shield shader
+            if (!npc.Alive() || State != (int)States.LightningAura || SubState != 5 || heldProj == -1 || !Main.projectile[heldProj].Alive())
+            {
+                return false;
+            }
+
+            
+            Vector2 heldPos = Main.projectile[heldProj].Center;
+
+            Vector2 auraPos = npc.Center;
+
+            Color darkColor = Color.Red;
+            Color mediumColor = Color.Orange;
+
+            float widthMult = MathHelper.Clamp(Timer / 60f, 0f, 2f);
+
+            float radius = 0.5f * npc.Distance(heldPos);
+            float visualWidth = widthMult * MathF.Sqrt(2 * 50 * 50);
+            float circumference = radius * MathF.Tau;
+            float fraction = visualWidth / circumference;
+            float arcWidth = fraction * MathF.Tau;
+            arcWidth *= 1.4f;
+
+            Vector2 nearbyPosition = npc.DirectionTo(heldPos);
+            var blackTile = TextureAssets.MagicPixel;
+            var diagonalNoise = FargoAssets.WavyNoise;
+            if (!blackTile.IsLoaded || !diagonalNoise.IsLoaded)
+                return false;
+            var maxOpacity = npc.Opacity;
+
+            ManagedShader innerShader = ShaderManager.GetShader("FargowiltasSouls.IceQueenShield");
+            innerShader.TrySetParameter("colorMult", 7.35f);
+            innerShader.TrySetParameter("time", Main.GlobalTimeWrappedHourly);
+            innerShader.TrySetParameter("radius", radius);
+            innerShader.TrySetParameter("anchorPoint", auraPos);
+            innerShader.TrySetParameter("screenPosition", Main.screenPosition);
+            innerShader.TrySetParameter("screenSize", Main.ScreenSize.ToVector2());
+            innerShader.TrySetParameter("nearbyPosition", nearbyPosition);
+            innerShader.TrySetParameter("maxOpacity", maxOpacity);
+            innerShader.TrySetParameter("darkColor", darkColor.ToVector4());
+            innerShader.TrySetParameter("midColor", mediumColor.ToVector4());
+            innerShader.TrySetParameter("arcWidth", arcWidth);
+
+
+            Main.spriteBatch.GraphicsDevice.Textures[1] = diagonalNoise.Value;
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap, DepthStencilState.None, Main.Rasterizer, innerShader.WrappedEffect, Main.GameViewMatrix.TransformationMatrix);
+            Rectangle rekt = new(Main.screenWidth / 2, Main.screenHeight / 2, Main.screenWidth, Main.screenHeight);
+            Main.spriteBatch.Draw(blackTile.Value, rekt, null, default, 0f, blackTile.Value.Size() * 0.5f, 0, 0f);
+            Main.spriteBatch.End();
+            //Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap, DepthStencilState.None, Main.Rasterizer, outerShader.WrappedEffect, Main.GameViewMatrix.TransformationMatrix);
+            //Main.spriteBatch.Draw(blackTile.Value, rekt, null, default, 0f, blackTile.Value.Size() * 0.5f, 0, 0f);
+            //Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+
             return false;
         }
         #endregion

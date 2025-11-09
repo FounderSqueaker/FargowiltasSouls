@@ -87,16 +87,16 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
                         {
                             float rot = Projectile.AngleTo(betsy.Center) + (safeRot / 2) + Main.rand.NextFloat(0f, MathHelper.TwoPi - (safeRot));
                             float scale = Main._rand.NextFloat(0f, 3f);
-                            new ElectricSpark(Projectile.Center, scale * 25 * Vector2.UnitX.RotatedBy(rot), Color.Purple, scale, 90).Spawn();
+                            new ElectricSpark(Projectile.Center, scale * 25 * Vector2.UnitX.RotatedBy(rot), Color.RoyalBlue, scale, 90).Spawn();
                         }
 
 
                         // toward betsy
-                        for (int i = 0; i < 5; i++)
+                        for (int i = 0; i < 2; i++)
                         {
                             float rot = Projectile.AngleTo(betsy.Center) - (safeRot / 2) + Main.rand.NextFloat(0f, safeRot);
                             float scale = Main._rand.NextFloat(0f, 2f);
-                            new ElectricSpark(Projectile.Center, scale * 6 * Vector2.UnitX.RotatedBy(rot), Color.Purple, scale, 90).Spawn();
+                            new ElectricSpark(Projectile.Center, scale * 6 * Vector2.UnitX.RotatedBy(rot), Color.RoyalBlue, scale, 90).Spawn();
                         }
                     }
                     
@@ -135,7 +135,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
             float ai2 = Projectile.ai[2] > timeToDet ? 2f * (Projectile.ai[2] - timeToDet) : 0;
 
 
-            Color color = Color.Purple;
+            Color color = Color.RoyalBlue;
             Vector2 pos = Projectile.Center;
 
             // aimed to betsy
@@ -145,7 +145,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
             float arcAngle = Projectile.AngleTo(betsy.Center);
 
             var blackTile = TextureAssets.MagicPixel;
-            var noise = FargoAssets.CracksNoise;
+            var noise = FargoAssets.PerlinNoise;
             if (!blackTile.IsLoaded || !noise.IsLoaded)
             {
                 return false;

@@ -63,11 +63,11 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
                 if (timer % 60 == 1)
                 {
                     SoundEngine.PlaySound(FargosSoundRegistry.CoffinHandCharge, Projectile.Center);
-                    FargoSoulsUtil.DustRing(chargeCenter, 30, DustID.PurpleTorch, scale * 3f, scale: scale);
+                    FargoSoulsUtil.DustRing(chargeCenter, 30, DustID.UltraBrightTorch, scale * 3f, scale: scale);
                 }
 
                 float r = Main.rand.NextFloat(0f, MathHelper.TwoPi);
-                new SparkParticle(chargeCenter + 100 * scale * Vector2.UnitX.RotatedBy(r), -10 * scale * Vector2.UnitX.RotatedBy(r), Color.Purple, scale, 10).Spawn();
+                new SparkParticle(chargeCenter + 100 * scale * Vector2.UnitX.RotatedBy(r), -10 * scale * Vector2.UnitX.RotatedBy(r), Color.RoyalBlue, scale, 10).Spawn();
             }
         }
 
@@ -85,11 +85,14 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
 
         public override bool PreDraw(ref Color lightColor)
         {
+            Main.instance.LoadNPC(NPCID.DD2DarkMageT3);
             Texture2D text = TextureAssets.Npc[NPCID.DD2DarkMageT3].Value;
             Rectangle frame = text.Frame(5, 9, 0, Projectile.frame);
             Vector2 origin2 = frame.Size() / 2;
 
-            Main.EntitySpriteDraw(text, Projectile.Center - Main.screenPosition, frame, lightColor, 0, origin2, Projectile.scale, SpriteEffects.None);
+            Color color = Color.Lerp(lightColor, Color.Purple, 0.5f);
+
+            Main.EntitySpriteDraw(text, Projectile.Center - Main.screenPosition, frame, color * 0.7f, 0, origin2, Projectile.scale, SpriteEffects.None);
 
             return false;
         }

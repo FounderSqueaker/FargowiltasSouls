@@ -589,12 +589,33 @@ namespace FargowiltasSouls
                 // emode world gen screen toggle
                 Action<bool> setEmode = (value) => WorldSavingSystem.QueueEnableEternityMode = value;
                 BOBW.Call("AddWorldGenToggle", Name, "Mods.FargoSeeds.WorldGenMenu.HeaderGeneral", "Mods.FargowiltasSouls.UI.Eternity", "Mods.FargowiltasSouls.UI.TogglesEternity", new Color(28, 222, 152), FargoAssets.Filepath + "UI/OncomingMutant", false, setEmode);
+
+                InitializeSoulsGlyphs(fargos);
             }
             catch (Exception e)
             {
                 Logger.Warn("FargowiltasSouls PostSetupContent Error: " + e.StackTrace + e.Message);
             }
         }
+
+        private static readonly List<string> SoulsGlyphs = new()
+        {
+            "EffectToggler",
+            "ActiveSkillMenu"
+        };
+
+
+        public static void InitializeSoulsGlyphs(Mod fargos)
+        {
+            string modName = FargowiltasSouls.Instance.Name;
+            foreach (var g in SoulsGlyphs)
+            {
+                string key = $"{modName}/{g}";
+                string fileName = $"{modName}/Assets/Textures/Glyphs/{g}";
+                fargos.Call("AddGlyph", key, fileName);
+            }
+        }
+
 
         public static void ManageMusicTimestop(bool playMusicAgain)
         {

@@ -1,5 +1,5 @@
-// SoulToggler: "[i:FargowiltasSouls/EffectTogglerItem] Effect Toggles"
-// ActiveSkillMenu: "[i:FargowiltasSouls/ActiveSkillMenuItem] Active Skills"
+// SoulToggler: "[g:FargowiltasSouls/EffectToggler] Effect Toggles"
+// ActiveSkillMenu: "[g:FargowiltasSouls/ActiveSkillMenu] Active Skills"
 Standard: 标准模式
 Eternity: 永恒模式
 Masochist: 受虐模式
