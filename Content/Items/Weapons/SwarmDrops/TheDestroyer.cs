@@ -61,8 +61,8 @@ namespace FargowiltasSouls.Content.Items.Weapons.SwarmDrops
         {
             CreateRecipe()
             .AddIngredient<ElectricWhip>()
-            .AddIngredient<AbomEnergy>(10)
             .AddIngredient<EnergizerDestroy>()
+            .AddIngredient<AbomEnergy>(10)
             .AddTile<CrucibleCosmosSheet>()
             .Register();
         }
