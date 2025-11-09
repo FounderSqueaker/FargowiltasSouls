@@ -1,6 +1,7 @@
 ﻿using FargowiltasSouls.Assets.Textures;
 using FargowiltasSouls.Content.Bosses.VanillaEternity;
 using Luminance.Assets;
+using Luminance.Core.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -37,7 +38,7 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.SwarmDrops
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.FargoSouls().DeletionImmuneRank = 1;
-            Projectile.scale = 1f;
+            Projectile.scale = 2f;
             Projectile.Opacity = 1;
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 20;
@@ -50,6 +51,7 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.SwarmDrops
 
         public override void AI()
         {
+            ScreenShakeSystem.StartShake(3, shakeStrengthDissipationIncrement: 10f / 30);
 
             Projectile.rotation = Projectile.ai[2];
             vfxinterpolant++;
@@ -146,7 +148,7 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.SwarmDrops
             Texture2D flare2 = FargoAssets.Smoke.Value;
             Texture2D flare = FargoAssets.Scorch.Value;
 
-            float smokesize = MathHelper.Lerp(0, 1f, vfxinterpolant * 0.07f);
+            float smokesize = MathHelper.Lerp(0, 1f, vfxinterpolant * 0.07f) * Projectile.scale;
 
             Main.spriteBatch.Draw(flare2, Projectile.Center - Main.screenPosition, null, Color.Gray with { A = 0 } * Projectile.Opacity, Projectile.rotation, flare2.Size() * 0.5f, smokesize, 0, 0f);
             Main.spriteBatch.Draw(flare, Projectile.Center - Main.screenPosition, null, Color.Yellow with { A = 0 } * Projectile.Opacity * 0.75f, Projectile.rotation, flare.Size() * 0.5f, smokesize, 0, 0f);

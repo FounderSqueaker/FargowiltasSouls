@@ -27,14 +27,14 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
-            binaryWriter.Write7BitEncodedInt(TeleDashTimer);
-            binaryWriter.Write7BitEncodedInt(DashCount);
+            binaryWriter.Write(TeleDashTimer);
+            binaryWriter.Write(DashCount);
         }
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-            TeleDashTimer = binaryReader.Read7BitEncodedInt();
-            DashCount = binaryReader.Read7BitEncodedInt();
+            TeleDashTimer = binaryReader.ReadInt32();
+            DashCount = binaryReader.ReadInt32();
         }
 
         public override bool SafePreAI(NPC npc)

@@ -78,9 +78,9 @@ namespace FargowiltasSouls.Content.Items.Weapons.SwarmDrops
         public override void AddRecipes()
         {
             CreateRecipe()
-            .AddIngredient(null, "DragonBreath")
-            .AddIngredient(null, "AbomEnergy", 10)
+            .AddIngredient(null, "DragonBreath")        
             .AddIngredient(ModContent.Find<ModItem>("Fargowiltas", "EnergizerBetsy"))
+            .AddIngredient(null, "AbomEnergy", 10)
             .AddTile(ModContent.Find<ModTile>("Fargowiltas", "CrucibleCosmosSheet"))
 
             .Register();

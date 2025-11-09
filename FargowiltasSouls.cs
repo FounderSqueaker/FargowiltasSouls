@@ -835,7 +835,7 @@ namespace FargowiltasSouls
                     case PacketID.SyncNanoCoreMode:
                         {
                             Player player = Main.player[reader.ReadByte()];
-                            player.GetModPlayer<NanoPlayer>().NanoCoreMode = reader.Read7BitEncodedInt();
+                            player.GetModPlayer<NanoPlayer>().NanoCoreMode = reader.ReadInt32();
                         }
                         break;
 
@@ -1031,7 +1031,7 @@ namespace FargowiltasSouls
                     case PacketID.SyncSoulVortexHit:
                         {
                             NPC npc = FargoSoulsUtil.NPCExists(reader.ReadByte());
-                            int ai2 = reader.Read7BitEncodedInt();
+                            int ai2 = reader.ReadInt32();
                             float ai3 = reader.ReadSingle();
                             Vector2 velocity = reader.ReadVector2();
                             if (npc != null && npc.active && npc.ModNPC is SoulVortex && Main.netMode == NetmodeID.Server)

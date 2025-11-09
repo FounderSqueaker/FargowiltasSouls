@@ -39,20 +39,20 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(AttackTimer);
-            binaryWriter.Write7BitEncodedInt(AttackCounter);
-            binaryWriter.Write7BitEncodedInt(P2SwordsAttackCounter);
-            binaryWriter.Write7BitEncodedInt(DashCounter);
+            binaryWriter.Write(AttackTimer);
+            binaryWriter.Write(AttackCounter);
+            binaryWriter.Write(P2SwordsAttackCounter);
+            binaryWriter.Write(DashCounter);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            AttackTimer = binaryReader.Read7BitEncodedInt();
-            AttackCounter = binaryReader.Read7BitEncodedInt();
-            P2SwordsAttackCounter = binaryReader.Read7BitEncodedInt();
-            DashCounter = binaryReader.Read7BitEncodedInt();
+            AttackTimer = binaryReader.ReadInt32();
+            AttackCounter = binaryReader.ReadInt32();
+            P2SwordsAttackCounter = binaryReader.ReadInt32();
+            DashCounter = binaryReader.ReadInt32();
         }
 
         public override void SetDefaults(NPC npc)

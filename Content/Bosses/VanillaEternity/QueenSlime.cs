@@ -17,10 +17,12 @@ using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
+using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using static tModPorter.ProgressUpdate;
@@ -74,29 +76,47 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(StompTimer);
-            binaryWriter.Write7BitEncodedInt(StompCounter);
+            binaryWriter.Write(StompTimer);
+            binaryWriter.Write(StompCounter);
+
             binaryWriter.Write(StompVelocityX);
             binaryWriter.Write(StompVelocityY);
+
             binaryWriter.Write(WingFrameTimer);
             binaryWriter.Write(WingFrame);
-            for (int i = 0; i < CustomAI.Length; i++)
-                binaryWriter.Write(CustomAI[i]);
-        }
+            binaryWriter.Write(HopGravityTimer);
+
+            binaryWriter.Write(State);
+            binaryWriter.Write(Timer);
+            binaryWriter.Write(NoContactDamage);
+            binaryWriter.Write(Split);
+            binaryWriter.Write(AI0);
+            binaryWriter.Write(AI1);
+            binaryWriter.Write(PreviousState);
+    }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            StompTimer = binaryReader.Read7BitEncodedInt();
-            StompCounter = binaryReader.Read7BitEncodedInt();
+            StompTimer = binaryReader.ReadInt32();
+            StompCounter = binaryReader.ReadInt32();
+
             StompVelocityX = binaryReader.ReadSingle();
             StompVelocityY = binaryReader.ReadSingle();
-            WingFrameTimer = binaryReader.Read7BitEncodedInt();
-            WingFrame = binaryReader.Read7BitEncodedInt();
-            for (int i = 0; i < CustomAI.Length; i++)
-                CustomAI[i] = binaryReader.ReadSingle();
-        }
+
+            WingFrameTimer = binaryReader.ReadInt32();
+            WingFrame = binaryReader.ReadInt32();
+            HopGravityTimer = binaryReader.ReadInt32();
+
+            State = binaryReader.ReadSingle();
+            Timer = binaryReader.ReadSingle();
+            NoContactDamage = binaryReader.ReadSingle();
+            Split = binaryReader.ReadSingle();
+            AI0 = binaryReader.ReadSingle();
+            AI1 = binaryReader.ReadSingle();
+            PreviousState = binaryReader.ReadSingle();
+    }
 
         public override void SetDefaults(NPC npc)
         {
@@ -112,14 +132,13 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         public NPC NPC = null;
         public Player Target => Main.player[NPC.target];
 
-        public float[] CustomAI = new float[7];
-        public ref float State => ref CustomAI[0];
-        public ref float Timer => ref CustomAI[1];
-        public ref float NoContactDamage => ref CustomAI[2];
-        public ref float Split => ref CustomAI[3];
-        public ref float AI0 => ref CustomAI[4];
-        public ref float AI1 => ref CustomAI[5];
-        public ref float PreviousState => ref CustomAI[6];
+        public float State;
+        public float Timer;
+        public float NoContactDamage;
+        public float Split;
+        public float AI0;
+        public float AI1;
+        public float PreviousState;
 
         public static int MaxSubjects => 9;
 
@@ -129,6 +148,11 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             NPC = npc;
             EModeGlobalNPC.queenSlimeBoss = npc.whoAmI;
+
+            if (Main.netMode == NetmodeID.Server)
+                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(State.ToString()), Color.White);
+            else
+                Main.NewText("client: " + State.ToString());
 
             // despawn and targetting
             int num4 = 3000;
@@ -1044,40 +1068,49 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             {
                 PreviousState = State;
                 State = (int)States.Hops;
-                ResetState();
             }
             else
             {
-                if (AvailableStates.Count == 0)
+                if (FargoSoulsUtil.HostCheck)
                 {
-                    List<States> states = [
-                        States.MinionChargeDirect, 
+                    if (AvailableStates.Count == 0)
+                    {
+                        List<States> states = [
+                            States.MinionChargeDirect, 
                         //States.MinionChargeSide, 
                         States.Artillery,
                         States.FlightExplosions,
                         States.SpikeRain
-                        ];
-                    AvailableStates.AddRange(states);
+                            ];
+                        AvailableStates.AddRange(states);
+                    }
+                    AvailableStates.Remove((States)State);
+                    State = (int)Main.rand.NextFromCollection(AvailableStates);
+                    AvailableStates.Remove((States)State);
                 }
-                AvailableStates.Remove((States)State);
-                State = (int)Main.rand.NextFromCollection(AvailableStates);
-                AvailableStates.Remove((States)State);
-                NetSync(NPC);
-                NPC.netUpdate = true;
-                ResetState();
+
             }
+
+            NetSync(NPC);
+            NPC.netUpdate = true;
+            ResetState();
             CheckStompy();
         }
         public void ChooseAttackP1()
         {
             ResetState();
-            List<States> states;
-            if (PreviousState != (int)States.MinionSlam && PreviousState != (int)States.QuickHops)
-                states = [States.MinionSlam, States.QuickHops];
-            else
-                states = [States.NormalSlam];
-            State = (int)Main.rand.NextFromCollection(states);
+            if (FargoSoulsUtil.HostCheck)
+            {
+                List<States> states;
+                if (PreviousState != (int)States.MinionSlam && PreviousState != (int)States.QuickHops)
+                    states = [States.MinionSlam, States.QuickHops];
+                else
+                    states = [States.NormalSlam];
+                State = (int)Main.rand.NextFromCollection(states);
+            }
+
             NetSync(NPC);
+            NPC.netUpdate = true;
 
             // debug
             //State = (int)States.QuickHops;

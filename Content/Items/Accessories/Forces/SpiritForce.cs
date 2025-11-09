@@ -74,12 +74,11 @@ namespace FargowiltasSouls.Content.Items.Accessories.Forces
         public override void PostUpdateEquips(Player player)
         {
             FargoSoulsPlayer modPlayer = player.FargoSouls();
-            if (modPlayer.ForbiddenCD > 0 && !player.HasEffectEnchant<ForbiddenEffect>())
+            if (!player.HasEffectEnchant<ForbiddenEffect>() && player.IncrementCooldownTowards<ForbiddenEffect>(-1, 0))
             {
-                modPlayer.ForbiddenCD--;
                 if (Main.myPlayer == player.whoAmI)
                     CooldownBarManager.Activate("ForbiddenTornadoCD", FargoAssets.GetTexture2D("Content/Items/Accessories/Enchantments", "ForbiddenEnchant").Value, new(231, 178, 28),
-                        () => (float)modPlayer.ForbiddenCD / (60 * 10), activeFunction: Main.LocalPlayer.HasEffect<SpiritTornadoEffect>, displayAtFull: false);
+                        () => Main.LocalPlayer.GetCooldown<ForbiddenEffect>() / (60 * 10), activeFunction: Main.LocalPlayer.HasEffect<SpiritTornadoEffect>, displayAtFull: false);
             }
         }
         public override void ActiveSkillJustPressed(Player player, bool stunned)
@@ -96,7 +95,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Forces
         }
         public static void CommandSpiritStorm(Player Player)
         {
-            if (Player.FargoSouls().ForbiddenCD > 0)
+            if (Player.GetCooldown<ForbiddenEffect>() > 0)
                 return;
             for (int i = 0; i < Main.maxProjectiles; i++)
             {

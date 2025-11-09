@@ -40,12 +40,12 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
 
         public override void SendExtraAI(BinaryWriter writer)
         {
-            writer.Write7BitEncodedInt(Projectile.timeLeft);
+            writer.Write(Projectile.timeLeft);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
-            Projectile.timeLeft = reader.Read7BitEncodedInt();
+            Projectile.timeLeft = reader.ReadInt32();
         }
 
         public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)

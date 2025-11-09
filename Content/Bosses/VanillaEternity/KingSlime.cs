@@ -63,9 +63,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         };
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
-            binaryWriter.Write7BitEncodedInt(DeathTimer);
-            binaryWriter.Write7BitEncodedInt(TeleportCD);
-            binaryWriter.Write7BitEncodedInt(ExplosionCD);
+            binaryWriter.Write(DeathTimer);
+            binaryWriter.Write(TeleportCD);
+            binaryWriter.Write(ExplosionCD);
             for (int i = 0; i < CustomAI.Length; i++)
             {
                 binaryWriter.Write(CustomAI[i]);
@@ -74,9 +74,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         }
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
-            DeathTimer = binaryReader.Read7BitEncodedInt();
-            TeleportCD = binaryReader.Read7BitEncodedInt();
-            ExplosionCD = binaryReader.Read7BitEncodedInt();
+            DeathTimer = binaryReader.ReadInt32();
+            TeleportCD = binaryReader.ReadInt32();
+            ExplosionCD = binaryReader.ReadInt32();
             for (int i = 0; i < CustomAI.Length; i++)
             {
                 CustomAI[i] = binaryReader.ReadSingle();

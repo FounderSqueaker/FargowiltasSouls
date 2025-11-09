@@ -45,10 +45,10 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(BerserkSpeedupTimer);
-            binaryWriter.Write7BitEncodedInt(TeleportTimer);
-            binaryWriter.Write7BitEncodedInt(WalkingSpeedUpTimer);
-            binaryWriter.Write7BitEncodedInt(HandsCooldown);
+            binaryWriter.Write(BerserkSpeedupTimer);
+            binaryWriter.Write(TeleportTimer);
+            binaryWriter.Write(WalkingSpeedUpTimer);
+            binaryWriter.Write(HandsCooldown);
             bitWriter.WriteBit(EnteredPhase2);
             bitWriter.WriteBit(EnteredPhase3);
             bitWriter.WriteBit(DoLaserAttack);
@@ -60,10 +60,10 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            BerserkSpeedupTimer = binaryReader.Read7BitEncodedInt();
-            TeleportTimer = binaryReader.Read7BitEncodedInt();
-            WalkingSpeedUpTimer = binaryReader.Read7BitEncodedInt();
-            HandsCooldown = binaryReader.Read7BitEncodedInt();
+            BerserkSpeedupTimer = binaryReader.ReadInt32();
+            TeleportTimer = binaryReader.ReadInt32();
+            WalkingSpeedUpTimer = binaryReader.ReadInt32();
+            HandsCooldown = binaryReader.ReadInt32();
             EnteredPhase2 = bitReader.ReadBit();
             EnteredPhase3 = bitReader.ReadBit();
             DoLaserAttack = bitReader.ReadBit();

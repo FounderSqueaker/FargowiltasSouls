@@ -1,4 +1,5 @@
 ﻿using Fargowiltas.Content.Items.Tiles;
+using FargowiltasSouls.Assets.Sounds;
 using FargowiltasSouls.Content.Buffs.Souls;
 using FargowiltasSouls.Content.Items.Accessories.Forces;
 using FargowiltasSouls.Content.Projectiles.Accessories.Souls;
@@ -7,6 +8,7 @@ using FargowiltasSouls.Core.Toggler.Content;
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -58,6 +60,8 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
         public override Header ToggleHeader => null;
         public static void FossilRevive(Player player)
         {
+            if (!Main.dedServ)
+                SoundEngine.PlaySound(FargosSoundRegistry.FossilRevive, player.Center);
             if (player.HasEffect<SpectreEffect>())
                 return;
 

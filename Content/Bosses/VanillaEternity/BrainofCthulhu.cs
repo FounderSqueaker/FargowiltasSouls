@@ -49,10 +49,10 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(ConfusionTimer);
-            binaryWriter.Write7BitEncodedInt(ConfusionIdleTimer);
-            binaryWriter.Write7BitEncodedInt(IllusionTimer);
-            binaryWriter.Write7BitEncodedInt(ClonefadeDashTimer);
+            binaryWriter.Write(ConfusionTimer);
+            binaryWriter.Write(ConfusionIdleTimer);
+            binaryWriter.Write(IllusionTimer);
+            binaryWriter.Write(ClonefadeDashTimer);
             binaryWriter.Write(CloneFade);
             bitWriter.WriteBit(EnteredPhase2);
             bitWriter.WriteBit(KnockbackImmune);
@@ -62,10 +62,10 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            ConfusionTimer = binaryReader.Read7BitEncodedInt();
-            ConfusionIdleTimer = binaryReader.Read7BitEncodedInt();
-            IllusionTimer = binaryReader.Read7BitEncodedInt();
-            ClonefadeDashTimer = binaryReader.Read7BitEncodedInt();
+            ConfusionTimer = binaryReader.ReadInt32();
+            ConfusionIdleTimer = binaryReader.ReadInt32();
+            IllusionTimer = binaryReader.ReadInt32();
+            ClonefadeDashTimer = binaryReader.ReadInt32();
             CloneFade = binaryReader.ReadSingle();
             EnteredPhase2 = bitReader.ReadBit();
             KnockbackImmune = bitReader.ReadBit();
@@ -536,14 +536,14 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(IchorAttackTimer);
+            binaryWriter.Write(IchorAttackTimer);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            IchorAttackTimer = binaryReader.Read7BitEncodedInt();
+            IchorAttackTimer = binaryReader.ReadInt32();
         }
 
         public override void SetDefaults(NPC npc)

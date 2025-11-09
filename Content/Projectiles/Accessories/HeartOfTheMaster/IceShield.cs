@@ -170,9 +170,9 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.Souls
         public override void OnKill(int timeLeft)
         {
             Player player = Main.player[Projectile.owner];
-            player.FargoSouls().IceQueenCrownCD = IceShieldEffect.CD;
+            player.SetCooldown<IceShieldEffect>(IceShieldEffect.CD);
             if (player.whoAmI == Main.myPlayer)
-                CooldownBarManager.Activate("IceQueenCooldown", FargoAssets.GetTexture2D("Content/Items/Accessories/Eternity", "IceQueensShield").Value, Color.LightBlue, () => 1f - (float)Main.LocalPlayer.FargoSouls().IceQueenCrownCD / IceShieldEffect.CD, activeFunction: player.HasEffect<IceShieldEffect>);
+                CooldownBarManager.Activate("IceQueenCooldown", FargoAssets.GetTexture2D("Content/Items/Accessories/Eternity", "IceQueensShield").Value, Color.LightBlue, () => 1f - Main.LocalPlayer.GetCooldown<IceShieldEffect>() / IceShieldEffect.CD, activeFunction: player.HasEffect<IceShieldEffect>);
         }
 
         public override bool? CanDamage()

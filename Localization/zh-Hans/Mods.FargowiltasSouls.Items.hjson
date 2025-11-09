@@ -3977,3 +3977,18 @@ DraconicCrystal: {
 		The event will instantly begin on the strongest tier at Wave 7
 		''' */
 }
+
+SoulGuyBody: {
+	// DisplayName: T Shirt
+	// Tooltip: "[i:FargowiltasSouls/Masochist]"
+}
+
+SoulGuyHead: {
+	// DisplayName: W Mask
+	// Tooltip: "[i:FargowiltasSouls/Masochist]"
+}
+
+SoulGuyLegs: {
+	// DisplayName: F Legs
+	// Tooltip: "[i:FargowiltasSouls/Masochist]"
+}

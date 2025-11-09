@@ -441,7 +441,7 @@ PlatinumEnchant: {
 	DisplayName: Platinum Enchantment
 	Tooltip:
 		'''
-		20% chance for enemies to drop loot 4 more times when defeated by you
+		20% chance for non-boss enemies to drop loot 4 more times when defeated by you
 		'Its value is immeasurable'
 		'''
 }
@@ -3836,4 +3836,19 @@ DraconicCrystal: {
 		Place in the Eternia Crystal Stand to summon Etheria's portals
 		The event will instantly begin on the strongest tier at Wave 7
 		'''
+}
+
+SoulGuyBody: {
+	DisplayName: T Shirt
+	Tooltip: "[i:FargowiltasSouls/Masochist]"
+}
+
+SoulGuyHead: {
+	DisplayName: W Mask
+	Tooltip: "[i:FargowiltasSouls/Masochist]"
+}
+
+SoulGuyLegs: {
+	DisplayName: F Legs
+	Tooltip: "[i:FargowiltasSouls/Masochist]"
 }

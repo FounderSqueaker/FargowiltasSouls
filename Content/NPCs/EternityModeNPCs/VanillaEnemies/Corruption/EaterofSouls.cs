@@ -31,13 +31,13 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Corrupti
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
-            binaryWriter.Write7BitEncodedInt(AttackTimer);
+            binaryWriter.Write(AttackTimer);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-            AttackTimer = binaryReader.Read7BitEncodedInt();
+            AttackTimer = binaryReader.ReadInt32();
         }
 
         public override NPCMatcher CreateMatcher() =>

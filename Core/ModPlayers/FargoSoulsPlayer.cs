@@ -646,7 +646,7 @@ namespace FargowiltasSouls.Core.ModPlayers
 
 
             DeviGrazeBonus = 0;
-            MutantEyeCD = 60;
+            Player.SetCooldown<BombKeyEffect>(60);
 
             MythrilTimer = 0;
             MythrilDelay = 20;

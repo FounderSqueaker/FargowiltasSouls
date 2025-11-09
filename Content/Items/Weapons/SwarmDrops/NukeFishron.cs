@@ -22,12 +22,12 @@ namespace FargowiltasSouls.Content.Items.Weapons.SwarmDrops
 
         public override void SetDefaults()
         {
-            Item.damage = 1000;
+            Item.damage = 3000;
             Item.DamageType = DamageClass.Ranged;
             Item.width = 24;
             Item.height = 24;
-            Item.useTime = 40;
-            Item.useAnimation = 40;
+            Item.useTime = 120;
+            Item.useAnimation = 120;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;
             Item.knockBack = 7.7f;
@@ -67,8 +67,8 @@ namespace FargowiltasSouls.Content.Items.Weapons.SwarmDrops
         {
             CreateRecipe()
             .AddIngredient(ModContent.ItemType<FishStick>())
-            .AddIngredient(ModContent.ItemType<AbomEnergy>(), 10)
             .AddIngredient(ModContent.Find<ModItem>("Fargowiltas", "EnergizerFish"))
+            .AddIngredient(ModContent.ItemType<AbomEnergy>(), 10)
             .AddTile(ModContent.Find<ModTile>("Fargowiltas", "CrucibleCosmosSheet"))
 
             .Register();

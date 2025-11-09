@@ -3879,3 +3879,18 @@ DraconicCrystal: {
 		Нашествие начнётся сразу на 7-й волне наивысшего доступного уровня
 		'''
 }
+
+SoulGuyBody: {
+	// DisplayName: T Shirt
+	// Tooltip: "[i:FargowiltasSouls/Masochist]"
+}
+
+SoulGuyHead: {
+	// DisplayName: W Mask
+	// Tooltip: "[i:FargowiltasSouls/Masochist]"
+}
+
+SoulGuyLegs: {
+	// DisplayName: F Legs
+	// Tooltip: "[i:FargowiltasSouls/Masochist]"
+}

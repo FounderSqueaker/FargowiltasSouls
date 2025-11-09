@@ -149,8 +149,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt((byte)VulnerabilityState);
-            binaryWriter.Write7BitEncodedInt(AttackMemory);
+            binaryWriter.Write((byte)VulnerabilityState);
+            binaryWriter.Write(AttackMemory);
             binaryWriter.Write(VulnerabilityTimer);
             binaryWriter.Write(AttackTimer);
             bitWriter.WriteBit(EnteredPhase2);
@@ -161,8 +161,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            VulnerabilityState = (ClassState)binaryReader.Read7BitEncodedInt();
-            AttackMemory = binaryReader.Read7BitEncodedInt();
+            VulnerabilityState = (ClassState)binaryReader.ReadInt32();
+            AttackMemory = binaryReader.ReadInt32();
             VulnerabilityTimer = binaryReader.ReadSingle();
             AttackTimer = binaryReader.ReadSingle();
             EnteredPhase2 = bitReader.ReadBit();
@@ -693,8 +693,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(OnSpawnCounter);
-            binaryWriter.Write7BitEncodedInt(RitualProj);
+            binaryWriter.Write(OnSpawnCounter);
+            binaryWriter.Write(RitualProj);
             bitWriter.WriteBit(SpawnSynchronized);
             bitWriter.WriteBit(SlowMode);
         }
@@ -703,8 +703,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            OnSpawnCounter = binaryReader.Read7BitEncodedInt();
-            RitualProj = binaryReader.Read7BitEncodedInt();
+            OnSpawnCounter = binaryReader.ReadInt32();
+            RitualProj = binaryReader.ReadInt32();
             SpawnSynchronized = bitReader.ReadBit();
             SlowMode = bitReader.ReadBit();
         }

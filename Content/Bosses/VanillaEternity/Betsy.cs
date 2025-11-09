@@ -70,11 +70,11 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             bitWriter.WriteBit(InPhase2);
             bitWriter.WriteBit(InPhase3);
 
-            binaryWriter.Write7BitEncodedInt(State);
-            binaryWriter.Write7BitEncodedInt(PreviousState);
-            binaryWriter.Write7BitEncodedInt(SubState);
-            binaryWriter.Write7BitEncodedInt(Timer);
-            binaryWriter.Write7BitEncodedInt(heldProj);
+            binaryWriter.Write(State);
+            binaryWriter.Write(PreviousState);
+            binaryWriter.Write(SubState);
+            binaryWriter.Write(Timer);
+            binaryWriter.Write(heldProj);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
@@ -84,11 +84,11 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             InPhase2 = bitReader.ReadBit();
             InPhase3 = bitReader.ReadBit();
 
-            State = binaryReader.Read7BitEncodedInt();
-            PreviousState = binaryReader.Read7BitEncodedInt();
-            SubState = binaryReader.Read7BitEncodedInt();
-            Timer = binaryReader.Read7BitEncodedInt();
-            heldProj = binaryReader.Read7BitEncodedInt();
+            State = binaryReader.ReadInt32();
+            PreviousState = binaryReader.ReadInt32();
+            SubState = binaryReader.ReadInt32();
+            Timer = binaryReader.ReadInt32();
+            heldProj = binaryReader.ReadInt32();
         }
 
         public override void SetDefaults(NPC npc)

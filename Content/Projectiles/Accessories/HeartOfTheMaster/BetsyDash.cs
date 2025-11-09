@@ -1,4 +1,6 @@
 using FargowiltasSouls.Assets.Textures;
+using FargowiltasSouls.Content.Items.Accessories.Eternity;
+using FargowiltasSouls.Core.AccessoryEffectSystem;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -114,8 +116,8 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.HeartOfTheMaster
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileID.SolarWhipSwordExplosion, 0, 0f, Main.myPlayer);
 
                 int reducedCooldown = LumUtils.SecondsToFrames(3.25f);
-                if (Main.player[Projectile.owner].FargoSouls().SpecialDashCD > reducedCooldown)
-                    Main.player[Projectile.owner].FargoSouls().SpecialDashCD = reducedCooldown;
+                if (Main.player[Projectile.owner].GetCooldown<SpecialDashEffect>() > reducedCooldown)
+                    Main.player[Projectile.owner].SetCooldown<SpecialDashEffect>(reducedCooldown);
 
             }
         }

@@ -24,13 +24,13 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
-            binaryWriter.Write7BitEncodedInt(projCount);
+            binaryWriter.Write(projCount);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-            projCount = binaryReader.Read7BitEncodedInt();
+            projCount = binaryReader.ReadInt32();
         }
 
         public override void AI(NPC npc)

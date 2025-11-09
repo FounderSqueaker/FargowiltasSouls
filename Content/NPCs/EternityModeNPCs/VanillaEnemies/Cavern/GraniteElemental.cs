@@ -27,15 +27,15 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
-            binaryWriter.Write7BitEncodedInt(AttackTimer);
-            binaryWriter.Write7BitEncodedInt(DamageStored);
+            binaryWriter.Write(AttackTimer);
+            binaryWriter.Write(DamageStored);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-            AttackTimer = binaryReader.Read7BitEncodedInt();
-            DamageStored = binaryReader.Read7BitEncodedInt();
+            AttackTimer = binaryReader.ReadInt32();
+            DamageStored = binaryReader.ReadInt32();
         }
 
         public override void AI(NPC npc)

@@ -95,7 +95,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.CustomEnemies.Desert
             {
                 ModPacket packet = FargowiltasSouls.Instance.GetPacket();
                 packet.Write((byte)FargowiltasSouls.PacketID.SyncSoulVortexHit);
-                packet.Write7BitEncodedInt((int)NPC.ai[2]);
+                packet.Write((int)NPC.ai[2]);
                 packet.Write(NPC.ai[3]);
                 packet.WriteVector2(NPC.velocity);
                 packet.Send();
@@ -115,7 +115,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.CustomEnemies.Desert
             {
                 ModPacket packet = FargowiltasSouls.Instance.GetPacket();
                 packet.Write((byte)FargowiltasSouls.PacketID.SyncSoulVortexHit);
-                packet.Write7BitEncodedInt((int)NPC.ai[2]);
+                packet.Write((int)NPC.ai[2]);
                 packet.Write(NPC.ai[3]);
                 packet.WriteVector2(NPC.velocity);
                 packet.Send();

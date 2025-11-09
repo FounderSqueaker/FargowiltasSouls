@@ -47,11 +47,9 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
             if (!hideVisual)
                 fargoPlayer.MutantEyeVisual = true;
 
-            if (fargoPlayer.MutantEyeCD > 0)
+            if (player.IncrementCooldownTowards<BombKeyEffect>(-1, 0))
             {
-                fargoPlayer.MutantEyeCD--;
-
-                if (fargoPlayer.MutantEyeCD == 0)
+                if (player.GetCooldown<BombKeyEffect>() == 0)
                 {
                     SoundEngine.PlaySound(SoundID.Item4, player.Center);
 
@@ -76,7 +74,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
                 }
             }
 
-            if (player.whoAmI == Main.myPlayer && fargoPlayer.MutantEyeVisual && fargoPlayer.MutantEyeCD <= 0
+            if (player.whoAmI == Main.myPlayer && fargoPlayer.MutantEyeVisual && player.GetCooldown<BombKeyEffect>() <= 0
                 && player.ownedProjectileCounts[ModContent.ProjectileType<PhantasmalRing2>()] <= 0)
             {
                 Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<PhantasmalRing2>(), 0, 0f, Main.myPlayer);

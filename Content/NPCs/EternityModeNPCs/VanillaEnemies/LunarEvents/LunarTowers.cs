@@ -56,8 +56,8 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.LunarEve
             {
                 return;
             }
-            binaryWriter.Write7BitEncodedInt(AttackTimer);
-            binaryWriter.Write7BitEncodedInt(Attack);
+            binaryWriter.Write(AttackTimer);
+            binaryWriter.Write(Attack);
             bitWriter.WriteBit(SpawnedDuringLunarEvent);
         }
 
@@ -68,8 +68,8 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.LunarEve
             {
                 return;
             }
-            AttackTimer = binaryReader.Read7BitEncodedInt();
-            Attack = binaryReader.Read7BitEncodedInt();
+            AttackTimer = binaryReader.ReadInt32();
+            Attack = binaryReader.ReadInt32();
             SpawnedDuringLunarEvent = bitReader.ReadBit();
         }
 

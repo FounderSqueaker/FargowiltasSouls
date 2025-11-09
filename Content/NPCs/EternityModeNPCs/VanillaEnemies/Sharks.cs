@@ -30,18 +30,18 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(JumpTimer);
-            binaryWriter.Write7BitEncodedInt(BleedCheckTimer);
-            binaryWriter.Write7BitEncodedInt(BleedCounter);
+            binaryWriter.Write(JumpTimer);
+            binaryWriter.Write(BleedCheckTimer);
+            binaryWriter.Write(BleedCounter);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            JumpTimer = binaryReader.Read7BitEncodedInt();
-            BleedCheckTimer = binaryReader.Read7BitEncodedInt();
-            BleedCounter = binaryReader.Read7BitEncodedInt();
+            JumpTimer = binaryReader.ReadInt32();
+            BleedCheckTimer = binaryReader.ReadInt32();
+            BleedCounter = binaryReader.ReadInt32();
         }
 
         public override void SetDefaults(NPC npc)

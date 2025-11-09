@@ -30,8 +30,8 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(AttackCycleTimer);
-            binaryWriter.Write7BitEncodedInt(IndividualAttackTimer);
+            binaryWriter.Write(AttackCycleTimer);
+            binaryWriter.Write(IndividualAttackTimer);
             bitWriter.WriteBit(DoStompAttack);
             bitWriter.WriteBit(CanDoAttack);
         }
@@ -40,8 +40,8 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            AttackCycleTimer = binaryReader.Read7BitEncodedInt();
-            IndividualAttackTimer = binaryReader.Read7BitEncodedInt();
+            AttackCycleTimer = binaryReader.ReadInt32();
+            IndividualAttackTimer = binaryReader.ReadInt32();
             DoStompAttack = bitReader.ReadBit();
             CanDoAttack = bitReader.ReadBit();
         }

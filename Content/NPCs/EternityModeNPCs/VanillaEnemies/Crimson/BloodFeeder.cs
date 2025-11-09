@@ -21,7 +21,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Crimson
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(TrueMaxLife);
+            binaryWriter.Write(TrueMaxLife);
             binaryWriter.Write(DamageMultiplier);
         }
 
@@ -29,7 +29,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Crimson
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            TrueMaxLife = binaryReader.Read7BitEncodedInt();
+            TrueMaxLife = binaryReader.ReadInt32();
             DamageMultiplier = binaryReader.ReadSingle();
         }
 

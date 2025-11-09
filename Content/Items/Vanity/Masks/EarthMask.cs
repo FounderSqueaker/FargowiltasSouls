@@ -3,14 +3,14 @@ using Terraria.GameContent.Creative;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace FargowiltasSouls.Content.Items.Armor.Masks
+namespace FargowiltasSouls.Content.Items.Vanity.Masks
 {
     [AutoloadEquip(EquipType.Head)]
-    public class LifelightMask : ModItem
+    public class EarthMask : ModItem
     {
-        public override string Texture => FargoAssets.GetAssetString("Content/Items/Armor/Masks", Name);
+        public override string Texture => FargoAssets.GetAssetString("Content/Items/Vanity/Masks", Name);
         public override void SetStaticDefaults()
-        {           
+        {     
             CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
         }
 

@@ -15,6 +15,7 @@ using FargowiltasSouls.Content.Items.Armor.Styx;
 using FargowiltasSouls.Content.Items.Consumables;
 using FargowiltasSouls.Content.Items.Weapons.Challengers;
 using FargowiltasSouls.Content.Items.Weapons.SwarmDrops;
+using FargowiltasSouls.Content.Projectiles.Accessories.HeartOfTheMaster;
 using FargowiltasSouls.Content.Projectiles.Accessories.Souls;
 using FargowiltasSouls.Core.AccessoryEffectSystem;
 using FargowiltasSouls.Core.Globals;
@@ -287,8 +288,7 @@ namespace FargowiltasSouls.Core.ModPlayers
 
             if (!Player.HasEffect<TimsInspectEffect>())
                 Player.FargoSouls().TimsInspect = false;
-            if (Player.FargoSouls().TimsInspectCD > 0)
-                Player.FargoSouls().TimsInspectCD--;
+            Player.IncrementCooldownTowards<TimsInspectEffect>(-1, 0);
 
             Player.wingTimeMax = (int)(Player.wingTimeMax * WingTimeModifier);
 
@@ -353,9 +353,8 @@ namespace FargowiltasSouls.Core.ModPlayers
 
             if (BetsysHeartItem != null || QueenStingerItem != null || Player.HasEffect<SupremeDashEffect>())
             {
-                if (SpecialDashCD > 0)
-                    SpecialDashCD--;
-                if (SpecialDashCD == 1)
+                Player.IncrementCooldownTowards<SpecialDashEffect>(-1, 0);
+                if (Player.GetCooldown<SpecialDashEffect>() == 1)
                 {
                     SoundEngine.PlaySound(SoundID.Item9, Player.Center);
                     for (int i = 0; i < 10; i++)
@@ -382,8 +381,7 @@ namespace FargowiltasSouls.Core.ModPlayers
             }
             else
             {
-                if (SpecialDashCD > 0 && SpecialDashCD < LumUtils.SecondsToFrames(7))
-                    SpecialDashCD++;
+                Player.IncrementCooldownTowards<SpecialDashEffect>(1, LumUtils.SecondsToFrames(7));
             }
 
             if (SlimyShieldItem != null || LihzahrdTreasureBoxItem != null)
@@ -901,16 +899,6 @@ namespace FargowiltasSouls.Core.ModPlayers
 
             if (Player.HasEffect<CelestialRuneAttacks>() && AdditionalAttacksTimer > 0)
                 AdditionalAttacksTimer--;
-
-            if (Player.HasEffect<SpookyEffect>() && SpookyCD > 0)
-            {
-                SpookyCD--;
-                if (SpookyCD == 1)
-                    SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath with {Volume = 2f}, Player.Center);
-            }
-
-            if (Player.HasEffect<RemoteLightningEffect>() && RemoteCD > 0)
-                RemoteCD--;
 
             StatLifePrevious = Player.statLife;
         }

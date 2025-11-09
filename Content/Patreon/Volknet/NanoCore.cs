@@ -189,7 +189,7 @@ namespace FargowiltasSouls.Content.Patreon.Volknet
 
                 packet.Write((byte)FargowiltasSouls.PacketID.SyncNanoCoreMode);
                 packet.Write((byte)Player.whoAmI);
-                packet.Write7BitEncodedInt(NanoCoreMode);
+                packet.Write(NanoCoreMode);
 
                 packet.Send(toWho, fromWho);
             }

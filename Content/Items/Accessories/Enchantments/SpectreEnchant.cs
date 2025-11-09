@@ -68,8 +68,9 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
 
         public override Header ToggleHeader => null;
         public static void SpectreRevive(Player player)
-        {
-            SoundEngine.PlaySound(FargosSoundRegistry.SpectreRevive, player.Center);
+        {   
+            if (!Main.dedServ)
+                SoundEngine.PlaySound(FargosSoundRegistry.SpectreRevive, player.Center);
             FargoSoulsPlayer modPlayer = player.FargoSouls();
             static Projectile[] XWay(int num, IEntitySource spawnSource, Vector2 pos, int type, float speed, int damage, float knockback, int player)
             {

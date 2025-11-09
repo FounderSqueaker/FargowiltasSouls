@@ -22,12 +22,12 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
-            binaryWriter.Write7BitEncodedInt(HangState);
+            binaryWriter.Write(HangState);
         }
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-            HangState = binaryReader.Read7BitEncodedInt();
+            HangState = binaryReader.ReadInt32();
         }
 
         public override void OnFirstTick(NPC npc)

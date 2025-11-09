@@ -64,12 +64,12 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(AttackModeTimer);
-            binaryWriter.Write7BitEncodedInt(CoilRadius);
-            binaryWriter.Write7BitEncodedInt(LaserTimer);
-            binaryWriter.Write7BitEncodedInt(SecondaryAttackTimer);
-            binaryWriter.Write7BitEncodedInt(RotationDirection);
-            binaryWriter.Write7BitEncodedInt(LightshowSlowTimer);
+            binaryWriter.Write(AttackModeTimer);
+            binaryWriter.Write(CoilRadius);
+            binaryWriter.Write(LaserTimer);
+            binaryWriter.Write(SecondaryAttackTimer);
+            binaryWriter.Write(RotationDirection);
+            binaryWriter.Write(LightshowSlowTimer);
             bitWriter.WriteBit(InPhase2);
             bitWriter.WriteBit(IsCoiling);
             bitWriter.WriteBit(PrepareToCoil);
@@ -79,12 +79,12 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            AttackModeTimer = binaryReader.Read7BitEncodedInt();
-            CoilRadius = binaryReader.Read7BitEncodedInt();
-            LaserTimer = binaryReader.Read7BitEncodedInt();
-            SecondaryAttackTimer = binaryReader.Read7BitEncodedInt();
-            RotationDirection = binaryReader.Read7BitEncodedInt();
-            LightshowSlowTimer = binaryReader.Read7BitEncodedInt();
+            AttackModeTimer = binaryReader.ReadInt32();
+            CoilRadius = binaryReader.ReadInt32();
+            LaserTimer = binaryReader.ReadInt32();
+            SecondaryAttackTimer = binaryReader.ReadInt32();
+            RotationDirection = binaryReader.ReadInt32();
+            LightshowSlowTimer = binaryReader.ReadInt32();
             InPhase2 = bitReader.ReadBit();
             IsCoiling = bitReader.ReadBit();
             PrepareToCoil = bitReader.ReadBit();
@@ -870,20 +870,20 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(ProjectileCooldownTimer);
-            binaryWriter.Write7BitEncodedInt(AttackTimer);
-            binaryWriter.Write7BitEncodedInt(ProbeReleaseTimer);
-            binaryWriter.Write7BitEncodedInt(DisabledTime);
+            binaryWriter.Write(ProjectileCooldownTimer);
+            binaryWriter.Write(AttackTimer);
+            binaryWriter.Write(ProbeReleaseTimer);
+            binaryWriter.Write(DisabledTime);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            ProjectileCooldownTimer = binaryReader.Read7BitEncodedInt();
-            AttackTimer = binaryReader.Read7BitEncodedInt();
-            ProbeReleaseTimer = binaryReader.Read7BitEncodedInt();
-            DisabledTime = binaryReader.Read7BitEncodedInt();
+            ProjectileCooldownTimer = binaryReader.ReadInt32();
+            AttackTimer = binaryReader.ReadInt32();
+            ProbeReleaseTimer = binaryReader.ReadInt32();
+            DisabledTime = binaryReader.ReadInt32();
         }
 
         public override void SetDefaults(NPC npc)
@@ -1164,10 +1164,10 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(OrbitChangeTimer);
-            binaryWriter.Write7BitEncodedInt(OrbitDirection);
-            binaryWriter.Write7BitEncodedInt(AttackTimer);
-            binaryWriter.Write7BitEncodedInt(GlowmaskFadeTimer);
+            binaryWriter.Write(OrbitChangeTimer);
+            binaryWriter.Write(OrbitDirection);
+            binaryWriter.Write(AttackTimer);
+            binaryWriter.Write(GlowmaskFadeTimer);
             binaryWriter.Write(TargetOrbitRotation);
             bitWriter.WriteBit(ShootLaser);
         }
@@ -1176,10 +1176,10 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            OrbitChangeTimer = binaryReader.Read7BitEncodedInt();
-            OrbitDirection = binaryReader.Read7BitEncodedInt();
-            AttackTimer = binaryReader.Read7BitEncodedInt();
-            GlowmaskFadeTimer = binaryReader.Read7BitEncodedInt();
+            OrbitChangeTimer = binaryReader.ReadInt32();
+            OrbitDirection = binaryReader.ReadInt32();
+            AttackTimer = binaryReader.ReadInt32();
+            GlowmaskFadeTimer = binaryReader.ReadInt32();
             TargetOrbitRotation = binaryReader.ReadSingle();
             ShootLaser = bitReader.ReadBit();
         }
