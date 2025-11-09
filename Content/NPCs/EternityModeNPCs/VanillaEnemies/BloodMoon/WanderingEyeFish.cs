@@ -5,7 +5,6 @@ using FargowiltasSouls.Content.Projectiles.Eternity.Bosses.EyeOfCthulhu;
 using FargowiltasSouls.Core.Globals;
 using FargowiltasSouls.Core.NPCMatching;
 using Luminance.Assets;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -13,7 +12,6 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoon
 {
@@ -32,13 +30,13 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
             binaryWriter.Write7BitEncodedInt(TeleDashTimer);
             binaryWriter.Write7BitEncodedInt(DashCount);
         }
-
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
             TeleDashTimer = binaryReader.Read7BitEncodedInt();
             DashCount = binaryReader.Read7BitEncodedInt();
         }
+
         public override bool SafePreAI(NPC npc)
         {
             if (npc.HasPlayerTarget && Collision.CanHitLine(npc.Center, 0, 0, Main.player[npc.target].Center, 0, 0))
@@ -79,7 +77,8 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
                 if (TeleDashTimer < 390)
                 {
                     npc.velocity = Vector2.Zero;
-                    npc.rotation = FargoSoulsUtil.NPCRotateTowards(npc, Pos1, 10) * npc.direction;
+                    npc.spriteDirection = npc.direction = Math.Sign(npc.HorizontalDirectionTo(Pos1));
+                    npc.rotation = FargoSoulsUtil.NPCRotateTowards(npc, Pos1, 10, npc.rotation) * npc.spriteDirection;
                 }
                 if (TeleDashTimer >= 390)
                 {
@@ -98,7 +97,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
                         npc.velocity = FargoSoulsUtil.SmartAccel(npc.Center, Pos3, npc.velocity, 1f, 2f);
                         if (npc.Distance(Pos3) <= 16) SpawnScythes(npc);
                     }
-                    npc.rotation = npc.velocity.ToRotation() * npc.direction;
+                    npc.rotation = npc.velocity.ToRotation() * npc.spriteDirection;
                     for (int i = 0; i < 2; ++i)
                     {
                         int d = Dust.NewDust(npc.position, npc.width, npc.height, DustID.FireworksRGB, npc.velocity.X, npc.velocity.Y, 100, newColor: Color.DarkRed, Scale: 1.2f);

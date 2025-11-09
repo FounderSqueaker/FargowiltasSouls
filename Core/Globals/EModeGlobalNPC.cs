@@ -41,6 +41,7 @@ namespace FargowiltasSouls.Core.Globals
 
         public bool PaladinsShield;
         public bool isWaterEnemy;
+        public bool BeingSuckedByDread;
 
         //public List<int> auraDebuffs = new List<int>();
 #pragma warning disable CA2211
@@ -78,6 +79,7 @@ namespace FargowiltasSouls.Core.Globals
         public override void ResetEffects(NPC npc)
         {
             PaladinsShield = false;
+            BeingSuckedByDread = false;
 
             if (BeetleTimer > 0 && --BeetleTimer <= 0)
             {
@@ -1346,6 +1348,11 @@ namespace FargowiltasSouls.Core.Globals
                     return false;
             }
             return ret;
+        }
+        public override bool? CanFallThroughPlatforms(NPC npc)
+        {
+            if (BeingSuckedByDread) return true;
+            return base.CanFallThroughPlatforms(npc);
         }
         public static void CustomReflect(NPC npc, int dustID, int ratio = 1)
         {

@@ -928,9 +928,6 @@ namespace FargowiltasSouls.Content.Projectiles
                     if (!Collision.SolidTiles(projectile.Center, 0, 0))
                     {
                         Lighting.AddLight(projectile.Center, TorchID.Crimson);
-
-                        if (counter > 180)
-                            projectile.tileCollide = true;
                     }
                     break;
 
@@ -2354,11 +2351,11 @@ namespace FargowiltasSouls.Content.Projectiles
 
             switch (projectile.type)
             {
-                case ProjectileID.BloodNautilusTears:
+                /*case ProjectileID.BloodNautilusTears:
                 case ProjectileID.BloodNautilusShot:
                     if (FargoSoulsUtil.HostCheck)
                         Projectile.NewProjectile(Entity.InheritSource(projectile), projectile.Center, Vector2.Zero, ModContent.ProjectileType<BloodFountain>(), projectile.damage, 0f, Main.myPlayer, Main.rand.Next(16, 48));
-                    break;
+                    break;*/
 
                 default:
                     break;
