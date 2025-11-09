@@ -25,6 +25,7 @@ namespace FargowiltasSouls.Assets.Sounds
         public static readonly SoundStyle StyxCharge = new(SoundsPath + "StyxCharge");
 
         // revives
+        public static readonly SoundStyle FossilRevive = new(AccessoriesPath + "FossilRevive");
         public static readonly SoundStyle SpectreRevive = new(AccessoriesPath + "SpectreRevive");
         public static readonly SoundStyle StyxRevive = new(AccessoriesPath + "StyxRevive");
 

@@ -37,7 +37,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
         }
         public override void SetDefaults(NPC npc)
         {
-            npc.lifeMax *= 2;
+            npc.lifeMax = (int)Math.Round(npc.lifeMax * 1.5);
         }
         public override bool SafePreAI(NPC npc)
         {
@@ -103,7 +103,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
                     AttackTimer++;
 
                     float randRot = Main.rand.NextFloat(MathHelper.Pi, MathHelper.TwoPi);
-                    new SparkParticle(npc.Center + npc.velocity + 50 * Vector2.UnitX.RotatedBy(npc.rotation + randRot + MathHelper.TwoPi), -3 * Vector2.UnitX.RotatedBy(npc.rotation + randRot + MathHelper.TwoPi), Color.DarkRed, 0.4f, 20).Spawn();
+                    new ExpandingBloomParticle(npc.Center + npc.velocity + 50 * Vector2.UnitX.RotatedBy(npc.rotation + randRot + MathHelper.TwoPi), -3 * Vector2.UnitX.RotatedBy(npc.rotation + randRot + MathHelper.TwoPi), Color.Red, Vector2.One, Vector2.One * 0.1f, 20).Spawn();
                     Lighting.AddLight(npc.Center, TorchID.Red);
 
                     float rotgoal = npc.SafeDirectionTo(target.Center).ToRotation() + MathHelper.PiOver2;
@@ -165,11 +165,11 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
             NPCID.BloodEelTail
         );
 
-        public override bool SafePreAI(NPC npc)
+        public override void AI(NPC npc)
         {
+            base.AI(npc);
             DelegateMethods.v3_1 = new Vector3(0.8f, 0f, 0);
             Utils.PlotTileLine(npc.Center, npc.Center + npc.velocity, 10, DelegateMethods.CastLight);
-            return base.SafePreAI(npc);
         }
 
         //pierce resist

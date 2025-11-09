@@ -46,8 +46,8 @@ namespace FargowiltasSouls.Content.Items.Weapons.SwarmDrops
         {
             CreateRecipe()
             .AddIngredient(null, "RockSlide")
-            .AddIngredient(null, "AbomEnergy", 10)
             .AddIngredient(ModContent.Find<ModItem>("Fargowiltas", "EnergizerGolem"))
+            .AddIngredient(null, "AbomEnergy", 10)
             .AddTile(ModContent.Find<ModTile>("Fargowiltas", "CrucibleCosmosSheet"))
 
             .Register();

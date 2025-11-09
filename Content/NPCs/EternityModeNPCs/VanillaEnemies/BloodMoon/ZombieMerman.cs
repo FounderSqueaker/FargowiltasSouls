@@ -26,6 +26,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
         public bool Jumped;
         public bool AnchorSlam;
         public bool ShortHopping;
+        public bool Wet;
 
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
@@ -73,14 +74,23 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
             Utils.PlotTileLine(npc.Center, npc.Center + npc.velocity, 10, DelegateMethods.CastLight);
             //Main.NewText($"{npc.ai[0]}, {npc.ai[1]}, {npc.ai[2]}, {npc.ai[3]}, ");
 
-            if (npc.wet && npc.HasPlayerTarget) // water ai
+            if (npc.wet) // water ai
             {
                 npc.ai[0] = 3;
                 Jumped = AnchorSlam = ShortHopping = false;
                 JumpTimer = AnchorSlamStartup = ShortHopAerialTimer = 0;
+                Wet = true;
             }
             else // regular ai
             {
+                if (Wet)
+                {
+                    float spd = Math.Clamp(3, -npc.velocity.Y, 10);
+                    npc.velocity = new(0, -spd);
+                    Wet = false;
+                    return base.SafePreAI(npc);
+                }
+
                 if (JumpTimer > 120) //initiate jump
                 {
                     JumpTimer = 0;

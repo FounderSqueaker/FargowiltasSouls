@@ -54,6 +54,10 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
             Jumped = binaryReader.ReadBoolean();
         }
 
+        public override void SetDefaults(NPC npc)
+        {
+            npc.npcSlots = 3; //0 in vanilla for no reason??? 
+        }
         public override bool SafePreAI(NPC npc)
         {
             Player target = Main.player[npc.target];

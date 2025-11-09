@@ -4,6 +4,7 @@ using FargowiltasSouls.Content.Items.Accessories.Forces;
 using FargowiltasSouls.Content.Items.Accessories.Souls;
 using FargowiltasSouls.Content.Items.Misc;
 using FargowiltasSouls.Core.AccessoryEffectSystem;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -305,6 +306,9 @@ namespace FargowiltasSouls.Core.Systems
                     recipe.DisableDecraft();
                     foreach (var item in recipe.requiredItem)
                         FargoSoulsSets.Items.MaterialOfImportantItem[item.type] = recipe.createItem.type;
+                    foreach (var i in recipe.acceptedGroups)
+                        foreach (var itemType in RecipeGroup.recipeGroups[i].ValidItems)
+                            FargoSoulsSets.Items.MaterialOfImportantItem[itemType] = recipe.createItem.type;
                 }
                     
 

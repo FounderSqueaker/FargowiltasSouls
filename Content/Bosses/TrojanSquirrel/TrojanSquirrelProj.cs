@@ -13,7 +13,7 @@ namespace FargowiltasSouls.Content.Bosses.TrojanSquirrel
     {
         public override void SetStaticDefaults()
         {
-            // DisplayName.SetDefault("Top Hat Squirrel");
+            Main.projFrames[Type] = 7;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
@@ -28,8 +28,19 @@ namespace FargowiltasSouls.Content.Bosses.TrojanSquirrel
         }
 
         public override void AI()
-        {
+        {   
+
+            if (ContentSamples.ProjectilesByType[Projectile.type].timeLeft == Projectile.timeLeft)
+            {
+                Projectile.frame = Main.rand.Next(8);
+            }
             Projectile.velocity.Y += Projectile.ai[0];
+
+            if (Projectile.frame == 0 || Projectile.frame == 1 || Projectile.frame == 6)
+                Projectile.rotation += 0.34f;
+
+            if (Projectile.frame >= 2 && Projectile.frame <= 5)
+                Projectile.rotation += 0.24f;
 
             if (--Projectile.ai[1] <= 0 && !Projectile.tileCollide)
             {
@@ -37,7 +48,7 @@ namespace FargowiltasSouls.Content.Bosses.TrojanSquirrel
                     Projectile.tileCollide = true;
             }
 
-            Projectile.rotation = Projectile.velocity.ToRotation();
+            
 
             if (Projectile.localAI[0] == 0)
                 Projectile.localAI[0] = Main.rand.NextBool() ? 1 : -1;
@@ -57,11 +68,11 @@ namespace FargowiltasSouls.Content.Bosses.TrojanSquirrel
             for (int k = 0; k < 20; k++)
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Blood, 0f, -1f);
 
-            if (Main.rand.NextBool(5) && !Main.dedServ)
+            /*if (Main.rand.NextBool(5) && !Main.dedServ)
             {
                 int g = Gore.NewGore(Projectile.GetSource_FromThis(), Projectile.Center, -0.1f * Projectile.oldVelocity.RotatedByRandom(MathHelper.PiOver4), ModContent.Find<ModGore>(Mod.Name, "TrojanSquirrelGore2_2").Type, Projectile.scale);
                 Main.gore[g].rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-            }
+            }*/
 
             /*SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.5f }, Projectile.Center);
 
