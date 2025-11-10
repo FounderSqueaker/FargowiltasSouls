@@ -44,16 +44,18 @@ namespace FargowiltasSouls.Content.Items.Accessories.Souls
 
             Item.value = 5000000;
             Item.rare = ItemRarityID.Expert;
-            Item.useTime = 30;
-            Item.useAnimation = 30;
+            Item.useAnimation = 20;
+            Item.useTime = 20;
+            Item.autoReuse = true;
+            Item.channel = true;
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.useTurn = true;
-            Item.UseSound = SoundID.DD2_BetsyFlameBreath with { Pitch = -1f, Volume = 2f };
+            Item.UseSound = SoundID.DD2_BetsyFlameBreath with { MaxInstances = 1, SoundLimitBehavior = Terraria.Audio.SoundLimitBehavior.IgnoreNew, Pitch = -1f, Volume = 2f };
         }
         public static readonly Color ItemColor = new(255, 51, 153, 0);
         protected override Color? nameColor => ItemColor;
-
-        public override void UseItemFrame(Player player) => SandsofTime.Use(player, Item);
+        public override bool CanUseItem(Player player) => SandsofTime.CanUse(player);
+        public override void UseItemFrame(Player player) => SandsofTime.Use(player);
         public override bool? UseItem(Player player) => true;
 
         public static void PassiveEffect(Player player, Item item)

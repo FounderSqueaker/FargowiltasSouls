@@ -117,9 +117,9 @@ ChlorophyteEnchant: {
 		'''
 		Grants a mediocre dash, overriden by other equipped dashes
 		Double tap a direction
+		Reduced delay after dashing for all dashes
 		All your dashes fire energy beams at nearby enemies
 		Energy beam damage scales with dash speed
-		Reduced delay after dashing for all dashes
 		[i:213] Increases alchemy plant collection
 		'The jungle's essence crystallizes around you'
 		''' */
@@ -1002,7 +1002,7 @@ BionomicCluster: {
 		Grants immunity to various enviornmental debuffs (hold [c/FF3399:{0}] to view all)
 		[i:FargowiltasSouls/NymphsPerfume] Attacks produce lifestealing hearts occasionally
 		[i:FargowiltasSouls/SqueakyToy] Enemy attacks have a 10% chance to squeak and only deal 1 damage to you
-		[i:FargowiltasSouls/SandsofTime] Use to teleport to where you were 1 minute before you last died
+		[i:FargowiltasSouls/SandsofTime] Use to save your position, granting the ability to teleport to it from the map
 		[i:FargowiltasSouls/TimsConcoction] Certain enemies will drop potions when defeated
 		[i:FargowiltasSouls/NymphsPerfume] You respawn with more life and [i:FargowiltasSouls/SandsofTime] when no boss is alive, respawn faster (works from inventory or vanity slots)
 		'A glimpse of Terraria's beauty'
@@ -1013,7 +1013,7 @@ BionomicCluster: {
 		Grants immunity to [i:FargowiltasSouls/SandsofTime] Mighty Wind (works from inventory or vanity slots), [i:FargowiltasSouls/FrigidGrasp] Chilled, Frostburn, [i:FargowiltasSouls/NymphsPerfume] Hexed, and [i:FargowiltasSouls/SqueakyToy] Squeaky Toy
 		[i:FargowiltasSouls/NymphsPerfume] Attacks produce lifestealing hearts occasionally
 		[i:FargowiltasSouls/SqueakyToy] Enemy attacks have a 10% chance to squeak and only deal 1 damage to you
-		[i:FargowiltasSouls/SandsofTime] Use to teleport to where you were 1 minute before you last died
+		[i:FargowiltasSouls/SandsofTime] Use to save your position, granting the ability to teleport to it from the map
 		[i:FargowiltasSouls/TimsConcoction] Certain enemies will drop potions when defeated
 		[i:FargowiltasSouls/NymphsPerfume] You respawn with more life and [i:FargowiltasSouls/SandsofTime] when no boss is alive, respawn faster (works from inventory or vanity slots)
 		'A glimpse of Terraria's beauty'
@@ -1510,14 +1510,16 @@ SandsofTime: {
 		Works from inventory or vanity slots:
 		Grants immunity to Mighty Wind
 		You respawn twice as fast when no boss is alive
-		Use to teleport to where you were 1 minute before you last died
+		Use and channel for 5 seconds to save your current location
+		You can teleport to this location by clicking it on the map
 		'Whatever you do, don't drop it'
 		''' */
 	/* VanityTooltip:
 		'''
 		Grants immunity to Mighty Wind
 		You respawn twice as fast when no boss is alive
-		Use to teleport to where you were 1 minute before you last died
+		Use and channel for 5 seconds to save your current location
+		You can teleport to this location by clicking it on the map
 		''' */
 }
 
@@ -1826,7 +1828,7 @@ MasochistSoul: {
 		[i:FargowiltasSouls/SinisterIcon] Enemies and bosses drop twice as much loot, increases spawn rate
 		[i:FargowiltasSouls/SupremeDeathbringerFairy] Greatly increases dashing and falling speed, reduces damage taken while dashing and quick movement creates trails of blood
 		[i:FargowiltasSouls/BionomicCluster] Attacks occasionally produce lifestealing hearts, enemy attacks have a chance to squeak and enemies drop potions
-		[i:FargowiltasSouls/BionomicCluster] Use to teleport to where you last died, you respawn faster and with more life
+		[i:FargowiltasSouls/BionomicCluster]  Use to save your position, granting the ability to teleport to it from the map, you respawn faster and with more life
 		[i:FargowiltasSouls/DubiousCircuitry] While debuffed, increases attack speed, critical strike chance, defense, and damage reduction
 		[i:FargowiltasSouls/PureHeart] Enemies near your cursor have reduced defense and take damage over time, increases flight time by 50% and movement speed and max life by 10%
 		[i:FargowiltasSouls/LithosphericCluster] Stabilizes gravity, reduces reforge cost, automatically sends money to piggy bank and uses mana potions when needed
