@@ -31,11 +31,13 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
             Item.rare = ItemRarityID.LightRed;
             Item.value = Item.sellPrice(0, 6);
             Item.defense = 3;
-            Item.useTime = 90;
-            Item.useAnimation = 90;
+            Item.useAnimation = 20;
+            Item.useTime = 20;
+            Item.autoReuse = true;
+            Item.channel = true;
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.useTurn = true;
-            Item.UseSound = SoundID.DD2_BetsyFlameBreath with { Pitch = -1f, Volume = 2f };
+            Item.UseSound = SoundID.DD2_BetsyFlameBreath with { MaxInstances = 1, SoundLimitBehavior = Terraria.Audio.SoundLimitBehavior.IgnoreNew, Pitch = -1f, Volume = 2f };
         }
 
         public static void PassiveEffect(Player player, Item item)
@@ -64,9 +66,9 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
             ActiveEffect(player, Item);
             player.AddEffect<FrigidGraspKeyEffect>(Item);
         }
-
-        public override void UseItemFrame(Player player) => SandsofTime.Use(player, Item);
+        public override bool CanUseItem(Player player) => SandsofTime.CanUse(player);
         public override bool? UseItem(Player player) => true;
+        public override void UseItemFrame(Player player) => SandsofTime.Use(player);
 
         public override void AddRecipes()
         {

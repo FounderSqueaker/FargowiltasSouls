@@ -10,7 +10,7 @@ Bee: Increased wing strength and bee swarm damage
 Beetle: Beetle cap increased to 9, increased buildup speed
 BorealWood: Increased snowball count to 7, reduced cooldown and increased damage softcap
 Cactus: Needle damage, amount, and range increased
-Chlorophyte: Grants an additional jump, bomb damage increased
+Chlorophyte: Increased dash speed and energy damage
 Cobalt: Increased explosion damage
 Copper: Arc count increased to 8, lightning damage increased
 Crimson: Timer doubled, but the heal triggers twice. Once in the middle, and once at the end
@@ -22,10 +22,10 @@ Fossil: Revive health increased to 200 and revive bone count doubled
 Frost: Increased icicle damage
 Gladiator: Doubled damage reduction and spear rain damage
 Gold: Increased shell duration
-Hallow: Increased potion heal bonus from 40% to 70%, doubled repel duration
+Hallow: Increased potion heal bonus from 40% to 70%, doubled repel duration, increased damage
 Huntress: Flat damage increased to 5, stack reduction on misses decreased to 3
 Iron: Increases grab range, increases damage reduction to 28%
-Jungle: Grants an additional jump, improved spore jump height and speed, spore damage increased
+Jungle: Increased dash speed and spore damage
 Lead: Lead Poisoning damage increased, DoT resistance increased to 50%
 Meteor: Increased meteor damage, size, and frequency
 Miner: Increased mining speed
@@ -37,7 +37,7 @@ Necro: Graves have increased size, float, and slightly home in on you when you'r
 Ninja: Crit chance increased to 30%, maximum player speed where effect activates increased
 Obsidian: Grants explosions at all times, explosions deal more damage while under a debuff or lava wet
 Orichalcum: Debuff damage further increased to 150%
-Palladium: Rapid Healing always lasts 5 seconds, increased orb damage
+Palladium: Increased orb damage, increased lifesteal to 15
 PalmWood: Palm tree attack speed, damage, and size increased
 Pearlwood: Your crits reroll twice, increased star damage
 Platinum: Bonus replaced with 33% chance for non-boss enemies to drop loot 4 more times

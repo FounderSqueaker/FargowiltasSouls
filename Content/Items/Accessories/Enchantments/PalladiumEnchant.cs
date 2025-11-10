@@ -55,14 +55,22 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
     public class PalladiumHealing : AccessoryEffect
     {
         public override Header ToggleHeader => null;
+        public override void PostUpdateEquips(Player player)
+        {
+            player.IncrementCooldownTowards<PalladiumHealing>(-1, 0);
+        }
         public override void OnHitNPCEither(Player player, NPC target, NPC.HitInfo hitInfo, DamageClass damageClass, int baseDamage, Projectile projectile, Item item)
         {
             if (!HasEffectEnchant(player))
                 return;
 
-            if (!player.onHitRegen)
+            var modPlayer = player.FargoSouls();
+            if (player.GetCooldown<PalladiumHealing>() == 0)
             {
-                player.AddBuff(BuffID.RapidHealing, Math.Min(LumUtils.SecondsToFrames(5), hitInfo.Damage / 3)); //heal time based on damage dealt, capped at 5sec
+                player.SetCooldown<PalladiumHealing>(60 * 4);
+                int lifesteal = player.ForceEffect<PalladiumHealing>() ? 15 : 10;
+                modPlayer.HealPlayer(lifesteal);
+                player.ApplyDamageToNPC(target, lifesteal, 0f, 0, false);
             }
         }
     }
@@ -70,7 +78,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
     {
         public override Header ToggleHeader => Header.GetHeader<EarthHeader>();
         public override int ToggleItemType => ModContent.ItemType<PalladiumEnchant>();
-        public static int BaseDamage(Player player) => FargoSoulsUtil.HighestDamageTypeScaling(player, player.ForceEffect<PalladiumEffect>() ? 100 : 50);
+        public static int BaseDamage(Player player) => FargoSoulsUtil.HighestDamageTypeScaling(player, player.ForceEffect<PalladiumEffect>() ? 320 : 160);
         public override void PostUpdateEquips(Player player)
         {
             FargoSoulsPlayer modPlayer = player.FargoSouls();
@@ -79,9 +87,9 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
             if (increment > 0)
             {
                 modPlayer.PalladCounter += increment;
-                if (modPlayer.PalladCounter > 80)
+                if (modPlayer.PalladCounter >= 80)
                 {
-                    modPlayer.PalladCounter = 0;
+                    modPlayer.PalladCounter -= 80;
                     if (player.whoAmI == Main.myPlayer && player.statLife < player.statLifeMax2)
                     {
                         Projectile.NewProjectile(player.GetSource_Accessory(player.EffectItem<PalladiumEffect>()), player.Center, -Vector2.UnitY, ModContent.ProjectileType<PalladOrb>(),
@@ -90,8 +98,6 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
                 }
             }
 
-            if (player.ForceEffect<PalladiumEffect>() || modPlayer.TerrariaSoul)
-                player.onHitRegen = true;
         }
     }
 }

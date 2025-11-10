@@ -1,8 +1,12 @@
 ﻿using Fargowiltas.Content.Items.Tiles;
 using FargowiltasSouls.Content.Projectiles.Accessories.Souls;
 using FargowiltasSouls.Core.AccessoryEffectSystem;
+using FargowiltasSouls.Core.Systems;
 using FargowiltasSouls.Core.Toggler.Content;
 using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -24,11 +28,12 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
 
         public override void UpdateAccessory(Player player, bool hideVisual)
         {
-            player.AddEffect<JungleJumpEffect>(Item);
-            player.jumpBoost = true;
-            player.extraFall += 10;
+            //player.AddEffect<JungleJumpEffect>(Item);
+            //player.jumpBoost = true;
+            //player.extraFall += 10;
             player.AddEffect<JungleHerbEffect>(Item);
-            //player.AddEffect<JungleDashEffect>(Item);
+            player.AddEffect<JungleDashEffect>(Item);
+            player.AddEffect<JungleSporesEffect>(Item);
         }
 
         public override void AddRecipes()
@@ -47,8 +52,15 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
                 .AddTile<EnchantedTreeSheet>()
                 .Register();
         }
+        public override int DamageTooltip(out DamageClass damageClass, out Color? tooltipColor, out int? scaling)
+        {
+            damageClass = DamageClass.Generic;
+            tooltipColor = null;
+            scaling = null;
+            return JungleSporesEffect.BaseDamage(Main.LocalPlayer, false);
+        }
     }
-    /*public class JungleDashEffect : AccessoryEffect
+    public class JungleDashEffect : AccessoryEffect
     {
         public override Header ToggleHeader => Header.GetHeader<NatureHeader>();
         public override int ToggleItemType => ModContent.ItemType<JungleEnchant>();
@@ -64,7 +76,12 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
         public static void JungleDash(Player player, int direction)
         {
             FargoSoulsPlayer modPlayer = player.FargoSouls();
-            float dashSpeed = modPlayer.ChlorophyteEnchantActive ? 12f : 9f;
+            bool force = player.ForceEffect<JungleDashEffect>();
+            float dashSpeed = 9f;
+            if (modPlayer.ChlorophyteEnchantActive || force)
+                dashSpeed = 12f;
+            if (modPlayer.ChlorophyteEnchantActive && force)
+                dashSpeed = 15f;
             player.velocity.X = dashSpeed * direction;
             if (modPlayer.IsDashingTimer < 10)
                 modPlayer.IsDashingTimer = 10;
@@ -72,7 +89,81 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
             if (Main.netMode == NetmodeID.MultiplayerClient)
                 NetMessage.SendData(MessageID.PlayerControls, number: player.whoAmI);
         }
-    }*/
+    }
+    public class JungleSporesEffect : AccessoryEffect
+    {
+        public override Header ToggleHeader => Header.GetHeader<NatureHeader>();
+        public override int ToggleItemType => ModContent.ItemType<JungleEnchant>();
+        public static int BaseDamage(Player player, bool chloro)
+        {
+            FargoSoulsPlayer modPlayer = player.FargoSouls();
+            bool force = player.ForceEffect<JungleDashEffect>();
+            float dmg;
+            if (!chloro) // jungle
+            {
+                dmg = force ? 35f : 6f;
+            }
+            else // chloro
+            {
+                dmg = force ? 80f : 40f;
+            }
+            return (int)(dmg * player.ActualClassDamage(DamageClass.Generic));
+        }
+        public static void JungleAttack(Player player, Vector2 pos)
+        {
+            if (!(player.whoAmI == Main.myPlayer && player.timeSinceLastDashStarted % 5 == 0))
+                return;
+
+            var modPlayer = player.FargoSouls();
+            if (!modPlayer.ChlorophyteEnchantActive) // jungle
+            {
+                if (!Main.dedServ) SoundEngine.PlaySound(SoundID.Item62 with { Volume = 0.5f }, player.Center);
+                int damage = BaseDamage(player, false);
+                damage = (int)(damage * Math.Max(1, player.velocity.Length() / 9f));
+                for (int i = -1; i <= 1; i++)
+                {
+                    Vector2 dir = -player.velocity.SafeNormalize(Vector2.UnitX * -player.direction).RotatedBy(i * MathHelper.PiOver2 * 0.4f);
+
+                    Projectile p = Projectile.NewProjectileDirect(player.GetSource_EffectItem<JungleSporesEffect>(), Main.rand.NextVector2FromRectangle(player.Hitbox) - dir * player.width / 2, dir * 5.5f, ProjectileID.SporeCloud, damage, 0f);
+                    if (p != null)
+                    {
+                        p.penetrate = 2;
+                        p.usesIDStaticNPCImmunity = true;
+                        p.idStaticNPCHitCooldown = 10;
+                        p.FargoSouls().noInteractionWithNPCImmunityFrames = true;
+                        p.velocity = p.velocity.RotatedByRandom(MathHelper.PiOver4 / 4);
+                        p.velocity *= Main.rand.NextFloat(0.8f, 1.2f);
+                        p.DamageType = DamageClass.Generic;
+                    }
+                }
+            }
+            else // chloro
+            {
+                if (player.timeSinceLastDashStarted % 10 != 0)
+                    return;
+                int damage = BaseDamage(player, true);
+                damage = (int)(damage * Math.Max(1, player.velocity.Length() / 9f));
+
+
+                int maxDistance = 500;
+                NPC target = FargoSoulsUtil.NPCExists(FargoSoulsUtil.FindClosestHostileNPC(player.Center, maxDistance, true));
+                if (target.Alive())
+                {
+                    Projectile p = Projectile.NewProjectileDirect(player.GetSource_EffectItem<JungleSporesEffect>(), player.Center, 10 * player.SafeDirectionTo(target.Center), ProjectileID.CrystalLeafShot, damage, 1f);
+                    if (p != null)
+                    {
+                        p.DamageType = DamageClass.Generic;
+                    }
+                }
+            }
+        }
+    }
+    public class JungleHerbEffect : AccessoryEffect
+    {
+        public override Header ToggleHeader => null;
+        public override int ToggleItemType => ModContent.ItemType<JungleEnchant>();
+    }
+    /*
     public class JungleJumpEffect : AccessoryEffect
     {
         public override Header ToggleHeader => Header.GetHeader<NatureHeader>();
@@ -109,103 +200,11 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
                     }
                 }
             }
-
-            /*if (player.whoAmI != Main.myPlayer)
-                return;
-            FargoSoulsPlayer modPlayer = player.FargoSouls();
-            if (player.grapCount > 0)
-            {
-                modPlayer.CanJungleJump = true;
-                modPlayer.JungleJumping = false;
-            }
-            else if (player.controlJump)
-            {
-                if (player.GetJumpState(ExtraJump.BlizzardInABottle).Available || player.GetJumpState(ExtraJump.SandstormInABottle).Available || player.GetJumpState(ExtraJump.CloudInABottle).Available || player.GetJumpState(ExtraJump.FartInAJar).Available || player.GetJumpState(ExtraJump.TsunamiInABottle).Available || player.GetJumpState(ExtraJump.UnicornMount).Available)
-                {
-                }
-                else if (!modPlayer.ChlorophyteEnchantActive)
-                {
-                    if (player.jump == 0 && player.releaseJump && player.velocity.Y != 0f && !player.mount.Active && modPlayer.CanJungleJump)
-                    {
-                        player.jump = (int)((double)Player.jumpHeight * 3);
-
-                        modPlayer.JungleJumping = true;
-                        modPlayer.JungleCD = 0;
-                        modPlayer.CanJungleJump = false;
-
-                        if (Main.netMode == NetmodeID.MultiplayerClient)
-                            NetMessage.SendData(MessageID.PlayerControls, number: player.whoAmI);
-                    }
-                }
-            }
-
-            if (modPlayer.JungleJumping)
-            {
-                if (player.rocketBoots > 0)
-                {
-                    modPlayer.savedRocketTime = player.rocketTimeMax;
-                    player.rocketTime = 0;
-                }
-
-                player.runAcceleration *= 3f;
-                //Player.maxRunSpeed *= 2f;
-
-                //spwn cloud
-                if (modPlayer.JungleCD == 0)
-                {
-                    int tier = 1;
-                    if (modPlayer.ChlorophyteEnchantActive)
-                        tier++;
-                    bool jungleForceEffect = modPlayer.ForceEffect<JungleEnchant>();
-                    if (jungleForceEffect)
-                        tier++;
-
-                    modPlayer.JungleCD = 18 - tier * tier;
-                    int dmg = 12 * tier * tier - 5;
-
-                    SoundEngine.PlaySound(SoundID.Item62 with { Volume = 0.5f }, player.Center);
-
-                    if (player.whoAmI == Main.myPlayer)
-                    {
-                        foreach (Projectile p in FargoSoulsUtil.XWay(10, GetSource_EffectItem(player), player.Bottom, ProjectileID.SporeCloud, 4f, FargoSoulsUtil.HighestDamageTypeScaling(player, dmg), 0f))
-                        {
-                            if (p == null)
-                                continue;
-                            p.usesIDStaticNPCImmunity = true;
-                            p.idStaticNPCHitCooldown = 10;
-                            p.FargoSouls().noInteractionWithNPCImmunityFrames = true;
-                            p.extraUpdates += 1;
-                            p.velocity = p.velocity.RotatedByRandom(MathHelper.PiOver2 * 0.15f);
-                            p.velocity *= Main.rand.NextFloat(0.8f, 1.2f);
-                            p.DamageType = DamageClass.Default;
-                        }
-                    }
-                }
-
-                if (player.jump == 0 || player.velocity == Vector2.Zero)
-                {
-                    modPlayer.JungleJumping = false;
-                    player.rocketTime = modPlayer.savedRocketTime;
-                }
-            }
-            else if (player.jump <= 0 && player.velocity.Y == 0f)
-            {
-                modPlayer.CanJungleJump = true;
-            }
-
-            if (modPlayer.JungleCD != 0)
-            {
-                modPlayer.JungleCD--;
-            }*/
         }
     }
+    */
 
-    public class JungleHerbEffect : AccessoryEffect
-    {
-        public override Header ToggleHeader => null;
-        public override int ToggleItemType => ModContent.ItemType<JungleEnchant>();
-    }
-
+    /*
     public class JungleJump : ExtraJump
     {
         public static bool Buff(Player player) => player.FargoSouls().ChlorophyteEnchantActive || player.ForceEffect<JungleJumpEffect>();
@@ -295,4 +294,5 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
     public class JungleJump2 : JungleJump { }
     public class JungleJump3 : JungleJump { } //wiz jung or chloro exclusive
     public class JungleJump4 : JungleJump { } //wiz chloro exclusive
+    */
 }

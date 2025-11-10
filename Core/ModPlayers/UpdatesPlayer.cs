@@ -429,6 +429,8 @@ namespace FargowiltasSouls.Core.ModPlayers
                 TryFastfallUpdate();
             if (Player.HasEffect<DeerclawpsEffect>() && IsInADashState)
                 DeerclawpsEffect.DeerclawpsAttack(Player, Player.Bottom);
+            if (Player.HasEffect<JungleSporesEffect>() && IsInADashState)
+                JungleSporesEffect.JungleAttack(Player, Player.Bottom);
 
             #endregion dashes
 
@@ -573,6 +575,11 @@ namespace FargowiltasSouls.Core.ModPlayers
         {
             TimeSinceHurt++;
 
+            if (SandsOfTimeChannel > 0 && Player.ItemTimeIsZero && !Player.ItemAnimationActive)
+                SandsOfTimeChannel = 0;
+            else if (SandsOfTimeChannel < 0)
+                SandsOfTimeChannel++;
+
             if (MinionSlotsNonstack > 0)
                 Player.maxMinions += MinionSlotsNonstack;
             if (SentrySlotsNonstack > 0)
@@ -589,15 +596,6 @@ namespace FargowiltasSouls.Core.ModPlayers
                     Player.GetDamage(DamageClass.Generic) += accessoryminioncount * 0.04f; // 4% each
                 if (minioncount > 0)
                     Player.GetDamage(DamageClass.Generic) += minioncount * 0.02f; // 2% each
-            }
-
-            if (Player.miscCounter % 150 == 0)
-            {
-                for (int i = OldPositionBig.Length - 1; i > 0; i--)
-                {
-                    OldPositionBig[i] = OldPositionBig[i - 1];
-                }
-                OldPositionBig[0] = Player.position;
             }
 
 
