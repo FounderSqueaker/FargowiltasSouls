@@ -1,3 +1,4 @@
+using Fargowiltas;
 using FargowiltasSouls.Assets.Sounds;
 using FargowiltasSouls.Core.Systems;
 using Microsoft.Xna.Framework;
@@ -453,7 +454,10 @@ namespace FargowiltasSouls.Content.Bosses.TrojanSquirrel
             {
                 Vector2 pos = NPC.Center;
                 if (!Main.dedServ)
+                {
                     Gore.NewGore(NPC.GetSource_FromThis(), pos, NPC.velocity, ModContent.Find<ModGore>(Mod.Name, $"TrojanSquirrelGore1").Type, NPC.scale);
+                    Gore.NewGore(NPC.GetSource_FromThis(), pos, NPC.velocity, ModContent.Find<ModGore>("Fargowiltas", $"TophatSquirrelGore").Type, NPC.scale);
+                }               
             }
         }
     }

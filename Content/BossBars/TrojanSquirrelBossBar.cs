@@ -29,14 +29,14 @@ namespace FargowiltasSouls.Content.BossBars
             Frame = ModContent.Request<Texture2D>("FargowiltasSouls/Content/BossBars/TrojanSquirrelFrame", AssetRequestMode.ImmediateLoad);
             Bars = ModContent.Request<Texture2D>("FargowiltasSouls/Content/BossBars/TrojanSquirrelBars", AssetRequestMode.ImmediateLoad);
 
-            int headTextureIndex = NPCID.Sets.BossHeadTextures[npc.type];
+            int headTextureIndex = npc.GetBossHeadTextureIndex();
             if (headTextureIndex == -1)
             {
                 NPCLoader.BossHeadSlot(npc, ref headTextureIndex);
                 if (headTextureIndex == -1)
                     return false;
             }
-
+            
             float lifeRatio = LumUtils.Saturate(life / lifeMax);
 
             Texture2D iconTexture = TextureAssets.NpcHeadBoss[headTextureIndex].Value;
@@ -75,7 +75,7 @@ namespace FargowiltasSouls.Content.BossBars
             lifeScale -= lifeScale % 2;
 
             // Background.
-            spriteBatch.Draw(Bars.Value, barTopLeft + new Vector2(6, 0), bgFrame, Color.White, 0f, Vector2.Zero, 1f, 0, 0f);
+            spriteBatch.Draw(Bars.Value, barTopLeft + new Vector2(6, 0), bgFrame, Color.White * 0.6f, 0f, Vector2.Zero, 1f, 0, 0f);
 
             //Vector2 stretchScale = new(scale / barFrame.Width, 1f);          
             Main.spriteBatch.Draw(Bars.Value, barTopLeft + new Vector2(6, 0), tipShieldFrame, Color.White, 0f, Vector2.Zero, 1, 0, 0f);

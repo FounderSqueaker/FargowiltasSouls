@@ -1,5 +1,5 @@
-SoulToggler: "[i:FargowiltasSouls/EffectTogglerItem] Переключатель эффектов"
-ActiveSkillMenu: "[i:FargowiltasSouls/ActiveSkillMenuItem] Активные умения"
+SoulToggler: "[g:FargowiltasSouls/EffectToggler] Переключатель эффектов"
+ActiveSkillMenu: "[g:FargowiltasSouls/ActiveSkillMenu] Активные умения"
 Standard: Обычный режим
 Eternity: Режим Вечность
 Masochist: Режим Мазохиста

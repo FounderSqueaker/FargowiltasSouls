@@ -212,6 +212,17 @@ namespace FargowiltasSouls.Content.Sky
             if (!rayTexture.IsLoaded)
                 return;
 
+            /// TODO: make the star background and auroras appear fixed in place while scrolling between 100% and 200% zoom.
+            /// i.e. make it so no matter how much you zoom in, the background always looks the same.
+            /// rn it seems like the shader origin is glued to the pre-zoom screenPosition? idk
+            float zoomValue = Math.Clamp(Main.GameZoomTarget, 1f, 2f);
+            Vector2 zoomedScreenSize = Main.ScreenSize.ToVector2() / zoomValue;
+            float zoomedScreenWidth = zoomedScreenSize.X;
+            float zoomedScreenHeight = zoomedScreenSize.Y;
+            Vector2 zoomedScreenPos = screenCenter - zoomedScreenSize / 2;
+
+            //if (!Main.gamePaused) Main.NewText($"{Main.screenPosition} {Main.screenWidth} {Main.screenHeight} {Main.GameZoomTarget} {zoomedScreenSize} {zoomedScreenPos}");
+
             ManagedShader blackShader = ShaderManager.GetShader("FargowiltasSouls.MutantNewBackgroundShader");
             blackShader.TrySetParameter("radius", Main.screenHeight * 1.6f);
             blackShader.TrySetParameter("time", Main.GlobalTimeWrappedHourly);
@@ -289,17 +300,16 @@ namespace FargowiltasSouls.Content.Sky
 
 
 
-            float[] scalers = [0.1f, 0.15f, 0.2f];
-            float[] yOffset = [0f, 80f, 240f];
-            float[] colorLerps = [0.2f, 0.5f, 0.9f];
+            float[] scalers = [0.1f, 0.15f, 0.2f, 0.2f];
+            float[] yOffset = [0f, 80f, 240f, 640f];
+            float[] colorLerps = [0.2f, 0.5f, 0.9f, 1f];
 
             float yLerp = LumUtils.InverseLerp(0, (float)Main.worldSurface * 16, screenCenter.Y);
 
             var bg = ModContent.Request<Texture2D>($"FargowiltasSouls/Assets/Textures/Misc/MutantBackground").Value;
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 4; i++)
             {
-
                 Color bgColor = color;
                 bgColor = Color.Lerp(bgColor, Color.Black, colorLerps[i]);
 
@@ -310,7 +320,7 @@ namespace FargowiltasSouls.Content.Sky
                     MathHelper.Lerp(Main.screenHeight / 2 + yOffset[i], Main.screenHeight * 0.85f + yOffset[i] / 2, 1 - yLerp)
                     );
 
-                for (int j = 0; j < 4; j++)
+                for (int j = 0; j < 5; j++)
                 {
                     Vector2 drawPos = pos;
                     drawPos.X += bg.Width * j;
@@ -318,12 +328,10 @@ namespace FargowiltasSouls.Content.Sky
                 }
             }
 
-            /*
             spriteBatch.Draw(
                 ModContent.Request<Texture2D>($"FargowiltasSouls/Content/Sky/MutantVignette", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value,
-                new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), 
-                (FargoSoulsUtil.AprilFools ? Color.Red : Color.Blue) * shaderIntensity * 0.2f);
-            */
+                new Rectangle((int)(zoomedScreenPos.X - Main.screenPosition.X), (int)(zoomedScreenPos.Y - Main.screenPosition.Y), (int)zoomedScreenWidth, (int)zoomedScreenHeight), 
+                (FargoSoulsUtil.AprilFools ? Color.Red : Color.Blue) * shaderIntensity * 0.15f);
         }
 
         void DoTvBands(SpriteBatch spriteBatch, float opacity)
