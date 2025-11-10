@@ -60,7 +60,9 @@ RainUmbrellaEffect: Зонт
 RainInnerTubeEffect: Воздушная камера
 RainFeatherfallEffect: Мягкое падение
 SnowEffect: Замораживающие снежки
-JungleJumpEffect: Споровый прыжок
+// JungleDashEffect: Jungle Dash
+// JungleSporesEffect: Projectiles When Dashing
+// JungleDashCooldownEffect: Dash Delay Reduction
 MoltenEffect: Инферно
 ShroomiteHealEffect: Улучшенные грибы
 ShroomiteMushroomPriority: Грибы в приоритете

@@ -429,6 +429,8 @@ namespace FargowiltasSouls.Core.ModPlayers
                 TryFastfallUpdate();
             if (Player.HasEffect<DeerclawpsEffect>() && IsInADashState)
                 DeerclawpsEffect.DeerclawpsAttack(Player, Player.Bottom);
+            if (Player.HasEffect<JungleSporesEffect>() && IsInADashState)
+                JungleSporesEffect.JungleAttack(Player, Player.Bottom);
 
             #endregion dashes
 

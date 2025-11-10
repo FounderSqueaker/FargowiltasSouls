@@ -16,7 +16,7 @@ namespace FargowiltasSouls.Core.Systems
             Shadow,
             Valhalla,
             Monk,
-            //Jungle,
+            Jungle,
             Crystal,
             DeerSinew
         }
@@ -34,10 +34,10 @@ namespace FargowiltasSouls.Core.Systems
                 PatreonPlayer.AddDash_Eight3One(player);
             }
 
-            /*if (player.HasEffect<JungleDashEffect>())
+            if (player.HasEffect<JungleDashEffect>())
             {
                 JungleDashEffect.AddDash(player);
-            }*/
+            }
             if (player.HasEffect<CrystalAssassinDash>())
             {
                 CrystalAssassinDash.AddDash(player);
@@ -92,11 +92,11 @@ namespace FargowiltasSouls.Core.Systems
                                 CrystalAssassinDash.CrystalDash(Player, dir);
                             }
                             break;
-                        /*case DashType.Jungle:
+                        case DashType.Jungle:
                             {
                                 JungleDashEffect.JungleDash(Player, dir);
                             }
-                            break;*/
+                            break;
                         case DashType.DeerSinew:
                             {
                                 modPlayer.DeerSinewDash(dir);
