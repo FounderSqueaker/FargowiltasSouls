@@ -593,7 +593,8 @@ namespace FargowiltasSouls
                 Action<bool> setEmode = (value) => WorldSavingSystem.QueueEnableEternityMode = value;
                 BOBW.Call("AddWorldGenToggle", Name, "Mods.FargoSeeds.WorldGenMenu.HeaderGeneral", "Mods.FargowiltasSouls.UI.Eternity", "Mods.FargowiltasSouls.UI.TogglesEternity", new Color(28, 222, 152), FargoAssets.Filepath + "UI/OncomingMutant", false, setEmode);
 
-                fargos.Call("AddGlyphPath", Name, $"{Name}/Assets/Textures/Glyphs");
+                //symbols
+                fargos.Call("AddSymbolPath", Name, $"{Name}/Assets/Textures/Symbols");
             }
             catch (Exception e)
             {

@@ -1,5 +1,5 @@
-SoulToggler: "[g:FargowiltasSouls/EffectToggler] Effect Toggles"
-ActiveSkillMenu: "[g:FargowiltasSouls/ActiveSkillMenu] Active Skills"
+SoulToggler: "[s:FargowiltasSouls/EffectToggler] Effect Toggles"
+ActiveSkillMenu: "[s:FargowiltasSouls/ActiveSkillMenu] Active Skills"
 Standard: Standard Mode
 Eternity: Eternity Mode
 Masochist: Masochist Mode
