@@ -117,9 +117,9 @@ ChlorophyteEnchant: {
 		'''
 		Grants a mediocre dash, overriden by other equipped dashes
 		Double tap a direction
+		Reduced delay after dashing for all dashes
 		All your dashes fire energy beams at nearby enemies
 		Energy beam damage scales with dash speed
-		Reduced delay after dashing for all dashes
 		[i:213] Increases alchemy plant collection
 		'The jungle's essence crystallizes around you'
 		''' */
