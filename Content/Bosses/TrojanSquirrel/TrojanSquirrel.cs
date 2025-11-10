@@ -1443,6 +1443,28 @@ namespace FargowiltasSouls.Content.Bosses.TrojanSquirrel
             npcLoot.Add(ItemDropRule.MasterModeCommonDrop(ModContent.ItemType<TrojanSquirrelRelic>()));
         }
 
+        public static int HeadIconIndex;
+
+        public static int bodyIconIndex;
+
+        public static void LoadHeadIcon()
+        {
+            string BodyPath = "FargowiltasSouls/Content/Bosses/TrojanSquirrel/TrojanSquirrel_Body_Boss";
+            string HeadPath = "FargowiltasSouls/Content/Bosses/TrojanSquirrel/TrojanSquirrel_Head_Boss";
+            FargowiltasSouls.Instance.AddBossHeadTexture(BodyPath);
+            bodyIconIndex = ModContent.GetModBossHeadSlot(BodyPath);
+            HeadIconIndex = ModContent.GetModBossHeadSlot(HeadPath);
+        }
+
+        public override void BossHeadSlot(ref int index)
+        {
+            if (head == null)
+                index = bodyIconIndex;
+            else
+                index = HeadIconIndex;
+            base.BossHeadSlot(ref index);
+        }
+
         public override void BossHeadSpriteEffects(ref SpriteEffects spriteEffects)
         {
             spriteEffects = NPC.direction < 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;

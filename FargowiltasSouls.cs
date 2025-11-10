@@ -9,6 +9,7 @@ using Fargowiltas.Content.Projectiles;
 using Fargowiltas.Content.UI;
 using FargowiltasSouls.Assets.Textures;
 using FargowiltasSouls.Content.Bosses.CursedCoffin;
+using FargowiltasSouls.Content.Bosses.TrojanSquirrel;
 using FargowiltasSouls.Content.Bosses.VanillaEternity;
 using FargowiltasSouls.Content.Buffs;
 using FargowiltasSouls.Content.Buffs.Boss;
@@ -139,6 +140,8 @@ namespace FargowiltasSouls
             ModLoader.TryGetMod("FargoSeeds", out BOBW);
             ModLoader.TryGetMod("CalamityMod", out CalamityMod);
             ModLoader.TryGetMod("MusicDisplay", out MusicDisplay);
+
+            TrojanSquirrel.LoadHeadIcon();
 
             List<TitleLinkButton> titleLinks = fargoTitleLinks;
             titleLinks.Add(MakeSimpleButton("TitleLinks.Discord", "https://discord.gg/fargo", 0));
