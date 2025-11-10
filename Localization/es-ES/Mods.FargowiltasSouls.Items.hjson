@@ -420,7 +420,7 @@ PalladiumEnchant: {
 	/* Tooltip:
 		'''
 		Every 4 seconds, your next hit steals 10 life
-		You spawn an orb of damaging life energy every 80 life healed or regenerated
+		You spawn an orb of damaging life energy every 80 life healed or regenerated from any source
 		'You feel your wounds slowly healing'
 		''' */
 }

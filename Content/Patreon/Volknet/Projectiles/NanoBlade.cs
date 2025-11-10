@@ -39,6 +39,7 @@ namespace FargowiltasSouls.Content.Patreon.Volknet.Projectiles
             Projectile.FargoSouls().DeletionImmuneRank = 1;
             Projectile.FargoSouls().TimeFreezeImmune = true;
             Projectile.FargoSouls().CanSplit = false;
+            Projectile.FargoSouls().IsAHeldProj = true;
 
             Projectile.GetGlobalProjectile<AttackSpeedScalingGlobalProjectile>().UseAttackSpeedToDoubleHit = true;
         }

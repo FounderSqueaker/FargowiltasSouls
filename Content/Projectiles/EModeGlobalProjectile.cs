@@ -61,13 +61,19 @@ namespace FargowiltasSouls.Content.Projectiles
             ProjAIStyleID.Yoyo,
             ProjAIStyleID.Spear,
             ProjAIStyleID.ShortSword,
+            ProjAIStyleID.Flail,
             ProjAIStyleID.Drill,
             ProjAIStyleID.HeldProjectile,
-            ProjAIStyleID.NightsEdge, // all fancy sword swings
+            ProjAIStyleID.NightsEdge, // all physical fancy sword swings
+            ProjAIStyleID.Vilethorn, // vilethorn likes
             ProjAIStyleID.CursedFlameWall, // clinger staff
             ProjAIStyleID.Rainbow, // rainbow gun
             ProjAIStyleID.MechanicalPiranha,
-            ProjAIStyleID.SleepyOctopod
+            ProjAIStyleID.SleepyOctopod, // ooa batons
+            ProjAIStyleID.ForwardStab, // ooa spears
+            ProjAIStyleID.ThickLaser, // last prism beams likes
+            ProjAIStyleID.AncientStorm, // forbidden armor tornado
+            ProjAIStyleID.Zenith
         ];
 
         /// <summary>

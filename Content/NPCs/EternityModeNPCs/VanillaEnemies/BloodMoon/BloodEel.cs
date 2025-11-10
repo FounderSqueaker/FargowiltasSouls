@@ -175,11 +175,18 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
         //pierce resist
         public override void SafeModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
         {
-            if (projectile.numHits > 0 && !FargoSoulsUtil.IsSummonDamage(projectile) && !FargoSoulsSets.Projectiles.PierceResistImmune[projectile.type] && !EModeGlobalProjectile.PierceResistImmuneAiStyles.Contains(projectile.aiStyle))
-                modifiers.FinalDamage *= 1f / MathF.Pow(1.75f, projectile.numHits);
-
-            if ((projectile.maxPenetrate >= 20 || projectile.maxPenetrate <= -1) && EModeGlobalProjectile.PierceResistImmuneAiStyles.Contains(projectile.aiStyle))
-            { //only affects projs of the type that are effectively infinite pierce
+            if (!FargoSoulsUtil.IsSummonDamage(projectile)
+            && !FargoSoulsSets.Projectiles.PierceResistImmune[projectile.type]
+            && !EModeGlobalProjectile.PierceResistImmuneAiStyles.Contains(projectile.aiStyle)
+            && !projectile.FargoSouls().IsAHeldProj)
+            {
+                if (projectile.numHits > 0)
+                    modifiers.FinalDamage *= 1f / MathF.Pow(1.75f, projectile.numHits);
+            }
+            else if (projectile.maxPenetrate >= 20 || projectile.maxPenetrate <= -1)
+            {
+                //generic damage decrease so projectiles that needed to be exempted dont overpower
+                //only affects projs of the type that are effectively infinite pierce
                 modifiers.FinalDamage *= 0.7f;
             }
         }
