@@ -1,8 +1,10 @@
 ﻿using FargowiltasSouls.Assets.Textures;
+using Luminance.Core.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -10,11 +12,15 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.Souls
 {
     public class PalladOrb : ModProjectile
     {
+        public const int TrailLength = 6;
         public override string Texture => FargoAssets.GetAssetString("Content/Projectiles/Accessories/Souls", Name);
         public override void SetStaticDefaults()
         {
             Main.projFrames[Projectile.type] = 4;
             ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true;
+
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = TrailLength;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
         public override void SetDefaults()
@@ -26,7 +32,7 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.Souls
             Projectile.timeLeft = 600;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.scale = 2f;
+            Projectile.scale = 1f;
 
             FargowiltasSouls.MutantMod.Call("LowRenderProj", Projectile);
         }
@@ -59,7 +65,7 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.Souls
                 SoundEngine.PlaySound(SoundID.Item14, Projectile.Center);
             }
 
-            int index2 = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, Main.rand.NextBool() ? 174 : 259, 0f, 0f, 100, new Color(), 2f);
+            int index2 = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, Main.rand.NextBool() ? 174 : 259, 0f, 0f, 100, new Color(), 1f);
             Main.dust[index2].noGravity = true;
             Main.dust[index2].velocity *= 3;
             int index3 = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, Main.rand.NextBool() ? 174 : 259, 0f, 0f, 100, new Color(), 1f);
@@ -95,21 +101,11 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.Souls
 
             for (int i = 0; i < 20; i++)
             {
-                int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Torch, 0f, 0f, 100, default, 3f);
+                int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Torch, 0f, 0f, 100, default, 1f);
                 Main.dust[dust].noGravity = true;
-                Main.dust[dust].velocity *= 7f;
+                Main.dust[dust].velocity = Projectile.velocity.RotatedByRandom(MathHelper.PiOver2 * 0.2f);
                 dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Torch, 0f, 0f, 100, default, 1f);
-                Main.dust[dust].velocity *= 3f;
-            }
-
-            for (int index1 = 0; index1 < 20; ++index1)
-            {
-                int index2 = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, Main.rand.NextBool() ? 174 : 259, 0f, 0f, 100, new Color(), 3f);
-                Main.dust[index2].noGravity = true;
-                Main.dust[index2].velocity *= 21f * Projectile.scale;
-                int index3 = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, Main.rand.NextBool() ? 174 : 259, 0f, 0f, 100, new Color(), 2f);
-                Main.dust[index3].velocity *= 12f;
-                Main.dust[index3].noGravity = true;
+                Main.dust[dust].velocity = Projectile.velocity.RotatedByRandom(MathHelper.PiOver2 * 0.2f) * 0.5f;
             }
         }
 
@@ -121,6 +117,47 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.Souls
 
         public override bool PreDraw(ref Color lightColor)
         {
+            float radius = Projectile.width / 2;
+            var blackTile = TextureAssets.MagicPixel;
+            var diagonalNoise = FargoAssets.WavyNoise;
+            if (!blackTile.IsLoaded || !diagonalNoise.IsLoaded)
+                return false;
+
+            Vector2 auraPos = Projectile.Center;
+            var maxOpacity = Projectile.Opacity * 0.7f;
+
+            ManagedShader borderShader = ShaderManager.GetShader("FargowiltasSouls.HellFireballShader");
+            borderShader.TrySetParameter("colorMult", 7.35f);
+            borderShader.TrySetParameter("time", Main.GlobalTimeWrappedHourly);
+            borderShader.TrySetParameter("radius", radius);
+            borderShader.TrySetParameter("screenPosition", Main.screenPosition);
+            borderShader.TrySetParameter("screenSize", Main.ScreenSize.ToVector2());
+
+
+            Main.spriteBatch.GraphicsDevice.Textures[1] = diagonalNoise.Value;
+            Rectangle rekt = new(Main.screenWidth / 2, Main.screenHeight / 2, Main.screenWidth, Main.screenHeight);
+
+            Vector2[] anchorPoints = new Vector2[ProjectileID.Sets.TrailCacheLength[Type]];
+            float[] opacities = new float[ProjectileID.Sets.TrailCacheLength[Type]];
+
+            for (int i = 0; i < ProjectileID.Sets.TrailCacheLength[Type]; i++)
+            {
+                var oldOpacity = maxOpacity * (ProjectileID.Sets.TrailCacheLength[Type] - (float)i) / (float)ProjectileID.Sets.TrailCacheLength[Type];
+                Vector2 oldCenter = Projectile.oldPos[i] + Projectile.Size / 2;
+                anchorPoints[i] = oldCenter;
+                opacities[i] = oldOpacity;
+            }
+
+            borderShader.TrySetParameter("anchorPoints", anchorPoints);
+            borderShader.TrySetParameter("opacities", opacities);
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap, DepthStencilState.None, Main.Rasterizer, borderShader.WrappedEffect, Main.GameViewMatrix.TransformationMatrix);
+            Main.spriteBatch.Draw(blackTile.Value, rekt, null, default, 0f, blackTile.Value.Size() * 0.5f, 0, 0f);
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+            return false;
+            /*
             Texture2D texture2D13 = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
             int num156 = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value.Height / Main.projFrames[Projectile.type]; //ypos of lower right corner of sprite to draw
             int y3 = num156 * Projectile.frame; //ypos of upper left corner of sprite to draw
@@ -129,6 +166,7 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.Souls
             SpriteEffects effects = Projectile.spriteDirection < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             Main.EntitySpriteDraw(texture2D13, Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY), new Microsoft.Xna.Framework.Rectangle?(rectangle), Projectile.GetAlpha(lightColor), Projectile.rotation, origin2, Projectile.scale, effects, 0);
             return false;
+            */
         }
 
         public override Color? GetAlpha(Color lightColor)

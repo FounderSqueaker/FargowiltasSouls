@@ -419,8 +419,8 @@ PalladiumEnchant: {
 	DisplayName: Palladium Enchantment
 	Tooltip:
 		'''
-		Briefly increases life regeneration after striking an enemy
-		You spawn an orb of damaging life energy every 80 life regenerated
+		Every 4 seconds, your next hit steals 10 life
+		You spawn an orb of damaging life energy every 80 life healed or regenerated
 		'You feel your wounds slowly healing'
 		'''
 }
