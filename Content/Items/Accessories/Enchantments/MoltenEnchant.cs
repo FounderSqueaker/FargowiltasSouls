@@ -96,9 +96,8 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
                 {
                     bool healed = false;
 
-                    for (int i = 0; i < Main.maxNPCs; i++)
+                    foreach (var npc in Main.ActiveNPCs)
                     {
-                        NPC npc = Main.npc[i];
                         if (npc.active && !npc.friendly && !npc.dontTakeDamage && !(npc.damage == 0 && npc.lifeMax == 5)) //critters
                         {
                             if (Vector2.Distance(player.Center, FargoSoulsUtil.ClosestPointInHitbox(npc.Hitbox, player.Center)) <= distance)

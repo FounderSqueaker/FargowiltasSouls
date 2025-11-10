@@ -249,6 +249,7 @@ HallowEnchant: {
 		'''
 		Healing potions restore 40% more, but take effect over time
 		Using a healing potion creates a shockwave that repels nearby enemy projectiles
+		The shockwave also damages enemies and inflicts Smite
 		'Hit me with your best shot'
 		''' */
 	// OverTime: over time

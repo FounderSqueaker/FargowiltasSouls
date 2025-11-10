@@ -1803,7 +1803,7 @@ EternitySoul: {
 		Additional: Дополнительно:
 		// Additional effects are automatically pulled from material tooltips
 		// Tooltips which start the with the text in filter won't be included in the SoE tooltip, filters are seperated with "|"
-		StartsWithFilter: "«"
+		StartsWithFilter: «
 		// Tooltips which contain the text in filter won't be included in the SoE tooltip, filters are seperated with "|"
 		ContainsFilter: Следующие эффекты|Grants togglable
 		Flavor: «Смертные или бессмертные, всё сущее признаёт ваше притязание на божественность.»
