@@ -105,7 +105,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
             }
             else // chloro
             {
-                dmg = force ? 100f : 50f;
+                dmg = force ? 80f : 40f;
             }
             return (int)(dmg * player.ActualClassDamage(DamageClass.Generic));
         }
