@@ -28,7 +28,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Night
                 npc.velocity *= 0.9f;
                 if (JumpTimer <= -60)
                 {
-                    JumpTimer = 60;
+                    JumpTimer = 60 * 9;
                     Jumped = true;
                     if (npc.HasPlayerTarget && Collision.CanHitLine(npc.Center, 1, 1, Main.player[npc.target].Center, 1, 1))
                     {
