@@ -39,64 +39,6 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
             Item.useTime = 180;
             Item.useAnimation = 180;
         }
-        /* public override bool? UseItem(Player player)
-        {
-            if (player.itemAnimation > 0 && player.itemTime == 0)
-            {
-                if (!Main.dedServ)
-                {
-                    int i;
-                    if (player.itemAnimation >= 61)
-                    {
-                        player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, MathHelper.Pi);
-                        player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, MathHelper.Pi);
-                    }
-                    else if (player.itemAnimation <= 30)
-                    {
-                        player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, MathHelper.Pi);
-                        player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, MathHelper.Pi);
-                    }
-                    else
-                    {
-                        player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, MathHelper.Pi);
-                        player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, MathHelper.Pi);
-                    }
-
-                    if (player.itemAnimation == 90)
-                    {
-                        for (i = 0; i < ChalicePotionEffect.ChaliceBuffsUse.Count; i += 3)
-                        {
-                            int buff = ChalicePotionEffect.ChaliceBuffsUse[i];
-                            int duration = 108000; //buff == BuffID.Lucky ? 60 * 60 * 15 : 60 * 60 * 8;
-                            player.AddBuff(buff, duration);
-                        }
-                        SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Item_3") { Pitch = -0.6f });
-                    }
-                    else if (player.itemAnimation == 60)
-                    {
-                        for (i = 1; i < ChalicePotionEffect.ChaliceBuffsUse.Count; i += 3)
-                        {
-                            int buff = ChalicePotionEffect.ChaliceBuffsUse[i];
-                            int duration = 108000; //buff == BuffID.Lucky ? 60 * 60 * 15 : 60 * 60 * 8;
-                            player.AddBuff(buff, duration);
-                        }
-                        SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Item_3") { Pitch = -0.4f });
-                    }
-                    else if (player.itemAnimation == 30)
-                    {
-                        for (i = 2; i < ChalicePotionEffect.ChaliceBuffsUse.Count; i += 3)
-                        {
-                            int buff = ChalicePotionEffect.ChaliceBuffsUse[i];
-                            int duration = 108000; //buff == BuffID.Lucky ? 60 * 60 * 15 : 60 * 60 * 8;
-                            player.AddBuff(buff, duration);
-                        }
-                        SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Item_3") { Pitch = -0.2f });
-                    }
-                }
-            }
-            return base.UseItem(player);
-        }
-        */
         public override void UpdateInventory(Player player)
         {
             player.AddEffect<ChalicePotionEffect>(Item);

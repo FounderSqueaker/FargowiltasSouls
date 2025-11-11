@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using FargowiltasSouls.Assets.Textures;
 using FargowiltasSouls.Content.Items.Accessories.Eternity;
 using FargowiltasSouls.Content.Projectiles.Weapons.ChallengerItems;
@@ -23,85 +24,94 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.ChaliceOfTheMoon
             Projectile.penetrate = -1;
             Projectile.timeLeft = 360;
             Projectile.alpha = 255;
+            Projectile.scale = 0.8f;
         }
-        public ref float timer => ref Projectile.ai[0];
-        public ref float rot => ref Projectile.ai[1];
-        public ref float based => ref Projectile.ai[2];
-
+        public ref float rot => ref Projectile.ai[0];
+        public ref float count => ref Projectile.ai[1];
         public override void AI()
         {
 
             Player player = Main.player[Projectile.owner];
-            float bleep = (Main.MouseWorld.DirectionTo(player.Center).X <= 0 ? 10f : -10f);
-                based++;
-            Vector2 holdOffset = new Vector2(bleep, -20f).RotatedBy(rot);
-
-                player.heldProj = Projectile.whoAmI;
-                Projectile.Center = player.Center + holdOffset;
-
-                player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, rot + MathHelper.Pi);
-                player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, rot + MathHelper.Pi);
+            if (count == 0f)
+            {
                 Projectile.direction = Main.MouseWorld.DirectionTo(player.Center).X <= 0 ? 1 : -1;
                 player.ChangeDir(Projectile.direction);
                 Projectile.spriteDirection = -Projectile.direction;
+            }
+            float xOffset = Projectile.spriteDirection == -1 ? 14f : -14f;
+            float rotate = (player.gravDir == 1) ? float.Pi / 360 * rot : float.Pi / -360 * rot;
+            Projectile.rotation = rotate;
+            int down;
+            int dir = Projectile.spriteDirection; //i really don't want to write out "Projectile.spriteDirection" a trillion times tyvm
+            count++;
 
-                int down;
-                /*if (player.itemAnimation >= 61)
+            Vector2 holdOffset = new Vector2(xOffset, player.gravDir == -1 ? -6f : 6f);
+            player.heldProj = Projectile.whoAmI;
+            Projectile.Center = player.Center + holdOffset;
+
+            if (count >= 30f && count < 61f || count >= 90f && count < 121f)
+            {
+                if (dir == -1)
                 {
-                    player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, MathHelper.Pi);
-                    player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, MathHelper.Pi);
+                    rot--;
                 }
-                else if (player.itemAnimation <= 30)
+                else
+                    rot++;
+            }
+            player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, (dir == -1) ? 30 + rot * MathHelper.Pi / 630 : (-1) * (30 - rot * MathHelper.Pi / 630));
+            player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, (dir == -1) ? 30 + rot * MathHelper.Pi / 630 : (-1) * (30 - rot * MathHelper.Pi / 630));
+            if (player.gravDir == -1)
+            {
+                Projectile.position.Y -= (dir == -1) ? rot / 12 : (-1) * rot / 12;
+            }
+            else
+            {
+                Projectile.position.Y += (dir == -1) ? rot / 12 : (-1) * rot / 12;
+            }
+            Projectile.position.X -= (dir == -1) ? rot / 12 : rot / 10;
+
+            if (count >= 150f)
+            {
+                if (dir == -1)
                 {
-                    player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, MathHelper.Pi);
-                    player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, MathHelper.Pi);
+                    rot += 2f;
+                    if (rot > 0f)
+                        rot = 0f;
                 }
                 else
                 {
-                    player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, MathHelper.Pi);
-                    player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, MathHelper.Pi);
+                    rot -= 2f;
+                    if (rot < 0f)
+                        rot = 0f;
                 }
-                */
-                if (based == 1)
+            }
+
+            if (count == 1 || count == 61 || count == 121) //you don't gulp 180 times methinks
+            {
+                float drinkPitch = (count == 61) ? -0.4f : (count == 121) ? -0.2f : -0.6f;
+                for (down = (count == 61) ? 1 : (count == 121) ? 2 : 0; down < ChalicePotionEffect.ChaliceBuffsUse.Count; down += 3)
                 {
-                    for (down = 0; down < ChalicePotionEffect.ChaliceBuffsUse.Count; down += 3)
-                    {
-                        int buff = ChalicePotionEffect.ChaliceBuffsUse[down];
-                        int duration = 108000; //buff == BuffID.Lucky ? 60 * 60 * 15 : 60 * 60 * 8;
-                        player.AddBuff(buff, duration);
-                    }
-                    SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Item_3") { Pitch = -0.6f }, player.Center);
+                    int buff = ChalicePotionEffect.ChaliceBuffsUse[down];
+                    int duration = 108000; //30 min
+                    player.AddBuff(buff, duration);
                 }
-                else if (based == 61)
-                {
-                    for (down = 1; down < ChalicePotionEffect.ChaliceBuffsUse.Count; down += 3)
-                    {
-                        int buff = ChalicePotionEffect.ChaliceBuffsUse[down];
-                        int duration = 108000; //buff == BuffID.Lucky ? 60 * 60 * 15 : 60 * 60 * 8;
-                        player.AddBuff(buff, duration);
-                    }
-                    SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Item_3") { Pitch = -0.4f }, player.Center);
-                }
-                else if (based == 121)
-                {
-                    for (down = 2; down < ChalicePotionEffect.ChaliceBuffsUse.Count; down += 3)
-                    {
-                        int buff = ChalicePotionEffect.ChaliceBuffsUse[down];
-                        int duration = 108000; //buff == BuffID.Lucky ? 60 * 60 * 15 : 60 * 60 * 8;
-                        player.AddBuff(buff, duration);
-                    }
-                    SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Item_3") { Pitch = -0.2f }, player.Center);
-                }
+                SpilledDrink(player);
+                SoundEngine.PlaySound(new SoundStyle("Terraria/Sounds/Item_3") { Pitch = drinkPitch }, player.Center);
+            }
             Projectile.timeLeft--;
-            Main.NewText($"based: {based}");
         }
 
         public override bool PreDraw(ref Color lightColor)
         {
+            Player player = Main.player[Projectile.owner];
             Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             float rot = Projectile.rotation;
-            SpriteEffects flip = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            SpriteEffects flip = SpriteEffects.None;
+            if (player.gravDir == -1) 
+                flip |= SpriteEffects.FlipVertically;
+            if (Projectile.spriteDirection == -1) 
+                flip |= SpriteEffects.FlipHorizontally;
             Main.EntitySpriteDraw(texture, drawPos, texture.Frame(), lightColor, rot, new Vector2(texture.Width / 2, texture.Height / 2), Projectile.scale, flip);
             return false;
         }
@@ -109,26 +119,31 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.ChaliceOfTheMoon
         {
             return base.CanHitNPC(target);
         }
-        public override void OnSpawn(IEntitySource source)
+        public void SpilledDrink(Player player)
         {
-            Player player = Main.player[Projectile.owner];
-            for (int i = 0; i < 90; i++)
+            player = Main.player[Projectile.owner];
+            for (int i = 0; i < 50; i++)
             {
-                float face = Main.MouseWorld.DirectionTo(player.Center).X <= 0 ? 1 : -1;
-                float xPos = player.Center.X + (face == 1 ? Main.rand.Next(0, 10) : Main.rand.Next(-10, 0));
+                float randomDust = Main.rand.Next(6, 10);
+                float xPos = player.Center.X + (Projectile.spriteDirection == -1 ? randomDust : (-1)*randomDust);
                 float ySpeed = 2 * Main.rand.NextFloat();
-                Vector2 dustPosition = new Vector2(xPos, player.Top.Y + 10);
+                Vector2 dustPosition = new Vector2(xPos, player.gravDir == -1 ? player.Bottom.Y - 15 : player.Top.Y + 15);
                 Color[] drink = new Color[]
                 {
-                    new Color(r: 254, g: 126, b:229), //nebula
+                    new Color(r: 254, g: 126, b: 229), //nebula
                     new Color(r: 254, g: 203, b: 58), //solar
                     new Color(r: 0, g: 242, b: 170), //vortex
                     new Color(r: 104, g: 214, b: 255) //stardust
                 };
+                Dust dust;
                 Color drinkDust = drink[Main.rand.Next(drink.Length)];
-                Dust.NewDustPerfect(dustPosition, DustID.WhiteTorch, new Vector2(player.velocity.X, player.velocity.Y + ySpeed), 0, drinkDust);
+                if (randomDust <= 8 && Projectile.spriteDirection == -1)
+                    dust = Dust.NewDustPerfect(dustPosition, DustID.WhiteTorch, new Vector2(player.velocity.X, ySpeed), 0, drinkDust, 1.5f);
+                else if ((-1)*randomDust >= -8 && Projectile.spriteDirection == 1)
+                    dust = Dust.NewDustPerfect(dustPosition, DustID.WhiteTorch, new Vector2(player.velocity.X, ySpeed), 0, drinkDust, 1.5f);
+                else if (randomDust > 8 || randomDust < -8)
+                    dust = Dust.NewDustPerfect(dustPosition, DustID.WhiteTorch, new Vector2(player.velocity.X, ySpeed-1f), 0, drinkDust, 1.5f);
             }
-            base.OnSpawn(source);
         }
     }
 }
