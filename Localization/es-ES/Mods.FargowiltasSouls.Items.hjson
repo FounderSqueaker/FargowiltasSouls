@@ -613,6 +613,7 @@ SquireEnchant: {
 		'''
 		Increases mount acceleration, speed, and jump height by 1.25x
 		While mounted, grants a double jump and fall damage immunity
+		Allows the usage of hooks without dismounting
 		Increases the effectiveness of healing sources by 10%
 		'Squire, will you hurry?'
 		''' */
@@ -696,6 +697,7 @@ ValhallaKnightEnchant: {
 		'''
 		Increases mount acceleration, speed, and jump height by 1.5x
 		While mounted grants a horizontal and vertical dash, double jump, and fall damage immunity
+		Allows the usage of hooks without dismounting
 		Increases the effectiveness of healing sources by 15%
 		'Valhalla calls'
 		''' */
@@ -3879,4 +3881,15 @@ SoulGuyHead: {
 SoulGuyLegs: {
 	// DisplayName: F Legs
 	// Tooltip: "[i:FargowiltasSouls/Masochist]"
+}
+
+TerrysChocolateOrange: {
+	// DisplayName: Terry's Chocolate Orange
+	/* Tooltip:
+		'''
+		{$CommonItemTooltip.MajorStats}
+		'Favored by the man with the red hat'
+		Increases life regeneration
+		10 minute duration
+		''' */
 }

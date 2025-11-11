@@ -149,11 +149,6 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             NPC = npc;
             EModeGlobalNPC.queenSlimeBoss = npc.whoAmI;
 
-            if (Main.netMode == NetmodeID.Server)
-                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(State.ToString()), Color.White);
-            else
-                Main.NewText("client: " + State.ToString());
-
             // despawn and targetting
             int num4 = 3000;
             if (Main.player[npc.target].dead || Math.Abs(npc.Center.X - Main.player[npc.target].Center.X) / 16f > num4)

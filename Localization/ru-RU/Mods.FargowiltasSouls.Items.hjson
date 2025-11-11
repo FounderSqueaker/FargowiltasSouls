@@ -3901,3 +3901,14 @@ SoulGuyLegs: {
 	// DisplayName: F Legs
 	// Tooltip: "[i:FargowiltasSouls/Masochist]"
 }
+
+TerrysChocolateOrange: {
+	DisplayName: Terry's Chocolate Orange
+	Tooltip:
+		'''
+		{$CommonItemTooltip.MajorStats}
+		«Обожаем мужчиной в красной шляпе»
+		Ускоряет регенерацию здоровья
+		Длительность 10 минут
+		'''
+}
