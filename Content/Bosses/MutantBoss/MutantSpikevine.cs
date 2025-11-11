@@ -45,6 +45,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
             Projectile.scale = 1;
             Projectile.Opacity = 0;
             Projectile.hide = true;
+            CooldownSlot = ImmunityCooldownID.Bosses;
         }
         ref float Timer => ref Projectile.ai[0];
         ref float MutantID => ref Projectile.ai[1];

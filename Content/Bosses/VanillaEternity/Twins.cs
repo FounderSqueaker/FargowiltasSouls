@@ -63,10 +63,10 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
-            binaryWriter.Write7BitEncodedInt(LaserSide);
-            binaryWriter.Write7BitEncodedInt(DeathrayState);
-            binaryWriter.Write7BitEncodedInt(AuraRadiusCounter);
-            binaryWriter.Write7BitEncodedInt(MechElectricOrbTimer);
+            binaryWriter.Write(LaserSide);
+            binaryWriter.Write(DeathrayState);
+            binaryWriter.Write(AuraRadiusCounter);
+            binaryWriter.Write(MechElectricOrbTimer);
             bitWriter.WriteBit(StoredDirectionToPlayer);
             bitWriter.WriteBit(ShouldDrawAura);
             binaryWriter.Write(LockedRotation);
@@ -74,10 +74,10 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
-            LaserSide = binaryReader.Read7BitEncodedInt();
-            DeathrayState = binaryReader.Read7BitEncodedInt();
-            AuraRadiusCounter = binaryReader.Read7BitEncodedInt();
-            MechElectricOrbTimer = binaryReader.Read7BitEncodedInt();
+            LaserSide = binaryReader.ReadInt32();
+            DeathrayState = binaryReader.ReadInt32();
+            AuraRadiusCounter = binaryReader.ReadInt32();
+            MechElectricOrbTimer = binaryReader.ReadInt32();
             StoredDirectionToPlayer = bitReader.ReadBit();
             ShouldDrawAura = bitReader.ReadBit();
             LockedRotation = binaryReader.ReadSingle();
@@ -215,7 +215,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
             NPC spazmatism = FargoSoulsUtil.NPCExists(EModeGlobalNPC.spazBoss, NPCID.Spazmatism);
 
-            if (WorldSavingSystem.MasochistModeReal && spazmatism == null && npc.HasValidTarget && ++RespawnTimer > 600)
+            if (WorldSavingSystem.MasochistModeReal && spazmatism == null && npc.HasValidTarget && ++RespawnTimer > 1200)
             {
                 RespawnTimer = 0;
                 if (FargoSoulsUtil.HostCheck)
@@ -329,6 +329,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
                             // reworked p1 lasers
                             float delay = 55f; //LaserSide == 0 ? 50f : 20f;
+                            ai_ShotTimer -= 0.2f;
                             if (ai_ShotTimer >= delay)
                             {
                                 LaserSide++;
@@ -383,7 +384,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                         break;
                     case 1: // dash frame
                         {
-                            float prepTime = WorldSavingSystem.MasochistModeReal ? 85 : 105;
+                            float prepTime = WorldSavingSystem.MasochistModeReal ? 95 : 105;
 
                             if (ai_StateTimer == 0)
                             {
@@ -399,7 +400,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                             }
 
                             // lock on to spot next to player
-                            float distance = WorldSavingSystem.MasochistModeReal ? 350f : 450f;
+                            float distance = WorldSavingSystem.MasochistModeReal ? 380f : 450f;
                             Vector2 desiredPos = player.Center + LockedRotation.ToRotationVector2() * distance;
                             float desiredX = desiredPos.X - npc.Center.X;
                             float desiredY = desiredPos.Y - npc.Center.Y;
@@ -415,7 +416,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
                             if (ai_StateTimer < prepTime - 30 && (npc.Distance(desiredPos) > 300 || waitForSpaz))
                                 ai_StateTimer--;
-                            int flashDelay = WorldSavingSystem.MasochistModeReal ? 30 : 45;
+                            int flashDelay = WorldSavingSystem.MasochistModeReal ? 35 : 45;
                             if (ai_StateTimer < prepTime - flashDelay && spazmatism.ai[2] < npc.ai[2])
                                 npc.ai[2] = spazmatism.ai[2];
 
@@ -472,6 +473,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
                 if (npc.ai[1] != 0)
                     npc.localAI[1] -= 1f;
+                npc.localAI[1] -= 0.2f;
                 if (npc.localAI[1] >= (npc.ai[1] == 0 ? 170 : 50)) //hijacking vanilla laser code
                 {
                     npc.localAI[1] = 0;
@@ -623,7 +625,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                     //2*pi * (# of full circles) / (seconds to finish rotation) / (ticks per sec)
                     float rotationInterval = 2f * (float)Math.PI * 1.2f / 4f / 60f;
                     if (WorldSavingSystem.MasochistModeReal)
-                        rotationInterval *= 1.05f;
+                        rotationInterval *= 1.025f;
 
                     npc.ai[0]++; //base value is 4
                     switch (DeathrayState) //laser code idfk
@@ -919,11 +921,11 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(ProjectileTimer);
-            binaryWriter.Write7BitEncodedInt(FlameWheelSpreadTimer);
-            binaryWriter.Write7BitEncodedInt(FlameWheelCount);
-            binaryWriter.Write7BitEncodedInt(MechElectricOrbTimer);
-            binaryWriter.Write7BitEncodedInt(P3DashPhaseDelay);
+            binaryWriter.Write(ProjectileTimer);
+            binaryWriter.Write(FlameWheelSpreadTimer);
+            binaryWriter.Write(FlameWheelCount);
+            binaryWriter.Write(MechElectricOrbTimer);
+            binaryWriter.Write(P3DashPhaseDelay);
             binaryWriter.Write(LockedRotation);
         }
 
@@ -931,11 +933,11 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            ProjectileTimer = binaryReader.Read7BitEncodedInt();
-            FlameWheelSpreadTimer = binaryReader.Read7BitEncodedInt();
-            FlameWheelCount = binaryReader.Read7BitEncodedInt();
-            MechElectricOrbTimer = binaryReader.Read7BitEncodedInt();
-            P3DashPhaseDelay = binaryReader.Read7BitEncodedInt();
+            ProjectileTimer = binaryReader.ReadInt32();
+            FlameWheelSpreadTimer = binaryReader.ReadInt32();
+            FlameWheelCount = binaryReader.ReadInt32();
+            MechElectricOrbTimer = binaryReader.ReadInt32();
+            P3DashPhaseDelay = binaryReader.ReadInt32();
             LockedRotation = binaryReader.ReadSingle();
         }
 
@@ -974,7 +976,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
             NPC retinazer = FargoSoulsUtil.NPCExists(EModeGlobalNPC.retiBoss, NPCID.Retinazer);
 
-            if (WorldSavingSystem.MasochistModeReal && retinazer == null && npc.HasValidTarget && ++RespawnTimer > 600)
+            if (WorldSavingSystem.MasochistModeReal && retinazer == null && npc.HasValidTarget && ++RespawnTimer > 1200)
             {
                 RespawnTimer = 0;
                 if (FargoSoulsUtil.HostCheck)
@@ -1150,7 +1152,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                         break;
                     case 1: // dash frame
                         {
-                            float prepTime = WorldSavingSystem.MasochistModeReal ? 85 : 105;
+                            float prepTime = WorldSavingSystem.MasochistModeReal ? 95 : 105;
 
                             if (ai_StateTimer == 0)
                             {
@@ -1167,7 +1169,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                             }
 
                             // lock on to spot next to player
-                            float distance = WorldSavingSystem.MasochistModeReal ? 350f : 450f;
+                            float distance = WorldSavingSystem.MasochistModeReal ? 380f : 450f;
                             Vector2 desiredPos = player.Center + LockedRotation.ToRotationVector2() * distance;
                             float desiredX = desiredPos.X - npc.Center.X;
                             float desiredY = desiredPos.Y - npc.Center.Y;
@@ -1186,7 +1188,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                                     waitForReti = false;
                             }
 
-                            int flashDelay = WorldSavingSystem.MasochistModeReal ? 30 : 45;
+                            int flashDelay = WorldSavingSystem.MasochistModeReal ? 35 : 45;
 
                             if (ai_StateTimer < prepTime - flashDelay && (npc.Distance(desiredPos) > 300 || waitForReti))
                             {
@@ -1298,7 +1300,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                     if (npc.ai[2] > 50)
                     {
                         npc.ai[2] -= modifier;
-                        npc.ai[2] -= 0.15f;
+                        npc.ai[2] -= 0.3f;
                     }
                     else
                     {
@@ -1413,7 +1415,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                                 npc.rotation = npc.SafeDirectionTo(retinazer.Center).ToRotation() - (float)Math.PI / 2;
                                 RealRotation = npc.rotation;
                             }
-                            else if (++ProjectileTimer % 30 == 0) //rings of stars
+                            else if (++ProjectileTimer % 35 == 0) //rings of stars
                             {
                                 if (FargoSoulsUtil.HostCheck)
                                 {

@@ -2,7 +2,6 @@
 using FargowiltasSouls.Content.Items.Misc;
 using FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA;
 using FargowiltasSouls.Content.Projectiles;
-using FargowiltasSouls.Content.Quests;
 using FargowiltasSouls.Core.AccessoryEffectSystem;
 using FargowiltasSouls.Core.Globals;
 using Microsoft.Xna.Framework;
@@ -73,7 +72,7 @@ namespace FargowiltasSouls //lets everything access it without using
         /// </summary>
         public static bool TryFindTooltipLine(this List<TooltipLine> tooltips, string tooltipName, string tooltipMod, out TooltipLine tooltipLine)
         {
-            tooltipLine = tooltips.First(line => line.Name == tooltipName && line.Mod == tooltipMod);
+            tooltipLine = tooltips.FirstOrDefault(line => line.Name == tooltipName && line.Mod == tooltipMod);
 
             return tooltipLine != null;
         }
@@ -146,9 +145,6 @@ namespace FargowiltasSouls //lets everything access it without using
             => player.GetModPlayer<EModePlayer>();
         public static AccessoryEffectPlayer AccessoryEffects(this Player player)
             => player.GetModPlayer<AccessoryEffectPlayer>();
-        public static DeviQuestModPlayer QuestPlayer(this Player player)
-            => player.GetModPlayer<DeviQuestModPlayer>();
-
         public static bool ForceEffect<T>(this Player player) where T : AccessoryEffect
         {
             Item item = player.EffectItem<T>();
@@ -164,6 +160,8 @@ namespace FargowiltasSouls //lets everything access it without using
         public static bool TypeAlive<T>(this Projectile projectile) where T : ModProjectile => projectile.Alive() && projectile.type == ModContent.ProjectileType<T>();
         public static bool TypeAlive(this NPC npc, int type) => npc.Alive() && npc.type == type;
         public static bool TypeAlive<T>(this NPC npc) where T : ModNPC => npc.Alive() && npc.type == ModContent.NPCType<T>();
+
+        public static bool Hostile(this NPC npc) => !npc.townNPC && !npc.CountsAsACritter && npc.life > 10 && npc.type != NPCID.TargetDummy;
 
         public static Texture2D GetTexture(this NPC npc) => TextureAssets.Npc[npc.type].Value;
         public static Texture2D GetTexture(this Projectile projectile) => TextureAssets.Projectile[projectile.type].Value;
@@ -325,15 +323,18 @@ namespace FargowiltasSouls //lets everything access it without using
             player.controlLeft = false;
             player.controlRight = false;
             player.controlJump = false;
+            player.controlUp = false;
             player.controlDown = false;
             player.controlUseItem = false;
             player.controlUseTile = false;
             player.controlHook = false;
             player.releaseHook = true;
+            player.controlMount = false;
+            player.releaseMount = false;
             if (player.grapCount > 0)
                 player.RemoveAllGrapplingHooks();
-            if (player.mount.Active)
-                player.mount.Dismount(player);
+            //if (player.mount.Active)
+            //    player.mount.Dismount(player);
             player.FargoSouls().NoUsingItems = 2;
             if (preventDashing)
             {

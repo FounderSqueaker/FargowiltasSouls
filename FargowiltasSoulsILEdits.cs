@@ -1,8 +1,9 @@
-using System;
 using FargowiltasSouls.Content.Items.Accessories.Enchantments;
 using FargowiltasSouls.Core.AccessoryEffectSystem;
+using FargowiltasSouls.Core.Systems;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using System;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.ID;
@@ -50,7 +51,16 @@ namespace FargowiltasSouls
         }
         public static bool NotSafeFromCactusDamage(Player player)
         {
-            return !player.HasEffect<CactusPassiveEffect>();
+            return player.whoAmI.IsWithinBounds(Main.maxPlayers) && !player.HasEffect<CactusPassiveEffect>();
+        }
+        public static float DrillMountRangeMult(Player player)
+        {
+            float rangeMult = 1f;
+            if (player.whoAmI.IsWithinBounds(Main.maxPlayers) && player.whoAmI == Main.myPlayer && player.mount.Active && player.mount.Type == MountID.Drill && player.FargoSouls().WorldShaperSoul && player.HasEffect<Content.Items.Accessories.Souls.DCUEffect>())
+            {
+                rangeMult *= 10f; // example mult
+            }
+            return rangeMult;
         }
     }
     internal sealed class Player_Update_ILEdit : ILEditUtils
@@ -70,6 +80,44 @@ namespace FargowiltasSouls
             cursor.EmitOr(); // for the previous stuff
             cursor.Emit(OpCodes.Ldarg_0); // get player instance as argument
             cursor.EmitDelegate(CanFallthrough); // outputs 1 or 0, next instruction is "or" to include this and the previous stuff we collected with EmitOr
+        }
+    }
+    internal sealed class Player_UpdateBuffs_ILEdit : ILEditUtils
+    {
+        public static bool ShouldNerf() => WorldSavingSystem.EternityMode && !NPC.downedBoss2;
+        public override void OnModLoad() => IL_Player.UpdateBuffs += Player_UpdateBuffs_IL;
+        public static void Player_UpdateBuffs_IL(ILContext context)
+        {
+            // nerf inferno pre evils in emode
+            ILCursor cursor = new(context);
+            // go to inferno = true at start of the inferno method
+            if (!cursor.TryGotoNext(MoveType.Before, i => i.MatchStfld<Player>("inferno")))
+            {
+                FargowiltasSouls.Instance.Logger.Warn("Inferno Potion nerf failure: on MatchStfld<Player>('inferno')");
+                MonoModHooks.DumpIL(ModContent.GetInstance<FargowiltasSouls>(), context);
+                return;
+            }
+            // go to where OnFire3 is loaded into which buff should be applied
+            if (!cursor.TryGotoNext(MoveType.Before, i => i.MatchLdcI4(BuffID.OnFire3)))
+            {
+                FargowiltasSouls.Instance.Logger.Warn("Inferno Potion nerf failure: could not find ldc.i4 323");
+                MonoModHooks.DumpIL(ModContent.GetInstance<FargowiltasSouls>(), context);
+                return;
+            }
+            // replace it with condition ? OnFire : OnFire3
+            cursor.EmitDelegate(() => ShouldNerf() ? BuffID.OnFire : BuffID.OnFire3);
+            cursor.Remove();
+
+            // go to where 20 damage is loaded into how much damage should be dealt
+            if (!cursor.TryGotoNext(MoveType.Before, i => i.MatchLdcI4(20)))
+            {
+                FargowiltasSouls.Instance.Logger.Warn("Inferno Potion nerf failure: could not find ldc.i4 20");
+                MonoModHooks.DumpIL(ModContent.GetInstance<FargowiltasSouls>(), context);
+                return;
+            }
+            // replace it with condition ? 8 : 20
+            cursor.EmitDelegate(() => ShouldNerf() ? 8 : 20);
+            cursor.Remove();
         }
     }
     internal sealed class Projectile_AI_099_1_ILEdit : ILEditUtils
@@ -172,7 +220,6 @@ namespace FargowiltasSouls
         public static void Projectile_Damage_IL(ILContext context)
         {
             ILCursor cursor = new(context);
-            cursor.Index = 3880; // Get as close as possible to the phantasmTime check
             if (!cursor.TryGotoNext(MoveType.After, i => i.MatchLdfld<Projectile>("arrow"))) // Go directly after the Projectile.arrow check
             {
                 FargowiltasSouls.Instance.Logger.Warn("Phantasm Arrow Rain fix failure on MatchLdfld<Projectile>('arrow')");
@@ -199,6 +246,60 @@ namespace FargowiltasSouls
             cursor.Emit(OpCodes.Ldarg_0); // Get Player instance
             cursor.EmitDelegate(NotSafeFromCactusDamage); // Check if the player has Cactus Passive Effect
             cursor.EmitAnd(); // Push the two bools together
+        }
+    }
+
+    internal sealed class Mount_DrillSmartCursor_Blocks_ILEdit : ILEditUtils
+    {
+        public override void OnModLoad() => IL_Mount.DrillSmartCursor_Blocks += Mount_DrillSmartCursor_Blocks_IL;
+        public static void Mount_DrillSmartCursor_Blocks_IL(ILContext context)
+        {
+            ILCursor cursor = new(context);
+            if (!cursor.TryGotoNext(MoveType.After, i => i.MatchLdcR4(224f))) // Go directly after the drill mount range cap check
+            {
+                FargowiltasSouls.Instance.Logger.Warn("Drill Mount range mod failure: i.MatchLdcR4(224f)");
+                MonoModHooks.DumpIL(ModContent.GetInstance<FargowiltasSouls>(), context);
+                return;
+            }
+            cursor.Emit(OpCodes.Ldarg_1); // Get player instance
+            cursor.EmitDelegate(DrillMountRangeMult); // Calc the mult
+            cursor.Emit(OpCodes.Mul); // Multiply
+            if (!cursor.TryGotoNext(MoveType.After, i => i.MatchLdcR4(224f))) // Go directly after the drill mount range cap set and do it again
+            {
+                FargowiltasSouls.Instance.Logger.Warn("Drill Mount range mod failure: i.MatchLdcR4(224f)");
+                MonoModHooks.DumpIL(ModContent.GetInstance<FargowiltasSouls>(), context);
+                return;
+            }
+            cursor.Emit(OpCodes.Ldarg_1); // Get player instance
+            cursor.EmitDelegate(DrillMountRangeMult); // Calc the mult
+            cursor.Emit(OpCodes.Mul); // Multiply
+        }
+    }
+
+    internal sealed class Mount_DrillSmartCursor_Walls_ILEdit : ILEditUtils // This is nearly a copy paste of the above IL because they are practically mirrored in origin
+    {
+        public override void OnModLoad() => IL_Mount.DrillSmartCursor_Walls += Mount_DrillSmartCursor_Walls_IL;
+        public static void Mount_DrillSmartCursor_Walls_IL(ILContext context)
+        {
+            ILCursor cursor = new(context);
+            if (!cursor.TryGotoNext(MoveType.After, i => i.MatchLdcR4(224f))) // Go directly after the drill mount range cap check
+            {
+                FargowiltasSouls.Instance.Logger.Warn("Drill Mount range mod failure: i.MatchLdcR4(224f)");
+                MonoModHooks.DumpIL(ModContent.GetInstance<FargowiltasSouls>(), context);
+                return;
+            }
+            cursor.Emit(OpCodes.Ldarg_1); // Get player instance
+            cursor.EmitDelegate(DrillMountRangeMult); // Calc the mult
+            cursor.Emit(OpCodes.Mul); // Multiply
+            if (!cursor.TryGotoNext(MoveType.After, i => i.MatchLdcR4(224f))) // Go directly after the drill mount range cap set and do it again
+            {
+                FargowiltasSouls.Instance.Logger.Warn("Drill Mount range mod failure: i.MatchLdcR4(224f)");
+                MonoModHooks.DumpIL(ModContent.GetInstance<FargowiltasSouls>(), context);
+                return;
+            }
+            cursor.Emit(OpCodes.Ldarg_1); // Get player instance
+            cursor.EmitDelegate(DrillMountRangeMult); // Calc the mult
+            cursor.Emit(OpCodes.Mul); // Multiply
         }
     }
 }

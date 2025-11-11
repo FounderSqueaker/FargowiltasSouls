@@ -38,7 +38,6 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.Minions
             Projectile.netImportant = true;
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 10;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
             Projectile.FargoSouls().CanSplit = false;
         }
 

@@ -17,11 +17,11 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Crimson
 
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
-            binaryWriter.Write7BitEncodedInt(BloodTimer);
+            binaryWriter.Write(BloodTimer);
         }
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
-            BloodTimer = binaryReader.Read7BitEncodedInt();
+            BloodTimer = binaryReader.ReadInt32();
         }
         public override bool SafePreAI(NPC npc)
         {
@@ -46,13 +46,6 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Crimson
                 
             }
             return base.SafePreAI(npc);
-        }
-
-        public override void OnHitPlayer(NPC npc, Player target, Player.HurtInfo hurtInfo)
-        {
-            base.OnHitPlayer(npc, target, hurtInfo);
-
-            target.AddBuff(BuffID.Rabies, 900);
         }
     }
 }

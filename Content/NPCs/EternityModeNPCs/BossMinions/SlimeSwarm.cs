@@ -39,6 +39,8 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.BossMinions
             NPC.value = 0;
 
             NPC.GravityMultiplier *= 2;
+
+            NPC.chaseable = false;
         }
 
         //public override bool CanHitNPC(NPC target) => false;
@@ -53,6 +55,8 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.BossMinions
             float accelX = 0.1f;
             int maxSpeedX = 12;
             int jumpSpeed = 5;
+
+            NPC.chaseable = false;
 
             if (Math.Abs(NPC.velocity.X) < maxSpeedX)
             {

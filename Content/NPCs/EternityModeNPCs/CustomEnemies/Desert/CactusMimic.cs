@@ -91,7 +91,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.CustomEnemies.Desert
             int[] sand = [TileID.Sand, TileID.Ebonsand, TileID.Pearlsand, TileID.Crimsand];
             if (sand.Contains(spawnInfo.SpawnTileType) && WorldSavingSystem.EternityMode && !spawnInfo.Player.ZoneBeach && !spawnInfo.Water && !DD2Event.Ongoing)
             {
-                return 0.7f;
+                return Main.hardMode ? 0.2f : 0.7f;
             }
             return 0;
         }

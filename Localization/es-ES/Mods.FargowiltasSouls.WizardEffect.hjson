@@ -2,7 +2,7 @@
 // Adamantite: Speed bonus increased to 33%
 // Apprentice: Secondary weapon frequency increased to 1/4
 // AncientHallow: Sword damage increased, projectile damage cap increased to 200
-// AncientShadow: Number of Shadow Orbs increased
+// AncientShadow: Increased damage
 // AncientCobalt: Increased jump height, explosion damage, and size
 // Angler: All fishing rods have 5 extra lures
 // AshWood: Reduced fireball cooldown, increased damage softcap
@@ -10,7 +10,7 @@
 // Beetle: Beetle cap increased to 9, increased buildup speed
 // BorealWood: Increased snowball count to 7, reduced cooldown and increased damage softcap
 // Cactus: Needle damage, amount, and range increased
-// Chlorophyte: Damage of ring and spores increased, cooldown of spores reduced
+// Chlorophyte: Increased dash speed and energy damage
 // Cobalt: Increased explosion damage
 // Copper: Arc count increased to 8, lightning damage increased
 // Crimson: Timer doubled, but the heal triggers twice. Once in the middle, and once at the end
@@ -22,10 +22,10 @@
 // Frost: Increased icicle damage
 // Gladiator: Doubled damage reduction and spear rain damage
 // Gold: Increased shell duration
-// Hallow: Increased potion heal bonus from 40% to 70%, doubled repel duration
+// Hallow: Increased potion heal bonus from 40% to 70%, doubled repel duration, increased damage
 // Huntress: Flat damage increased to 5, stack reduction on misses decreased to 3
 // Iron: Increases grab range, increases damage reduction to 28%
-// Jungle: Spore damage increased, cooldown decreased
+// Jungle: Increased dash speed and spore damage
 // Lead: Lead Poisoning damage increased, DoT resistance increased to 50%
 // Meteor: Increased meteor damage, size, and frequency
 // Miner: Increased mining speed
@@ -34,18 +34,18 @@
 // Mythril: Max attack speed bonus increased and lasts longer
 // Nebula: Nebula shots deal increased damage and spawn 2 nebula boosters
 // Necro: Graves have increased size, float, and slightly home in on you when you're close
-// Ninja: Maximum crit chance increased to 24%, maximum player speed where effect activates increased
+// Ninja: Crit chance increased to 30%, maximum player speed where effect activates increased
 // Obsidian: Grants explosions at all times, explosions deal more damage while under a debuff or lava wet
 // Orichalcum: Debuff damage further increased to 150%
-// Palladium: Rapid Healing always lasts 5 seconds, increased orb damage
+// Palladium: Increased orb damage, increased lifesteal to 15
 // PalmWood: Palm tree attack speed, damage, and size increased
 // Pearlwood: Your crits reroll twice, increased star damage
-// Platinum: Bonus replaced with 33% chance for enemies to drop loot 4 more times
+// Platinum: Bonus replaced with 33% chance for non-boss enemies to drop loot 4 more times
 // Pumpkin: Pumpkins can grow while flying, heal for twice as much and deal more damage
 // Rain: Umbrella can block up to 400 damage and reflected damage is tripled
 // RedRiding: Decreased arrow rain cooldown and increased damage
 // RichMahogany: Hooks pull 2x as fast, damage reduction and launch damage tripled
-// Shadewood: Aura size and blood damage increased, blood inflicts Ichor
+// Shadewood: Aura size and blood damage increased
 // Shinobi: Increased dash damage
 // Shroomite: Mushroom Power stats increased to 25%, mushroom cloud damage and count increased
 // Silver: Parrying blocks up to 200 damage, Parry Boost duration tripled

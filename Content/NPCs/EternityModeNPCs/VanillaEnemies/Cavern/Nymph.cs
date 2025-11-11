@@ -30,21 +30,12 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern
             }
         }
 
-        public override void OnFirstTick(NPC npc)
-        {
-            base.OnFirstTick(npc);
-
-            npc.buffImmune[BuffID.Confused] = true;
-        }
-
         public override void AI(NPC npc)
         {
             base.AI(npc);
 
             if (npc.type == NPCID.Nymph)
             {
-                npc.knockBackResist = 0f;
-
                 EModeGlobalNPC.Aura(npc, 250, ModContent.BuffType<HexedBuff>(), true, DustID.PinkTorch);
 
                 if (--Counter < 0)

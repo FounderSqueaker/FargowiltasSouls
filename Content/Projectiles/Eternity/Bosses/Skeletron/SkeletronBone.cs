@@ -32,11 +32,11 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Skeletron
             Projectile.scale = 1.5f;
             Projectile.timeLeft = 240;
             Projectile.tileCollide = false;
-            if (FargoSoulsUtil.BossIsAlive(ref EModeGlobalNPC.guardBoss, NPCID.DungeonGuardian)
+            /*if (FargoSoulsUtil.BossIsAlive(ref EModeGlobalNPC.guardBoss, NPCID.DungeonGuardian)
                 || FargoSoulsUtil.BossIsAlive(ref EModeGlobalNPC.skeleBoss, NPCID.SkeletronHead) && Main.npc[EModeGlobalNPC.skeleBoss].ai[1] == 2f)
             {
                 CooldownSlot = ImmunityCooldownID.Bosses;
-            }
+            }*/
         }
         public override void OnSpawn(IEntitySource source)
         {

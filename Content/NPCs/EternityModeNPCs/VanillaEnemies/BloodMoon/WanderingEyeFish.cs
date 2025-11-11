@@ -5,7 +5,6 @@ using FargowiltasSouls.Content.Projectiles.Eternity.Bosses.EyeOfCthulhu;
 using FargowiltasSouls.Core.Globals;
 using FargowiltasSouls.Core.NPCMatching;
 using Luminance.Assets;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -13,7 +12,6 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoon
 {
@@ -29,21 +27,23 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
-            binaryWriter.Write7BitEncodedInt(TeleDashTimer);
-            binaryWriter.Write7BitEncodedInt(DashCount);
+            binaryWriter.Write(TeleDashTimer);
+            binaryWriter.Write(DashCount);
         }
-
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-            TeleDashTimer = binaryReader.Read7BitEncodedInt();
-            DashCount = binaryReader.Read7BitEncodedInt();
+            TeleDashTimer = binaryReader.ReadInt32();
+            DashCount = binaryReader.ReadInt32();
         }
+
         public override bool SafePreAI(NPC npc)
         {
             if (npc.HasPlayerTarget && Collision.CanHitLine(npc.Center, 0, 0, Main.player[npc.target].Center, 0, 0))
                 TeleDashTimer++;
             Player player = Main.player[npc.target];
+            DelegateMethods.v3_1 = new Vector3(0.8f, 0f, 0);
+            Utils.PlotTileLine(npc.Center, npc.Center + npc.velocity, 10, DelegateMethods.CastLight);
 
             if (TeleDashTimer == 360) //warning flashes
             {
@@ -74,11 +74,11 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
                 }
                 else if (TeleDashTimer == 360)
                     SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = 0.8f }, npc.Center);
-                //Dust.NewDustPerfect(Pos1, DustID.RedTorch); Dust.NewDustPerfect(Pos2, DustID.RedTorch); Dust.NewDustPerfect(Pos3, DustID.RedTorch);
                 if (TeleDashTimer < 390)
                 {
                     npc.velocity = Vector2.Zero;
-                    npc.rotation = FargoSoulsUtil.NPCRotateTowards(npc, Pos1, 10) * npc.spriteDirection;
+                    npc.spriteDirection = npc.direction = Math.Sign(npc.HorizontalDirectionTo(Pos1));
+                    npc.rotation = FargoSoulsUtil.NPCRotateTowards(npc, Pos1, 10, npc.rotation) * npc.spriteDirection;
                 }
                 if (TeleDashTimer >= 390)
                 {

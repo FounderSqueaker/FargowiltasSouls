@@ -1,5 +1,6 @@
 ﻿using Fargowiltas;
 using FargowiltasSouls.Content.Items.Weapons.Challengers;
+using FargowiltasSouls.Content.Patreon.ParadoxWolf;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,8 @@ namespace FargowiltasSouls
     {
         public class Items
         {
-           
+            public static bool[] AllowedSoulItemExceptions;
+            public static int[] MaterialOfImportantItem;
         }
         public class Projectiles
         {
@@ -38,6 +40,25 @@ namespace FargowiltasSouls
         {
             #region Items
             SetFactory itemFactory = ItemID.Sets.Factory;
+
+            Items.AllowedSoulItemExceptions = itemFactory.CreateBoolSet(false, [
+                ModContent.ItemType<ParadoxWolfSoul>(),
+                ItemID.RareEnchantment,
+                ItemID.SoulofLight,
+                ItemID.SoulofNight,
+                ItemID.SoulofFlight,
+                ItemID.SoulofFright,
+                ItemID.SoulofSight,
+                ItemID.SoulofMight,
+                ItemID.SoulBottleFlight,
+                ItemID.SoulBottleFright,
+                ItemID.SoulBottleLight,
+                ItemID.SoulBottleMight,
+                ItemID.SoulBottleNight,
+                ItemID.SoulBottleSight
+            ]);
+
+            Items.MaterialOfImportantItem = itemFactory.CreateIntSet(0);
 
             List<int> sacrificePreHM = [
                 // squrl

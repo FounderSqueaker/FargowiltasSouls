@@ -1,4 +1,5 @@
-﻿using FargowiltasSouls.Common.Graphics.Particles;
+﻿using FargowiltasSouls.Assets.Textures;
+using FargowiltasSouls.Common.Graphics.Particles;
 using FargowiltasSouls.Common.Utilities;
 using FargowiltasSouls.Core.Globals;
 using Microsoft.Xna.Framework;
@@ -45,44 +46,34 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
         {
             Projectile.ai[1]++;
             NPC npc = Main.npc[(int)owner];
-            if (!npc.active)
+            if (!npc.active || !(npc.type is NPCID.DD2JavelinstT1 or NPCID.DD2JavelinstT2 or NPCID.DD2JavelinstT3))
                 Projectile.Kill();
 
 
             float distance = 3f * 16;
 
-            if (Projectile.ai[1] > 70) // reflect
+            if (Projectile.ai[1] > 80) // reflect
             {
-                Main.projectile.Where(x => x.active && x.friendly && x.FargoSouls().DeletionImmuneRank == 0 && !FargoSoulsUtil.IsSummonDamage(x, false)).ToList().ForEach(x =>
+                Main.projectile.Where(x => EModeGlobalProjectile.CanBeAbsorbed(x)).ToList().ForEach(x =>
                 {
                     if (Vector2.Distance(x.Center, npc.Center) <= distance)
                     {
                         new SmallSparkle(x.Center, Vector2.UnitX, Color.White, 1f, 10).Spawn();
-                        SoundEngine.PlaySound(SoundID.Item150, Projectile.Center);
+                        SoundEngine.PlaySound(SoundID.Item52 with { Pitch = -0.3f }, Projectile.Center);
+                        SoundEngine.PlaySound(SoundID.Item13 with { Volume = 0.7f }, Projectile.Center);
 
-                        // Set ownership
-                        x.hostile = true;
-                        x.friendly = false;
-                        x.owner = Main.myPlayer;
-                        x.damage = Projectile.damage;
-                        x.FargoSouls().Reflected = true;
-
-                        // Turn around
-                        x.velocity *= -1f;
-
-                        // Flip sprite
-                        if (x.Center.X > npc.Center.X * 0.5f)
+                        if (FargoSoulsUtil.HostCheck)
                         {
-                            x.direction = 1;
-                            x.spriteDirection = 1;
-                        }
-                        else
-                        {
-                            x.direction = -1;
-                            x.spriteDirection = -1;
+                            for (int i = 0; i < 3; i++)
+                            {
+                                float vel = 9 + Main.rand.NextFloat(-0.5f, 0.5f);
+                                float rot = Main.rand.NextFloat(-0.2f, 0.2f);
+                                Projectile.NewProjectile(Projectile.InheritSource(Projectile), x.Center, (new Vector2(-x.direction, -1) * (vel * Vector2.One)).RotatedBy(rot), ModContent.ProjectileType<JavelinSpark>(), Projectile.damage, 1f);
+                            }
                         }
 
-                        //x.netUpdate = true;
+                        // kill
+                        x.active = false;
                     }
                 });
             }
@@ -132,6 +123,36 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
                 FargoSoulsUtil.GenericProjectileDraw(Projectile, lightColor);
             }
             return false;
+        }
+    }
+
+    public class JavelinSpark : ModProjectile
+    {
+        public override string Texture => FargoAssets.GetAssetString("Content/Projectiles", "Empty");
+
+        public override void SetDefaults()
+        {
+            Projectile.hostile = true;
+            Projectile.width = 10;
+            Projectile.height = 10;
+            
+        }
+
+        public override void AI()
+        {
+            Projectile.ai[0]++;
+            Projectile.velocity.Y += 0.35f;
+            Projectile.rotation = Projectile.velocity.ToRotation();
+
+            new SparkParticle(Projectile.Center, Projectile.velocity, Color.Lerp(Color.Orange, Color.Red, 0.5f), 0.3f, 4).Spawn();
+            Dust.NewDust(Projectile.Center, 1, 1, DustID.Torch, Scale: 0.2f);
+        }
+
+        public override void OnHitPlayer(Player target, Player.HurtInfo info)
+        {
+            base.OnHitPlayer(target, info);
+
+            target.AddBuff(BuffID.OnFire, 120);
         }
     }
 }

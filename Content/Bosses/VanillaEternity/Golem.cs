@@ -44,7 +44,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
             npc.trapImmune = true;
 
-            npc.damage = (int)Math.Round(npc.damage * 1.25);
+            npc.damage = (int)Math.Round(npc.damage * 1.15);
 
             npc.lifeMax = (int)Math.Round(npc.lifeMax * 1.75);
         }
@@ -137,9 +137,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(StompAttackCounter);
-            binaryWriter.Write7BitEncodedInt(SpikyBallTimer);
-            //binaryWriter.Write7BitEncodedInt(AntiAirTimer);
+            binaryWriter.Write(StompAttackCounter);
+            binaryWriter.Write(SpikyBallTimer);
+            //binaryWriter.Write(AntiAirTimer);
             bitWriter.WriteBit(DoStompBehaviour);
             bitWriter.WriteBit(HaveBoostedJumpHeight);
             bitWriter.WriteBit(IsInTemple);
@@ -149,9 +149,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            StompAttackCounter = binaryReader.Read7BitEncodedInt();
-            SpikyBallTimer = binaryReader.Read7BitEncodedInt();
-            //AntiAirTimer = binaryReader.Read7BitEncodedInt();
+            StompAttackCounter = binaryReader.ReadInt32();
+            SpikyBallTimer = binaryReader.ReadInt32();
+            //AntiAirTimer = binaryReader.ReadInt32();
             DoStompBehaviour = bitReader.ReadBit();
             HaveBoostedJumpHeight = bitReader.ReadBit();
             IsInTemple = bitReader.ReadBit();
@@ -162,7 +162,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             base.SetDefaults(npc);
 
             npc.lifeMax *= 3; // Compensation for 1.4.4 buff
-            npc.damage = (int)(npc.damage * 1.2);
+            npc.damage = (int)(npc.damage * 1.15);
         }
 
         public override bool SafePreAI(NPC npc)
@@ -482,7 +482,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(FistAttackRateSlowdownTimer);
+            binaryWriter.Write(FistAttackRateSlowdownTimer);
             bitWriter.WriteBit(DoAttackOnFistImpact);
         }
 
@@ -490,7 +490,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            FistAttackRateSlowdownTimer = binaryReader.Read7BitEncodedInt();
+            FistAttackRateSlowdownTimer = binaryReader.ReadInt32();
             DoAttackOnFistImpact = bitReader.ReadBit();
         }
 
@@ -499,7 +499,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             base.SetDefaults(npc);
 
             npc.lifeMax *= 2;
-            npc.damage = (int)(npc.damage * 1.3);
+            npc.damage = (int)(npc.damage * 1.15);
             NPCID.Sets.ImmuneToAllBuffs[npc.type] = true;
 
             //npc.scale += 0.5f;
@@ -603,8 +603,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(AttackTimer);
-            binaryWriter.Write7BitEncodedInt(DeathraySweepTargetHeight);
+            binaryWriter.Write(AttackTimer);
+            binaryWriter.Write(DeathraySweepTargetHeight);
             binaryWriter.Write(SuppressedAi1);
             binaryWriter.Write(SuppressedAi2);
             bitWriter.WriteBit(DoAttack);
@@ -618,8 +618,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            AttackTimer = binaryReader.Read7BitEncodedInt();
-            DeathraySweepTargetHeight = binaryReader.Read7BitEncodedInt();
+            AttackTimer = binaryReader.ReadInt32();
+            DeathraySweepTargetHeight = binaryReader.ReadInt32();
             SuppressedAi1 = binaryReader.ReadSingle();
             SuppressedAi2 = binaryReader.ReadSingle();
             DoAttack = bitReader.ReadBit();
@@ -645,8 +645,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         public override bool SafePreAI(NPC npc)
         {
             bool result = base.SafePreAI(npc);
-            if (npc.damage < 165)
-                npc.damage = 165;
+            if (npc.damage < 120)
+                npc.damage = 120;
 
             NPC golem = FargoSoulsUtil.NPCExists(NPC.golemBoss, NPCID.Golem);
             if (npc.type == NPCID.GolemHead)

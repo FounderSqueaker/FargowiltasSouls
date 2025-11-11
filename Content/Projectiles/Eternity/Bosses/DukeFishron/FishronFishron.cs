@@ -24,7 +24,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.DukeFishron
         {
             base.SetDefaults();
             Projectile.width = Projectile.height = 40;
-            CooldownSlot = -1;
+            CooldownSlot = ImmunityCooldownID.General;
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

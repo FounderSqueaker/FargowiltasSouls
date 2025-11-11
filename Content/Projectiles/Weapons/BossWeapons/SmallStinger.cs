@@ -118,7 +118,6 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.BossWeapons
                     // target.StrikeNPC(damage / 2, 0, 0, true); //normal damage but looks like a crit ech
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), p.Center, Vector2.Zero, ModContent.ProjectileType<SmallStingHitbox>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner);
                     target.AddBuff(ModContent.BuffType<InfestedBuff>(), 300);
-                    DustRing(p, 16);
                     p.Kill();
                     SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.4f }, Projectile.Center);
                     break;
@@ -147,21 +146,6 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.BossWeapons
             }
             SoundEngine.PlaySound(SoundID.Item10, Projectile.Center);
         }
-
-        private static void DustRing(Projectile proj, int max)
-        {
-            //dust
-            /*for (int i = 0; i < max; i++)
-            {
-                Vector2 vector6 = Vector2.UnitY * 5f;
-                vector6 = vector6.RotatedBy((i - (max / 2 - 1)) * 6.28318548f / max) + proj.Center;
-                Vector2 vector7 = vector6 - proj.Center;
-                int d = Dust.NewDust(vector6 + vector7, 0, 0, DustID.CorruptGibs, 0f, 0f, 0, default, 1.5f);
-                Main.dust[d].noGravity = true;
-                Main.dust[d].velocity = vector7;
-            }*/
-        }
-
 
         public override bool PreDraw(ref Color lightColor)
         {

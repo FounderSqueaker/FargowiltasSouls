@@ -16,6 +16,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.SkyAndRa
             NPCID.WyvernLegs,
             NPCID.WyvernTail,
             NPCID.AngryNimbus,
+            NPCID.MeteorHead,
             NPCID.MartianProbe
         );
 

@@ -1,5 +1,5 @@
-SoulToggler: "[i:FargowiltasSouls/EffectTogglerItem] Effect Toggles"
-ActiveSkillMenu: "[i:FargowiltasSouls/ActiveSkillMenuItem] Active Skills"
+SoulToggler: "[s:FargowiltasSouls/EffectToggler] Effect Toggles"
+ActiveSkillMenu: "[s:FargowiltasSouls/ActiveSkillMenu] Active Skills"
 Standard: Standard Mode
 Eternity: Eternity Mode
 Masochist: Masochist Mode
@@ -54,7 +54,8 @@ ExpandedFeatures:
 	-New Eternity-exclusive item drops
 	-Deviantt provides a starter pack and progress-based advice
 	-Improves base stats
-	-Player damage reduction is now scaled to emulate multiplicative scaling: every additional 15% DR reduces damage by 15% compared to the previous value, instead of being additive
+	-Player damage reduction is now scaled to emulate multiplicative scaling: 
+	 Every additional 15% DR reduces damage by 15% compared to the previous value, instead of being additive
 	-Debuffs wear off faster when not attacking, you cannot die to damage over time debuffs unless in Masochist Mode
 	-Changes the functionality and strength of certain items
 	'''
@@ -76,13 +77,8 @@ ActiveSkills: Active Skills
 AvailableSkills: Available Skills
 SelectDifficulty: Select Difficulty
 NoRespawn: Respawn prevented: Only one respawn per boss in {0} multiplayer!
-
-DeviQuestBoard: {
-	Title: Quest Board
-	InfoBlank: Select a Quest!
-	TaskButton: Tasks
-	RewardButton: Rewards
-	SubmitButton: Submit
-	TasksHeader: Current Tasks
-	RewardsHeader: Completion Rewards
-}
+TogglesEternity:
+	'''
+	Toggles the Eternity Mode, which overhauls many parts of the game. 
+	If combined with Master Mode, toggles Masochist Mode.
+	'''

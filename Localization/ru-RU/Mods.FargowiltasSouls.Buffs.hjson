@@ -551,11 +551,6 @@ SolarFlareBuff: {
 	Description: Mods.FargowiltasSouls.BuffDescription.SolarFlareBuff
 }
 
-SuperBleedBuff: {
-	DisplayName: Кровавый гейзер
-	Description: Mods.FargowiltasSouls.BuffDescription.SuperBleedBuff
-}
-
 CorruptingBuff: {
 	DisplayName: Увядание
 	Description: Вы увядаете

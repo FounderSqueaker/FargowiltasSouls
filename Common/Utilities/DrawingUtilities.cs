@@ -80,6 +80,42 @@ namespace FargowiltasSouls
             Main.EntitySpriteDraw(texture, drawPos.Value - Main.screenPosition + new Vector2(0f, projectile.gfxOffY), rectangle, projectile.GetAlpha(lightColor),
                     rotation.Value, origin, projectile.scale, spriteEffects, 0);
         }
+
+        public static void ProjectileWithGlowDraw(Projectile projectile, Color lightColor, Color? glowColor, float glowRadius, Texture2D texture = null, bool additiveGlow = true, bool alsoAdditiveMainSprite = false)
+        {
+            texture ??= TextureAssets.Projectile[projectile.type].Value;
+            glowColor ??= Color.White * 0.7f;
+
+            int sizeY = texture.Height / Main.projFrames[projectile.type]; //ypos of lower right corner of sprite to draw
+            int frameY = projectile.frame * sizeY;
+            Rectangle rectangle = new(0, frameY, texture.Width, sizeY);
+            Vector2 origin = rectangle.Size() / 2f;
+            SpriteEffects spriteEffects = projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+            if (additiveGlow)
+            {
+                Main.spriteBatch.UseBlendState(BlendState.Additive);
+            }
+
+            for (int j = 0; j < 12; j++)
+            {
+                Vector2 afterimageOffset = (MathHelper.TwoPi * j / 12f).ToRotationVector2() * glowRadius;
+
+                Main.EntitySpriteDraw(texture, projectile.Center + afterimageOffset - Main.screenPosition + new Vector2(0f, projectile.gfxOffY), rectangle, glowColor.Value,
+                    projectile.rotation, origin, projectile.scale, spriteEffects, 0);
+            }
+
+            if (additiveGlow && !alsoAdditiveMainSprite)
+            {
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+            }
+            GenericProjectileDraw(projectile, lightColor, texture);
+            if (additiveGlow && alsoAdditiveMainSprite)
+            {
+                Main.spriteBatch.ResetToDefault();
+            }
+        }
         public static void ProjectileWithTrailDraw(Projectile projectile, Color lightColor, Texture2D texture = null, int? trailLength = null, bool additiveTrail = false, bool alsoAdditiveMainSprite = true)
         {
 

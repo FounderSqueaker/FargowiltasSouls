@@ -91,7 +91,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
             Player player = Main.LocalPlayer;
             FargoSoulsPlayer modPlayer = player.FargoSouls();
 
-            if (modPlayer.ForceEffect(this, true) && player.FargoSouls().EquippedEnchants.Contains(this))
+            if (modPlayer.ForceEffect(this, true) && modPlayer.EquippedEnchants.Contains(this))
             {
                 for (int j = 0; j < 12; j++)
                 {

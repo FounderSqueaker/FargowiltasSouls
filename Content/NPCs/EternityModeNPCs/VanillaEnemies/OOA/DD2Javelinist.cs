@@ -4,6 +4,7 @@ using FargowiltasSouls.Core.Globals;
 using FargowiltasSouls.Core.NPCMatching;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.IO;
 using Terraria;
 using Terraria.Audio;
@@ -27,15 +28,15 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
-            binaryWriter.Write7BitEncodedInt(Timer);
-            binaryWriter.Write7BitEncodedInt(Javelin);
+            binaryWriter.Write(Timer);
+            binaryWriter.Write(Javelin);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-            Timer = binaryReader.Read7BitEncodedInt();
-            Javelin = binaryReader.Read7BitEncodedInt();
+            Timer = binaryReader.ReadInt32();
+            Javelin = binaryReader.ReadInt32();
         }
 
         public override bool SafePreAI(NPC npc)
@@ -65,28 +66,30 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
 
             if (Timer >= 180)
             {
-                if (Javelin == -1 && FargoSoulsUtil.HostCheck)
+                if (Javelin == -1)
                 {
                     if (FargoSoulsUtil.HostCheck)
                         Javelin = Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Center, Vector2.Zero, ModContent.ProjectileType<JavelinSpin>(), npc.damage / 6, 3f, ai0: npc.whoAmI);
                     SoundEngine.PlaySound(SoundID.Item60, npc.Center);
                     npc.netUpdate = true;
+                    NetSync(npc);
                 }
                 if (Timer > 390)
                 {
                     Timer = 0;
-                    if (Javelin != 1)
+                    if (Javelin != -1)
                     {
                         Main.projectile[Javelin].Kill();
                         Javelin = -1;
                     }
                     return false;
                 }
-                float jTimer = Main.projectile[Javelin].ai[1];
+                float jTimer = Math.Min(Main.projectile[Javelin].ai[1], 120);
 
-                npc.velocity.X = npc.direction * MathHelper.Lerp(0, 1.5f, jTimer / 80);
+                npc.velocity.X = npc.direction * MathHelper.Lerp(0, 3f, jTimer / 120);
 
-                if (jTimer > 85)
+
+                if (jTimer >= 100)
                     new SparkParticle(npc.Top - npc.spriteDirection * npc.width * Vector2.UnitX + Main.rand.NextFloat(0, npc.height) * Vector2.UnitY, -npc.velocity * 0.5f, Color.Green, 0.3f, 8).Spawn();
 
                 return false;

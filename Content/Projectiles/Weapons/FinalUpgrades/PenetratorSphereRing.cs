@@ -6,7 +6,6 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.FinalUpgrades
 {
     public class PenetratorSphereRing : Bosses.MutantBoss.MutantSphereRing
     {
-        public override string Texture => "Terraria/Images/Projectile_454";
 
         public override void SetDefaults()
         {

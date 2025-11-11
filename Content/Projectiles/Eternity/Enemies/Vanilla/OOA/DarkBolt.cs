@@ -15,7 +15,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
 
         public override void SetStaticDefaults()
         {
-            ProjectileID.Sets.TrailCacheLength[Type] = 6;
+            ProjectileID.Sets.TrailCacheLength[Type] = 12;
             ProjectileID.Sets.TrailingMode[Type] = 3;
         }
 
@@ -51,6 +51,9 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
             }
             if (state == 1)
                 Projectile.velocity *= 1.05f;
+
+            if (Projectile.ai[2] < 1)
+                Projectile.ai[2] += 1f / 30;
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info)
@@ -69,14 +72,27 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
             Vector2 origin2 = texture2D13.Size() / 2f;
             SpriteEffects spriteEffects = Projectile.spriteDirection < 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
+
+            Main.spriteBatch.UseBlendState(BlendState.Additive);
             for (int k = Projectile.oldPos.Length - 1; k >= 0; k--)
             {
                 Vector2 drawPos = Projectile.oldPos[k] - Main.screenPosition + origin2;
                 Color color = Projectile.GetAlpha(lightColor) * ((Projectile.oldPos.Length - k) / ((float)Projectile.oldPos.Length * 2));
-                Main.EntitySpriteDraw(texture2D13, drawPos, rectangle, color, Projectile.rotation, origin2, Projectile.scale, spriteEffects, 0);
+                color *= 1.75f;
+                Main.EntitySpriteDraw(texture2D13, drawPos, rectangle, color, Projectile.rotation, origin2, Projectile.scale * Projectile.ai[2], spriteEffects, 0);
             }
 
-            Main.EntitySpriteDraw(texture2D13, Projectile.Center - Main.screenPosition, rectangle, Color.White, Projectile.rotation, texture2D13.Size() / 2, Projectile.scale, spriteEffects, 0);
+            Color glowColor = Color.White * 0.7f;
+            Vector2 drawPosition = Projectile.Center - Main.screenPosition;
+            for (int j = 0; j < 12; j++)
+            {
+                Vector2 afterimageOffset = (MathHelper.TwoPi * j / 12).ToRotationVector2() * 2f * Projectile.scale * Projectile.ai[2];
+
+                Main.EntitySpriteDraw(texture2D13, drawPosition + afterimageOffset, rectangle, glowColor, Projectile.rotation, origin2, Projectile.scale * Projectile.ai[2], spriteEffects, 0);
+            }
+            Main.spriteBatch.ResetToDefault();
+
+            Main.EntitySpriteDraw(texture2D13, Projectile.Center - Main.screenPosition, rectangle, Color.White, Projectile.rotation, origin2, Projectile.scale * Projectile.ai[2], spriteEffects, 0);
             return false;
         }
     }

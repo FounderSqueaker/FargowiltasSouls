@@ -40,9 +40,11 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
             Projectile.hide = true;
         }
 
+        public override bool? CanDamage() => false;
+
         public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
         {
-            behindProjectiles.Add(index);
+            behindNPCs.Add(index);
         }
 
         bool spawn;

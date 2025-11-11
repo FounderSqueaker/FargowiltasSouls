@@ -49,14 +49,14 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
         public Vector2 AuraCenter = Vector2.Zero;
 
-        internal const float HealthMultiplier = 1.8f;
+        internal const float HealthMultiplier = 1.9f;
 
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(WorldEvilAttackCycleTimer);
-            binaryWriter.Write7BitEncodedInt(ChainBarrageTimer);
+            binaryWriter.Write(WorldEvilAttackCycleTimer);
+            binaryWriter.Write(ChainBarrageTimer);
             bitWriter.WriteBit(UseCorruptAttack);
             bitWriter.WriteBit(InPhase2);
             bitWriter.WriteBit(InPhase3);
@@ -68,8 +68,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            WorldEvilAttackCycleTimer = binaryReader.Read7BitEncodedInt();
-            ChainBarrageTimer = binaryReader.Read7BitEncodedInt();
+            WorldEvilAttackCycleTimer = binaryReader.ReadInt32();
+            ChainBarrageTimer = binaryReader.ReadInt32();
             UseCorruptAttack = bitReader.ReadBit();
             InPhase2 = bitReader.ReadBit();
             InPhase3 = bitReader.ReadBit();
@@ -498,27 +498,31 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         public bool TelegraphingLasers;
         public int TelegraphTimer;
 
+        public static int realLife = -1;
+
+        public static bool? realImmune = null;
+
 
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(PreventAttacks);
+            binaryWriter.Write(PreventAttacks);
             bitWriter.WriteBit(RepeatingAI);
             bitWriter.WriteBit(HasTelegraphedNormalLasers);
             bitWriter.WriteBit(TelegraphingLasers);
-            binaryWriter.Write7BitEncodedInt(TelegraphTimer);
+            binaryWriter.Write(TelegraphTimer);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            PreventAttacks = binaryReader.Read7BitEncodedInt();
+            PreventAttacks = binaryReader.ReadInt32();
             RepeatingAI = bitReader.ReadBit();
             HasTelegraphedNormalLasers = bitReader.ReadBit();
             TelegraphingLasers = bitReader.ReadBit();
-            TelegraphTimer = binaryReader.Read7BitEncodedInt();
+            TelegraphTimer = binaryReader.ReadInt32();
 
         }
 
@@ -777,6 +781,20 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             }    
             */
             return true;
+        }
+
+        public override void ModifyHoverBoundingBox(NPC npc, ref Rectangle boundingBox)
+        {
+            if (npc.realLife > -1 && realLife == -1 && realImmune == null)
+            {
+                NPC mouth = Main.npc[npc.realLife];
+                if (mouth.active && mouth.type == NPCID.WallofFlesh && mouth.dontTakeDamage)
+                {
+                    realImmune = true;
+                    mouth.dontTakeDamage = false;
+                    realLife = npc.realLife;
+                }
+            }
         }
 
         public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

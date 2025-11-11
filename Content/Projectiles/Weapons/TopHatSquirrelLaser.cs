@@ -18,7 +18,6 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons
 
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 10;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
         }
 
         public override Color? GetAlpha(Color lightColor)

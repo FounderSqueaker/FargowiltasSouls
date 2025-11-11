@@ -60,8 +60,9 @@ RainUmbrellaEffect: 雨云 雨伞盾牌
 RainInnerTubeEffect: 雨云 游泳圈效果
 RainFeatherfallEffect: 雨云 雨伞羽落效果
 SnowEffect: 冰雪 雪球
-JungleJump: 丛林 跳跃孢子
-JungleDashEffect: 丛林 冲刺
+// JungleDashEffect: Jungle Dash
+// JungleSporesEffect: Projectiles When Dashing
+// JungleDashCooldownEffect: Dash Delay Reduction
 MoltenEffect: 熔岩 狱火增益
 ShroomiteHealEffect: 蘑菇 蘑菇消耗增益
 ShroomiteMushroomPriority: 蘑菇 使用药水优先级

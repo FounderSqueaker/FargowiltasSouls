@@ -1,5 +1,5 @@
-// SoulToggler: "[i:FargowiltasSouls/EffectTogglerItem] Effect Toggles"
-// ActiveSkillMenu: "[i:FargowiltasSouls/ActiveSkillMenuItem] Active Skills"
+// SoulToggler: "[s:FargowiltasSouls/EffectToggler] Effect Toggles"
+// ActiveSkillMenu: "[s:FargowiltasSouls/ActiveSkillMenu] Active Skills"
 Standard: 标准模式
 Eternity: 永恒模式
 Masochist: 受虐模式
@@ -73,13 +73,8 @@ ActiveSkills: 主动技能
 AvailableSkills: 可用技能
 SelectDifficulty: 选择难度
 NoRespawn: 禁止重生：在{0}多人模式中每个玩家每场Boss战只能重生一次！
-
-DeviQuestBoard: {
-	// Title: Quest Board
-	// InfoBlank: Select a Quest!
-	// TaskButton: Tasks
-	// RewardButton: Rewards
-	// SubmitButton: Submit
-	// TasksHeader: Current Tasks
-	// RewardsHeader: Completion Rewards
-}
+/* TogglesEternity:
+	'''
+	Toggles the Eternity Mode, which overhauls many parts of the game. 
+	If combined with Master Mode, toggles Masochist Mode.
+	''' */

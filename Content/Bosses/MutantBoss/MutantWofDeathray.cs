@@ -149,6 +149,12 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
             }
         }
 
+        public override void PostAI()
+        {
+            base.PostAI();
+            Projectile.hide = true;
+        }
+
         public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
         {
             //empty, disables inherited function
@@ -163,8 +169,7 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
 
         public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
         {
-            if (Projectile.hide)
-                behindNPCs.Add(index);
+            behindProjectiles.Add(index);
         }
 
         public override bool PreDraw(ref Color lightColor) => false;
@@ -173,15 +178,12 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
 
         public static Color ColorFunction(float _)
         {
-            Color color = Color.LightSkyBlue; //new(232, 140, 240);
-            color.A = 0;
+            Color color = Color.Blue; //new(232, 140, 240);
+            color.A = 150;
             return color;
         }
         public void RenderPixelatedPrimitives(SpriteBatch spriteBatch)
         {
-            if (Projectile.hide)
-                return;
-
             ManagedShader shader = ShaderManager.GetShader("FargowiltasSouls.WoFDeathray");
 
             // Get the laser end position.

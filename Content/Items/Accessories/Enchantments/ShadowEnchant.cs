@@ -62,7 +62,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
         public override bool ExtraAttackEffect => true;
         public static int BaseDamage(Player player)
         {
-            int dmg = player.FargoSouls().AncientShadowEnchantActive ? 40 : 25;
+            int dmg = 25;
             return (int)(dmg * player.ActualClassDamage(DamageClass.Magic));
         }
         public override void PostUpdateEquips(Player player)
@@ -75,18 +75,13 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
                 int currentOrbs = player.ownedProjectileCounts[ModContent.ProjectileType<ShadowEnchantOrb>()];
 
                 int max = 2;
-                bool ancientShadow = modPlayer.AncientShadowEnchantActive;
                 bool forceEffect = modPlayer.ForceEffect<ShadowEnchant>();
 
                 if (modPlayer.TerrariaSoul)
                 {
                     max = 5;
                 }
-                else if (forceEffect && ancientShadow) //ancient shadow force
-                {
-                    max = 4;
-                }
-                else if (ancientShadow || (forceEffect)) //ancient shadow or normal shadow force
+                else if (forceEffect)
                 {
                     max = 3;
                 }

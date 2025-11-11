@@ -60,6 +60,8 @@ namespace FargowiltasSouls.Core.ModPlayers
         public bool LifeForceActive;
         public float AuraSizeBonus;
         public int TerrariaSoulProcCD;
+        public int AncientShadowCD;
+        public int AncientShadowCounter;
 
         public int TimeSinceHurt;
 
@@ -67,7 +69,7 @@ namespace FargowiltasSouls.Core.ModPlayers
         public bool MahoganyCanUseDR;
         public int MahoganyTimer;
         public float EbonwoodCharge;
-        public int ShadewoodCD;
+        public float ShadewoodCharge;
         public bool WoodEnchantDiscount;
         public int PearlwoodCritDuration;
         public int PearlwoodManaCD;
@@ -105,9 +107,10 @@ namespace FargowiltasSouls.Core.ModPlayers
         public Item SquireEnchantItem;
         public bool ValhallaEnchantActive = false;
 
-        public bool AncientShadowEnchantActive = false;
-        public int AncientShadowFlameCooldown;
         public int ShadowOrbRespawnTimer;
+        public float NinjaCounter;
+        public int NinjaDecrementCD;
+        public static int NinjaDecrementMaxCD = 20;
 
         public Item PlatinumEffect;
         public int PalladCounter;
@@ -130,8 +133,6 @@ namespace FargowiltasSouls.Core.ModPlayers
         public int IcicleCount;
         public int icicleCD;
         public int GladiatorCD;
-        public int GladiatorStandardCD;
-        public int IceQueenCrownCD;
         public bool GoldEnchMoveCoins;
         public bool GoldShell;
         private int goldHP;
@@ -151,12 +152,11 @@ namespace FargowiltasSouls.Core.ModPlayers
         public bool ApprenticeEnchantActive;
         public bool DarkArtistEnchantActive;
         public int BeeCD;
-        public int JungleCD;
+        public int ChloroTimer;
         public int BeetleAttackCD;
         public int Beetles;
         public float BeetleCharge;
         public int BeetleHitCD;
-        public int SpookyCD;
         public int BorealCD;
         public int PalmWoodForceCD;
         public bool CrystalEnchantActive = false;
@@ -186,7 +186,6 @@ namespace FargowiltasSouls.Core.ModPlayers
         public bool SnowVisual;
         public int SpectreCD;
         public int SpectreGhostTime;
-        public int ForbiddenCD;
         public bool MinionCrits;
         public int SpiderCD;
         //public bool squireReduceIframes;
@@ -224,6 +223,7 @@ namespace FargowiltasSouls.Core.ModPlayers
         public bool SupersonicSoul;
         public bool WorldShaperSoul;
         public bool FlightMasterySoul;
+        public int FlightSoulWingFrameX;
         public bool BuilderMode;
         public bool DimensionSoul;
         public bool UniverseSoul;
@@ -265,7 +265,6 @@ namespace FargowiltasSouls.Core.ModPlayers
         public bool DubiousCircuitry;
         public bool Supercharged;
         public bool TwinsInstall;
-        public int RemoteCD;
         public bool SuperInstall;
         public bool Probes;
         public bool MagicalBulb;
@@ -276,7 +275,6 @@ namespace FargowiltasSouls.Core.ModPlayers
         public int GroundPound;
         public Item BetsysHeartItem;
         public bool BetsyDashing;
-        public int SpecialDashCD;
         public bool MutantAntibodies;
         public Item GravityGlobeEXItem;
         public int AdditionalAttacksTimer;
@@ -290,8 +288,7 @@ namespace FargowiltasSouls.Core.ModPlayers
         public bool MasochistHeart;
         public bool SandsofTime;
         public bool SecurityWallet;
-        public int FrigidGemstoneCD;
-        public int WretchedPouchCD;
+        public float WretchedPouchCD;
         public bool NymphsPerfume;
         public bool NymphsPerfumeRespawn;
         public int NymphsPerfumeRestoreLife;
@@ -309,7 +306,6 @@ namespace FargowiltasSouls.Core.ModPlayers
         public bool TwinsEX;
         public bool TimsConcoction;
         public bool TimsInspect;
-        public int TimsInspectCD;
         public bool ReceivedMasoGift;
         public bool DeviGraze;
         public bool Graze;
@@ -321,7 +317,6 @@ namespace FargowiltasSouls.Core.ModPlayers
         public int DevianttHeartsCD;
         public Item MutantEyeItem;
         public bool MutantEyeVisual;
-        public int MutantEyeCD;
         public bool AbominableWandRevived;
         public bool AbomRebirth;
         public bool WasHurtBySomething;

@@ -43,25 +43,28 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
             NPCID.Sets.TrailingMode[NPCID.DD2WyvernT3] = 1;
         }
 
-        public override void SetDefaults(NPC entity)
+        public override void SetDefaults(NPC npc)
         {
-            base.SetDefaults(entity);
-            entity.noTileCollide = false;
+            base.SetDefaults(npc);
+            npc.noTileCollide = false;
+            npc.lifeMax = (int)(npc.lifeMax * 0.66667f);
         }
 
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
-            binaryWriter.Write7BitEncodedInt(Timer);
-            binaryWriter.Write7BitEncodedInt(State);
+            binaryWriter.Write(Timer);
+            binaryWriter.Write(State);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-            Timer = binaryReader.Read7BitEncodedInt();
-            State = binaryReader.Read7BitEncodedInt();
+            Timer = binaryReader.ReadInt32();
+            State = binaryReader.ReadInt32();
         }
+
+        public override bool? CanFallThroughPlatforms(NPC npc) => true;
 
         public override bool SafePreAI(NPC npc)
         {
@@ -94,9 +97,10 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                         if (FargoSoulsUtil.HostCheck)
                         {
                             Projectile p = Projectile.NewProjectileDirect(npc.GetSource_FromThis(), npc.Center + npc.direction * 10 * Vector2.UnitX, (crystalCenter.X - 10 - npc.Center.X) / 50 * Vector2.UnitX.RotatedBy(Main.rand.NextFloat(-spread, spread)), ProjectileID.BallofFire, npc.damage / 6, 1f);
-                            p.timeLeft = 60;
+                            p.timeLeft = 80;
                             p.hostile = true;
                             p.friendly = false;
+                            p.tileCollide = false;
                         }
                     }
                     if (Timer > 240)

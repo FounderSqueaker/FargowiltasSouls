@@ -41,7 +41,7 @@ namespace FargowiltasSouls.Content.Bosses.Champions.Will
         {
             base.OnSpawn(source);
             if (source is EntitySource_Parent parent && parent.Entity is NPC sourceNPC && sourceNPC.type is NPCID.DD2Betsy)
-                CooldownSlot = -1;
+                CooldownSlot = ImmunityCooldownID.General;
         }
         public override void AI()
         {

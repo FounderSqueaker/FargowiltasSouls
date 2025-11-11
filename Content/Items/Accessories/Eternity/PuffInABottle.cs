@@ -36,11 +36,15 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
     }
     public class PuffJump : ExtraJump
     {
-        public override Position GetDefaultPosition() => new After(BlizzardInABottle);
+        public override Position GetDefaultPosition() => AfterBottleJumps;
 
         public override IEnumerable<Position> GetModdedConstraints() //hover for explanation, leaving here if we want it later
         {
-            return null;
+            foreach (var jump in ExtraJumpLoader.OrderedJumps)
+            {
+                if (jump.Type != Type)
+                    yield return new After(jump);
+            }
         }
 
         public override float GetDurationMultiplier(Player player)
@@ -66,7 +70,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
 
             for (int i = 0; i < 2; i++)
             {
-                Dust dust = Dust.NewDustDirect(player.position + new Vector2(-34f, offsetY), 102, 32, DustID.Cloud, -player.velocity.X * 0.5f, player.velocity.Y * 0.5f, 100, Color.Gray, 1.5f);
+                Dust dust = Dust.NewDustDirect(player.position + new Vector2(-34f, offsetY), 102, 32, DustID.Cloud, -player.velocity.X * 0.5f, player.velocity.Y * 0.5f, 100, Scale: 1.5f);
                 dust.velocity = dust.velocity * 0.5f - player.velocity * new Vector2(0.1f, 0.3f);
             }
 

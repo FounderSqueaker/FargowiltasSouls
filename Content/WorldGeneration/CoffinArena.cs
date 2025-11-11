@@ -13,9 +13,8 @@ namespace FargowiltasSouls.Content.WorldGeneration
 {
     public static class CoffinArena
     {
-        public const int Width = 60; // Width of internal room
-
-        public const int Height = 35; // Height of internal room
+        public static int Width = 60; // Width of internal room
+        public static int Height = 35; // Height of internal room
 
         public static int VectorWidth => Width * 16;
         public static int VectorHeight => Height * 16;

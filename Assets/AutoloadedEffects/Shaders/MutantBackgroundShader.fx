@@ -1,5 +1,5 @@
 ﻿sampler scrollingFireNoise : register(s1);
-sampler fixedFlameNoise : register(s2);
+// sampler fixedFlameNoise : register(s2);
 
 float globalTime;
 float opacity;
@@ -10,9 +10,12 @@ float2 screenSize;
 
 float4 PixelShaderFunction(float4 sampleColor : COLOR0, float2 uv : TEXCOORD0) : COLOR0
 {
+    // pixelate
+    float pixelationLevel = screenSize * 0.5;
+    uv = floor(uv * pixelationLevel) / pixelationLevel;
+    
     // Split UVs into posterized bands along the Y axis, each with their own
-    // unique horizontal offset for the CRT effect. Time-variance can be easily
-    // included as well if desired.
+    // unique horizontal offset for the CRT effect.
     float bandCount = 300;
     float posterizedV = round(uv.y * bandCount) / bandCount;
     float maxBandOffset = 0.05;
@@ -39,7 +42,7 @@ float4 PixelShaderFunction(float4 sampleColor : COLOR0, float2 uv : TEXCOORD0) :
     float noiseLuminance = (noiseColor.r + noiseColor.g + noiseColor.b) / 3.0;
 
     float3 finalColor = lerp(sampleColor.rgb, noiseColor, noiseLuminance);
-    float finalModifier = 0.04 * opacity;
+    float finalModifier = 0.05 * opacity;
     finalColor = lerp(sampleColor.rgb, finalColor, finalModifier);
     float finalA = lerp(sampleColor.a, noiseLuminance, finalModifier);
     return float4(finalColor, finalA);

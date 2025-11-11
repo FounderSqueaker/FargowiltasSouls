@@ -32,7 +32,6 @@ namespace FargowiltasSouls.Content.Items.Accessories.Expert
                 GetItemTuple(ModContent.ItemType<IronEnchant>()),
                 GetItemTuple(ModContent.ItemType<RainEnchant>()),
                 GetItemTuple(ModContent.ItemType<WoodEnchant>()),
-                GetItemTuple(ModContent.ItemType<CactusEnchant>()),
                 GetItemTuple(ModContent.ItemType<TerraForce>()),
                 GetItemTuple(ModContent.ItemType<TimberForce>()),
                 GetItemTuple(ModContent.ItemType<LifeForce>()),
@@ -104,35 +103,50 @@ namespace FargowiltasSouls.Content.Items.Accessories.Expert
 
         public override bool AltFunctionUse(Player player) => true;
 
-        public override bool? UseItem(Player player)
+        void BoxItems(Player player)
         {
-            if (player.altFunctionUse == 2)
+            var storableItems = GetStorableItems();
+            foreach (Item item in player.inventory)
             {
-                var storableItems = GetStorableItems();
-                foreach (Item item in player.inventory)
+                foreach ((int itemType, string itemName) in storableItems)
                 {
-                    foreach ((int itemType, string itemName) in storableItems)
+                    if (itemType == item.type && !item.favorited && !storedItems.Any(storedItem => storedItem.type == item.type))
                     {
-                        if (itemType == item.type && !storedItems.Any(storedItem => storedItem.type == item.type))
-                        {
-                            storedItems.Add(item.Clone());
-                            item.TurnToAir(true);
-                            break;
-                        }
+                        storedItems.Add(item.Clone());
+                        item.TurnToAir(true);
+                        break;
                     }
                 }
             }
-            else
+        }
+
+        void UnboxItems(Player player)
+        {
+            if (storedItems.Count > 0)
             {
-                if (storedItems.Count > 0)
-                {
-                    foreach (Item item in storedItems)
-                        Item.NewItem(player.GetSource_FromThis(), player.Center, item);
-                    storedItems.Clear();
-                }
+                foreach (Item item in storedItems)
+                    Item.NewItem(player.GetSource_FromThis(), player.Center, item);
+                storedItems.Clear();
             }
+        }
+        
+        public override bool? UseItem(Player player)
+        {
+            if (player.altFunctionUse == 2)
+                UnboxItems(player);
+            else
+                BoxItems(player);
 
             return true;
+        }
+
+        public override bool CanRightClick() => true;
+
+        public override bool ConsumeItem(Player player) => false;
+
+        public override void RightClick(Player player)
+        {
+            UnboxItems(player);
         }
 
         public override void SafeModifyTooltips(List<TooltipLine> tooltips)

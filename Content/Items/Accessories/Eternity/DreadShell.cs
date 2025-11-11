@@ -34,13 +34,13 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
         }
         public static void ActiveEffects(Player player, Item item)
         {
+            player.noKnockback = true;
             player.buffImmune[ModContent.BuffType<AnticoagulationBuff>()] = true;
             player.AddEffect<DreadShellEffect>(item);
             player.AddEffect<ParryEffect>(item);
         }
         public override void UpdateAccessory(Player player, bool hideVisual)
         {
-            player.noKnockback = true;
             ActiveEffects(player, Item);
         }
         public override int DamageTooltip(out DamageClass damageClass, out Color? tooltipColor, out int? scaling)

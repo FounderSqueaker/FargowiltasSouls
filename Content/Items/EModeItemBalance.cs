@@ -230,6 +230,11 @@ namespace FargowiltasSouls.Content.Items
                     balanceNumber = 1.1f;
                     return EModeChange.Buff;
 
+                case ItemID.SkyFracture:
+                    balanceTextKeys = ["Damage", "SkyFracture"];
+                    balanceNumber = 1.15f;
+                    return EModeChange.Buff;
+
                 case ItemID.DD2SquireDemonSword: // brand of inferno
                     balanceTextKeys = ["Damage"];
                     balanceNumber = 1.2f;
@@ -265,7 +270,7 @@ namespace FargowiltasSouls.Content.Items
 
                 case ItemID.CrossNecklace:
                     balanceTextKeys = ["CrossNecklaceNerf"];
-                    return EModeChange.Nerf;
+                    return EModeChange.ReworkNerf;
 
                 #region Sword and Spear Reworks
                 case ItemID.CobaltNaginata:
@@ -360,6 +365,16 @@ namespace FargowiltasSouls.Content.Items
                 case ItemID.FeatherfallPotion:
                     balanceTextKeys = ["FeatherfallPotionNerf"];
                     return EModeChange.Nerf;
+
+                case ItemID.WrathPotion:
+                case ItemID.RagePotion:
+                case ItemID.InfernoPotion:
+                    if (!NPC.downedBoss2)
+                    {
+                        balanceTextKeys = ["EarlyPotions"];
+                        return EModeChange.ReworkNerf;
+                    }
+                    return EModeChange.None;
 
                 case ItemID.JungleRose:
                     balanceTextKeys = ["JungleRose"];
@@ -576,20 +591,23 @@ namespace FargowiltasSouls.Content.Items
                     return EModeChange.ReworkBuff;
 
                 case ItemID.Handgun:
+                    balanceTextKeys = ["Damage"];
+                    balanceNumber = 0.85f;
+                    return EModeChange.Nerf;
                 case ItemID.PhoenixBlaster:
                     balanceTextKeys = ["Damage"];
                     balanceNumber = 0.8f;
                     return EModeChange.Nerf;
 
-                case ItemID.DarkLance:
+                /*case ItemID.DarkLance:
                     balanceTextKeys = ["Damage"];
                     balanceNumber = 1.2f;
-                    return EModeChange.Buff;
+                    return EModeChange.Buff;*/
 
-                case ItemID.Sunfury:
+                /*case ItemID.Sunfury:
                     balanceTextKeys = ["Damage"];
                     balanceNumber = 1.3f;
-                    return EModeChange.Buff;
+                    return EModeChange.Buff;*/
 
                 case ItemID.Trimarang:
                     balanceTextKeys = ["Trimarang"];

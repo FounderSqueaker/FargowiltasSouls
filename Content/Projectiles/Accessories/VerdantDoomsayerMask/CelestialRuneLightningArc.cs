@@ -39,7 +39,6 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.VerdantDoomsayerMask
 
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 10;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
 
             FargowiltasSouls.MutantMod.Call("LowRenderProj", Projectile);
         }

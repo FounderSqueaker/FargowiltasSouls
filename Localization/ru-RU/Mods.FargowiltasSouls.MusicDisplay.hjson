@@ -1,4 +1,4 @@
-﻿NutsAndBolts: {
+NutsAndBolts: {
 	DisplayName: Nuts and Bolts
 	Author: от ProduceVGM
 }
@@ -31,4 +31,9 @@ PlatinumStar: {
 Laevateinn: {
 	DisplayName: Laevateinn
 	Author: от Yuri O
+}
+
+FinalWave: {
+	// DisplayName: Final Wave
+	// Author: by Zentaque & Azathoth
 }

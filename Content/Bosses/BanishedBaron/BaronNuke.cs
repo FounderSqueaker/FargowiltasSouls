@@ -119,8 +119,6 @@ namespace FargowiltasSouls.Content.Bosses.BanishedBaron
             Timer++;
             if (Timer >= Duration)
             {
-                if (Timer == Duration)
-                    SoundEngine.PlaySound(FargosSoundRegistry.BaronNukeExplosion, Projectile.Center);
                 Projectile.tileCollide = false;
                 Projectile.alpha = 0;
                 Projectile.position = Projectile.Center;
@@ -133,6 +131,7 @@ namespace FargowiltasSouls.Content.Bosses.BanishedBaron
             if (Timer > Duration)
             {
                 Projectile.Kill();
+                
             }
             if (Timer < Duration)
             {
@@ -192,6 +191,7 @@ namespace FargowiltasSouls.Content.Bosses.BanishedBaron
         }
         public override void OnKill(int timeLeft)
         {
+            SoundEngine.PlaySound(FargosSoundRegistry.BaronNukeExplosion, Projectile.Center);
             ScreenShakeSystem.StartShake(10, shakeStrengthDissipationIncrement: 10f / 30);
 
             ExplosionVisual(Projectile.Center, ExplosionDiameter, Projectile.GetSource_FromThis());

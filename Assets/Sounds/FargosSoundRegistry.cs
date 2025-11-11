@@ -15,7 +15,6 @@ namespace FargowiltasSouls.Assets.Sounds
         public const string WeaponsPath = SoundsPath + "Weapons/";
         public const string AccessoriesPath = SoundsPath + "Accessories/";
 
-        public static readonly SoundStyle Victory = new(SoundsPath + "Victory");
         public static readonly SoundStyle ThrowShort = new(SoundsPath + "ThrowShort");
         public static readonly SoundStyle ReticleBeep = new(SoundsPath + "ReticleBeep");
         public static readonly SoundStyle ReticleLockOn = new(SoundsPath + "ReticleLockOn");
@@ -26,6 +25,7 @@ namespace FargowiltasSouls.Assets.Sounds
         public static readonly SoundStyle StyxCharge = new(SoundsPath + "StyxCharge");
 
         // revives
+        public static readonly SoundStyle FossilRevive = new(AccessoriesPath + "FossilRevive");
         public static readonly SoundStyle SpectreRevive = new(AccessoriesPath + "SpectreRevive");
         public static readonly SoundStyle StyxRevive = new(AccessoriesPath + "StyxRevive");
 
@@ -51,9 +51,10 @@ namespace FargowiltasSouls.Assets.Sounds
         public static readonly SoundStyle TrojanDeath = new (SoundsPath + "Challengers/Trojan/TrojanDeath");
         public static readonly SoundStyle TrojanGunStartup = new (SoundsPath + "Challengers/Trojan/TrojanGunStartup");
         public static readonly SoundStyle TrojanSnowball = new (SoundsPath + "Challengers/Trojan/TrojanSnowball");
+        public static readonly SoundStyle TrojanSnowballSplat = new SoundStyle(SoundsPath + "Challengers/Trojan/SnowballSplat") with { Variants = [1, 2, 3] };
         public static readonly SoundStyle TrojanCannon = new(SoundsPath + "Challengers/Trojan/TrojanCannon");
         public static readonly SoundStyle Minigun = new(SoundsPath + "Challengers/Trojan/Minigun");
-        public static readonly SoundStyle TrojanHookLoop = new(SoundsPath + "Challengers/Trojan/TrojanHookLoop");
+        public static readonly SoundStyle TrojanHookLoop = new SoundStyle(SoundsPath + "Challengers/Trojan/TrojanHookLoop") with { Volume = 0.8f};
         public static readonly SoundStyle TrojanHookTelegraph = new(SoundsPath + "Challengers/Trojan/TrojanHookTelegraph");
         public static readonly SoundStyle TrojanSummon = new(SoundsPath + "Challengers/Trojan/TrojanSummon");
 

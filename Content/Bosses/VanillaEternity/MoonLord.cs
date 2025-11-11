@@ -38,7 +38,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         public override void SetDefaults(NPC npc)
         {
             base.SetDefaults(npc);
-            npc.lifeMax = (int)(MathF.Round(npc.lifeMax * 2.5f));
+            npc.lifeMax = (int)(MathF.Round(npc.lifeMax * 1.6f));
         }
         public override void OnFirstTick(NPC npc)
         {
@@ -149,8 +149,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt((byte)VulnerabilityState);
-            binaryWriter.Write7BitEncodedInt(AttackMemory);
+            binaryWriter.Write((byte)VulnerabilityState);
+            binaryWriter.Write(AttackMemory);
             binaryWriter.Write(VulnerabilityTimer);
             binaryWriter.Write(AttackTimer);
             bitWriter.WriteBit(EnteredPhase2);
@@ -161,8 +161,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            VulnerabilityState = (ClassState)binaryReader.Read7BitEncodedInt();
-            AttackMemory = binaryReader.Read7BitEncodedInt();
+            VulnerabilityState = (ClassState)binaryReader.ReadInt32();
+            AttackMemory = binaryReader.ReadInt32();
             VulnerabilityTimer = binaryReader.ReadSingle();
             AttackTimer = binaryReader.ReadSingle();
             EnteredPhase2 = bitReader.ReadBit();
@@ -373,7 +373,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
                                 float handToAttackWith = npc.localAI[AttackMemory];
                                 if (FargoSoulsUtil.HostCheck)
-                                    Projectile.NewProjectile(npc.GetSource_FromThis(), Main.npc[(int)handToAttackWith].Center, Vector2.Zero, ModContent.ProjectileType<MoonLordSun>(), 60, 0f, Main.myPlayer, npc.whoAmI, handToAttackWith);
+                                    Projectile.NewProjectile(npc.GetSource_FromThis(), Main.npc[(int)handToAttackWith].Center, Vector2.Zero, ModContent.ProjectileType<MoonLordSun>(), 40, 0f, Main.myPlayer, npc.whoAmI, handToAttackWith);
                             }
                         }
                         break;
@@ -429,25 +429,25 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                             {
                                 if (FargoSoulsUtil.HostCheck)
                                     Projectile.NewProjectile(npc.GetSource_FromThis(), Main.npc[(int)npc.localAI[0]].Center, Main.npc[(int)npc.localAI[0]].SafeDirectionTo(player.Center), ModContent.ProjectileType<PhantasmalDeathrayMLSmall>(),
-                                        60, 0f, Main.myPlayer, baseRotation * Main.rand.NextFloat(0.9f, 1.1f), npc.localAI[0]);
+                                        40, 0f, Main.myPlayer, baseRotation * Main.rand.NextFloat(0.9f, 1.1f), npc.localAI[0]);
                             }
                             else if (AttackMemory == 20)
                             {
                                 if (FargoSoulsUtil.HostCheck)
                                     Projectile.NewProjectile(npc.GetSource_FromThis(), Main.npc[(int)npc.localAI[1]].Center, Main.npc[(int)npc.localAI[2]].SafeDirectionTo(player.Center), ModContent.ProjectileType<PhantasmalDeathrayMLSmall>(),
-                                        60, 0f, Main.myPlayer, -baseRotation * Main.rand.NextFloat(0.9f, 1.1f), npc.localAI[1]);
+                                        40, 0f, Main.myPlayer, -baseRotation * Main.rand.NextFloat(0.9f, 1.1f), npc.localAI[1]);
                             }
                             else if (AttackMemory == 30)
                             {
                                 if (FargoSoulsUtil.HostCheck)
                                     Projectile.NewProjectile(npc.GetSource_FromThis(), Main.npc[(int)npc.localAI[2]].Center, Main.npc[(int)npc.localAI[1]].SafeDirectionTo(player.Center), ModContent.ProjectileType<PhantasmalDeathrayMLSmall>(),
-                                        60, 0f, Main.myPlayer, baseRotation * Main.rand.NextFloat(0.9f, 1.1f), npc.localAI[2]);
+                                        40, 0f, Main.myPlayer, baseRotation * Main.rand.NextFloat(0.9f, 1.1f), npc.localAI[2]);
                             }
                             else if (AttackMemory == 40)
                             {
                                 if (FargoSoulsUtil.HostCheck)
                                     Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Center, npc.SafeDirectionTo(player.Center), ModContent.ProjectileType<PhantasmalDeathrayMLSmall>(),
-                                        60, 0f, Main.myPlayer, -baseRotation * Main.rand.NextFloat(0.9f, 1.1f), npc.whoAmI);
+                                        40, 0f, Main.myPlayer, -baseRotation * Main.rand.NextFloat(0.9f, 1.1f), npc.whoAmI);
                             }
                         }
                         break;
@@ -467,12 +467,12 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                                             for (int i = 0; i < 4; i++)
                                             {
                                                 Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Center, p.SafeDirectionTo(Main.player[npc.target].Center).RotatedBy(MathHelper.TwoPi / 4 * i), ModContent.ProjectileType<MoonLordMoon>(),
-                                                    60, 0f, Main.myPlayer, p.identity, 1450);
+                                                    40, 0f, Main.myPlayer, p.identity, 1450);
                                             }
                                             for (int i = 0; i < 4; i++)
                                             {
                                                 Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Center, p.SafeDirectionTo(Main.player[npc.target].Center).RotatedBy(MathHelper.TwoPi / 4 * (i + 0.5f)), ModContent.ProjectileType<MoonLordMoon>(),
-                                                    60, 0f, Main.myPlayer, p.identity, -950);
+                                                    40, 0f, Main.myPlayer, p.identity, -950);
                                             }
                                         }
                                         break;
@@ -486,7 +486,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
                                 if (FargoSoulsUtil.HostCheck)
                                 {
-                                    const int max = 8;
+                                    const int max = 4;
                                     const int speed = 8;
                                     const float rotationModifier = 0.5f;
                                     int damage = 40;
@@ -693,8 +693,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(OnSpawnCounter);
-            binaryWriter.Write7BitEncodedInt(RitualProj);
+            binaryWriter.Write(OnSpawnCounter);
+            binaryWriter.Write(RitualProj);
             bitWriter.WriteBit(SpawnSynchronized);
             bitWriter.WriteBit(SlowMode);
         }
@@ -703,8 +703,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            OnSpawnCounter = binaryReader.Read7BitEncodedInt();
-            RitualProj = binaryReader.Read7BitEncodedInt();
+            OnSpawnCounter = binaryReader.ReadInt32();
+            RitualProj = binaryReader.ReadInt32();
             SpawnSynchronized = bitReader.ReadBit();
             SlowMode = bitReader.ReadBit();
         }

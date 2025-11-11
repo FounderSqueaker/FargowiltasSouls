@@ -12,7 +12,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Hell
         public int Counter;
         public override void SetDefaults(NPC npc)
         {
-            if (Main.hardMode)
+            if (NPC.downedMechBossAny)
             {
                 npc.lifeMax *= 3; 
             }

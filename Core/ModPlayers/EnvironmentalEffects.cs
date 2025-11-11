@@ -1,20 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fargowiltas.Content.Buffs;
+﻿using Fargowiltas.Content.Buffs;
 using Fargowiltas.Content.Projectiles;
 using FargowiltasSouls.Content.Buffs.Eternity;
 using FargowiltasSouls.Content.Items.Accessories.Enchantments;
 using FargowiltasSouls.Content.Projectiles.Eternity.Environment;
+using FargowiltasSouls.Content.Tiles;
 using FargowiltasSouls.Core.AccessoryEffectSystem;
 using FargowiltasSouls.Core.Systems;
 using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Chat;
 using Terraria.DataStructures;
+using Terraria.GameContent.Drawing;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -68,7 +70,7 @@ namespace FargowiltasSouls.Core.ModPlayers
                 //quicksand alpha, theres literally no water in ug... unless?
                 if (Player.ZoneUndergroundDesert)
                 {
-                //    FargoSoulsUtil.AddDebuffFixedDuration(Player, BuffID.Shimmer, 2);
+                    //    FargoSoulsUtil.AddDebuffFixedDuration(Player, BuffID.Shimmer, 2);
                 }
 
                 //make ichor proj do this?
@@ -97,7 +99,7 @@ namespace FargowiltasSouls.Core.ModPlayers
 
             if (Player.ZoneJungle && !fargoSoulsPlayer.PureHeart)
             {
-                JungleStorming(); 
+                JungleStorming();
 
                 //reduce max storm
                 //while storming ... spawn rates up
@@ -133,7 +135,7 @@ namespace FargowiltasSouls.Core.ModPlayers
             {
                 //Player.AddBuff(BuffID.WaterCandle, 2);
             }
-                    
+
             //boss environs
             //deerclops
             if (!NPC.downedDeerclops && Player.ZoneRockLayerHeight && Player.ZoneSnow && !LumUtils.AnyBosses() && !fargoSoulsPlayer.PureHeart)
@@ -144,7 +146,7 @@ namespace FargowiltasSouls.Core.ModPlayers
             // hallow lifelight sparks
             if (!WorldSavingSystem.DownedBoss[(int)WorldSavingSystem.Downed.Lifelight] && Player.ZoneHallow && Player.ZoneRockLayerHeight && !LumUtils.AnyBosses() && !fargoSoulsPlayer.PureHeart)
             {
-                LifelightSparkles();
+                //LifelightSparkles();
             }
 
             //other stuff not prevent by pure heart
@@ -152,10 +154,15 @@ namespace FargowiltasSouls.Core.ModPlayers
             {
                 MeteorFallenStars();
             }
+
+            //TryBouncingBlocks();
         }
+
+        
 
         private void EvilWaterDust(int dustId)
         {
+            return;
             //search around player for water, add dust
             Vector2 playerPos = Player.Center;
             int radius = 1000;
@@ -404,7 +411,7 @@ namespace FargowiltasSouls.Core.ModPlayers
         private void DesertDebuffs(Tile currentTile)
         {
 
-           // Main.NewText("hi " + Player.ZoneDirtLayerHeight + " " + Player.ZoneRockLayerHeight);
+            // Main.NewText("hi " + Player.ZoneDirtLayerHeight + " " + Player.ZoneRockLayerHeight);
 
             if ((Player.ZoneDirtLayerHeight || Player.ZoneRockLayerHeight) && Player.wet)
             {
@@ -663,5 +670,86 @@ namespace FargowiltasSouls.Core.ModPlayers
                 || Player.HasEffect<RainUmbrellaEffect>();
         }
 
+        //make mushrooms bounce more t:m:
+    private void TryBouncingBlocks()
+        {
+            Vector2 vector4 = Collision.TileCollision(Player.position, Player.velocity, Player.width, Player.height, false, false, (int)Player.gravDir);
+            bool falling = false;
+            if (vector4.Y > Player.gravity)
+            {
+                falling = true;
+            }
+            if (vector4.Y < 0f - Player.gravity)
+            {
+                falling = true;
+            }
+
+
+
+            bool num = !Player.wet && !Player.shimmering && (Player.velocity.Y >= 5f || Player.velocity.Y <= -5f);
+            bool flag = false;
+            bool flag2 = false;
+            float num2 = 1f;
+            if (!num)
+            {
+                return;
+            }
+            bool flag3 = false;
+            int num3 = 0;
+            foreach (Point touchedTile in Player.TouchedTiles)
+            {
+                Tile tile = Main.tile[touchedTile.X, touchedTile.Y];
+                if (tile != null && tile.HasTile && !tile.IsActuated && (tile.TileType == ModContent.TileType<BouncyMushroomTile>()))
+                {
+                    flag3 = true;
+                    num3 = touchedTile.Y;
+                    break;
+                }
+            }
+            if (!flag3)
+            {
+                return;
+            }
+
+            Main.NewText("yoooo");
+
+            Player.velocity.Y *= -0.8f;
+            if (Player.controlJump)
+            {
+                Player.velocity.Y = MathHelper.Clamp(Player.velocity.Y, -13f, 13f);
+            }
+            Player.position.Y = num3 * 16 - ((Player.velocity.Y < 0f) ? Player.height : (-16));
+            Player.FloorVisuals(falling);
+            if (flag2)
+            {
+                Vector2 vector = (Player.fullRotation - (float)Math.PI / 2f).ToRotationVector2();
+                if (vector.Y > 0f)
+                {
+                    vector.Y *= -1f;
+                }
+                vector.Y = vector.Y * 0.5f + -0.5f;
+                float num4 = 0f - vector.Y;
+                if (num4 < 0f)
+                {
+                    num4 = 0f;
+                }
+                float num5 = num4 * 1.5f + 1f;
+                float value = Math.Abs(Player.velocity.Y) * num5 * num2;
+                value = MathHelper.Clamp(value, 2f, 16f);
+                Player.velocity = vector * value;
+                float num6 = 20f;
+                Vector2 vector2 = Player.Center + (Player.fullRotation + (float)Math.PI / 2f).ToRotationVector2() * num6;
+                vector2 = Player.Bottom;
+                ParticleOrchestrator.RequestParticleSpawn(clientOnly: true, ParticleOrchestraType.Keybrand, new ParticleOrchestraSettings
+                {
+                    PositionInWorld = vector2
+                }, Player.whoAmI);
+            }
+            Player.velocity.Y = MathHelper.Clamp(Player.velocity.Y, -20f, 20f);
+            if (Player.velocity.Y * Player.gravDir < 0f)
+            {
+                Player.fallStart = (int)Player.position.Y / 16;
+            }
+        }
     }
 }

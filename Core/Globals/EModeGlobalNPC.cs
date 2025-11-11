@@ -1,22 +1,25 @@
-﻿using FargowiltasSouls.Content.Achievements;
-using FargowiltasSouls.Content.Bosses.MutantBoss;
-using FargowiltasSouls.Content.Buffs.Eternity;
-using FargowiltasSouls.Content.Buffs.Souls;
-using FargowiltasSouls.Content.Items.Accessories.Eternity;
-using FargowiltasSouls.Content.Items.Placables;
-using FargowiltasSouls.Content.NPCs.EternityModeNPCs.CustomEnemies.Desert;
-using FargowiltasSouls.Content.Projectiles.Eternity.Environment;
-using FargowiltasSouls.Core.AccessoryEffectSystem;
-using FargowiltasSouls.Core.ItemDropRules.Conditions;
-using FargowiltasSouls.Core.Systems;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FargowiltasSouls.Common.Graphics.Particles;
+using FargowiltasSouls.Content.Achievements;
+using FargowiltasSouls.Content.Bosses.MutantBoss;
+using FargowiltasSouls.Content.Buffs.Eternity;
+using FargowiltasSouls.Content.Items.Placables;
+using FargowiltasSouls.Content.NPCs.EternityModeNPCs.CustomEnemies.Desert;
+using FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern;
+using FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.Jungle;
+using FargowiltasSouls.Content.Projectiles.Eternity.Environment;
+using FargowiltasSouls.Core.ItemDropRules.Conditions;
+using FargowiltasSouls.Core.Systems;
+using Luminance.Core.Graphics;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent.Events;
 using Terraria.GameContent.ItemDropRules;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -34,9 +37,11 @@ namespace FargowiltasSouls.Core.Globals
         public bool BeetleDefenseAura;
         public bool BeetleUtilAura;
         public int BeetleTimer;
+        public int LacCloudTimer;
 
         public bool PaladinsShield;
         public bool isWaterEnemy;
+        public bool BeingSuckedByDread;
 
         //public List<int> auraDebuffs = new List<int>();
 #pragma warning disable CA2211
@@ -74,12 +79,14 @@ namespace FargowiltasSouls.Core.Globals
         public override void ResetEffects(NPC npc)
         {
             PaladinsShield = false;
+            BeingSuckedByDread = false;
 
             if (BeetleTimer > 0 && --BeetleTimer <= 0)
             {
                 BeetleDefenseAura = false;
                 BeetleOffenseAura = false;
                 BeetleUtilAura = false;
+                LacCloudTimer = 0;
             }
         }
 
@@ -92,12 +99,6 @@ namespace FargowiltasSouls.Core.Globals
             {
                 npc.lifeMax = (int)Math.Round(npc.lifeMax * 1.1f);
             }
-
-            //VERY old masomode boss scaling numbers, leaving here in case we ever want to do the funny again
-            // +2.5% hp each kill 
-            // +1.25% damage each kill
-            // max of 4x hp and 2.5x damage
-            //pre hm get 8x and 5x
         }
 
         public override bool PreAI(NPC npc)
@@ -105,8 +106,8 @@ namespace FargowiltasSouls.Core.Globals
             if (!WorldSavingSystem.EternityMode)
                 return base.PreAI(npc);
 
-            //in pre-hm, enemies glow slightly at night
-            if (!Main.dayTime && !Main.hardMode && Main.player.Any(p => p.Alive() && p.FargoSouls().SquirrelCharm != null))
+            //squirrel 
+            if (!Main.dayTime && Main.player.Any(p => p.Alive() && p.FargoSouls().SquirrelCharm != null))
             {
                 int x = (int)npc.Center.X / 16;
                 int y = (int)npc.Center.Y / 16;
@@ -120,27 +121,8 @@ namespace FargowiltasSouls.Core.Globals
                 }
             }
 
-
-            /*if (Stop > 0)
-            {
-                Stop--;
-                npc.position = npc.oldPosition;
-                npc.frameCounter = 0;
-            }*/
-
             if (!npc.dontTakeDamage)
             {
-                /*
-                bool boss = npc.boss || npc.type == NPCID.EaterofWorldsHead || npc.type == NPCID.EaterofWorldsBody || npc.type == NPCID.EaterofWorldsTail;
-                if (npc.position.Y / 16 < Main.worldSurface * 0.35f && !boss) //enemy in space
-                    npc.AddBuff(BuffID.Suffocation, 2, true);
-                else if (npc.position.Y / 16 > Main.maxTilesY - 200 && !boss && !Main.remixWorld) //enemy in hell
-                {
-                    //because of funny bug where town npcs fall forever in mp, including into hell
-                    if (FargoSoulsUtil.HostCheck)
-                        npc.AddBuff(BuffID.OnFire, 2);
-                }
-                */
                 Vector2 tileCenter = npc.Center;
                 tileCenter.X /= 16;
                 tileCenter.Y /= 16;
@@ -153,56 +135,112 @@ namespace FargowiltasSouls.Core.Globals
                         npc.AddBuff(BuffID.Wet, 2);
                     }
                 }
-
-                if (npc.wet && !npc.honeyWet && !npc.lavaWet && !npc.shimmerWet && !npc.noTileCollide && !isWaterEnemy && npc.HasPlayerTarget)
-                {
-                    /*npc.AddBuff(ModContent.BuffType<LethargicBuff>(), 2, true);
-                    if (Main.player[npc.target].ZoneCorrupt)
-                        npc.AddBuff(BuffID.CursedInferno, 2, true);
-                    if (Main.player[npc.target].ZoneCrimson)
-                        npc.AddBuff(BuffID.Ichor, 2, true); 
-                    if (Main.player[npc.target].ZoneHallow)
-                        npc.AddBuff(ModContent.BuffType<SmiteBuff>(), 2, true);
-                    if (Main.player[npc.target].ZoneJungle)
-                        npc.AddBuff(BuffID.Poisoned, 2, true);*/
-                }
-
-
-
-                //if (!npc.boss && !npc.friendly && Main.SceneMetrics.EnoughTilesForSnow)
-                //{
-                //    npc.AddBuff(ModContent.BuffType<FrozenBuff>(), 3600);
-                //}
             }
 
-            
+            if (BeetleTimer > 0 && npc.Hostile())
+            {
+                Vector2 pos = npc.position + new Vector2(Main.rand.Next(0, npc.width), Main.rand.Next(0, npc.height));
+                float scale = Main.rand.NextFloat(0.4f, 0.8f);
+                if (BeetleOffenseAura)
+                {
+                    Vector2 vel = new(Main.rand.NextFloat(-0.3f, 0.3f), -Main.rand.NextFloat(1.6f, 2.4f));
+                    Particle p = new SparkParticle(pos + npc.velocity, vel, Color.DarkRed, scale, 30);
+                    if (Main.rand.NextBool(5)) p.Spawn();
 
+                    //ai speed increase to slime/fighter ai
+                    if (npc.aiStyle == NPCAIStyleID.Slime && !npc.noGravity)
+                    {
+                        if (npc.velocity.Y == 0) npc.ai[0] += 2; //rests on ground for 1/3rd of normal time
+                        else if (npc.velocity.Y > 0) npc.GravityMultiplier *= 2f; //drop down faster after jumps
+                    }
+                    if (npc.aiStyle == NPCAIStyleID.Fighter)
+                    {
+                        if (Math.Abs(npc.velocity.X) < 2 && Math.Abs(npc.velocity.X) > 0.1f && npc.ai[1] == 0) 
+                            npc.velocity.X += 0.5f * npc.direction; //flat speed increase
+                    }
+                }
+                if (BeetleDefenseAura)
+                {
+                    Vector2 vel = new(Main.rand.NextFloat(-0.3f, 0.3f), -Main.rand.NextFloat(1.6f, 2.4f));
+                    Particle p = new SmallSparkle(pos + npc.velocity, vel + npc.velocity, Color.DarkCyan, scale / 2, Main.rand.Next(20, 30));
+                    if (Main.rand.NextBool(5)) p.Spawn();
+
+                    //knockback res up
+                    if (BeetleTimer != 1)
+                    {
+                        if (npc.knockBackResist > 0.1f)
+                            npc.knockBackResist = 0.1f;
+                    }
+                    else npc.knockBackResist = npc.FargoSouls().defKnockBackResist;
+                }
+                if (BeetleUtilAura)
+                {
+                    if (LacCloudTimer++ >= 180 && FargoSoulsUtil.HostCheck)
+                    {
+                        LacCloudTimer = Main.rand.Next(-30, 31);
+                        int dmg = FargoSoulsUtil.ScaledProjectileDamage(40);
+                        Projectile.NewProjectile(npc.GetSource_Misc("Lac"), npc.Center, Main.rand.NextVector2CircularEdge(1, 1) + npc.velocity, ModContent.ProjectileType<LacBeetleCloud>(), dmg, 0);
+                    }
+                }
+            }
             return true;
         }
 
         public override void OnHitPlayer(NPC npc, Player target, Player.HurtInfo hurtInfo)
         {
-            if (WorldSavingSystem.EternityMode)
+            if (!WorldSavingSystem.EternityMode)
+                return;
+
+            if (BeetleTimer > 0)
             {
-                //switch (npc.type)
-                //{
-                //    case NPCID.EaterofWorldsHead:
-                //    case NPCID.EaterofWorldsBody:
-                //    case NPCID.EaterofWorldsTail:
-                //        target.AddBuff(BuffID.CursedInferno, 180);
-                //        target.AddBuff(ModContent.BuffType<Rotting>(), 600);
-                //        break;
+                if (BeetleOffenseAura)
+                {
+                    for (int i = 0; i < 10; i++)
+                    {
+                        Vector2 pos = target.position + new Vector2(Main.rand.Next(0, target.width), Main.rand.Next(0, target.height));
+                        Vector2 vel = Main.rand.NextVector2CircularEdge(5, 5) * Main.rand.NextFloat(0.8f, 1.2f);
+                        float scale = Main.rand.NextFloat(0.4f, 0.8f);
+                        Particle p = new SparkParticle(pos, vel, Color.DarkRed, scale, Main.rand.Next(60, 90));
+                        p.Spawn();
+                    }
 
-                //    default:
-                //        break;
-                //}
-
+                    if (!Main.dedServ)
+                        SoundEngine.PlaySound(SoundID.Shatter with { Pitch = 0.7f }, target.Center);
+                }
                 if (BeetleUtilAura)
                 {
-                    target.FargoSouls().AddBuffNoStack(BuffID.Frozen, 30);
+
                 }
             }
         }
+        public void OnHitEither(NPC npc, Player player, int damageDone)
+        {
+            if (BeetleTimer > 0 && BeetleDefenseAura)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    Vector2 pos = npc.position + new Vector2(Main.rand.Next(0, npc.width), Main.rand.Next(0, npc.height));
+                    Vector2 vel = Main.rand.NextVector2CircularEdge(5, 5) * Main.rand.NextFloat(0.8f, 1.2f);
+                    float scale = Main.rand.NextFloat(0.4f, 0.8f);
+                    Particle p = new RectangleParticle(pos, vel, Color.DarkCyan, scale / 4, Main.rand.Next(20, 30), Main.rand.NextBool());
+                    p.Spawn();
+                }
+                if (!Main.dedServ) SoundEngine.PlaySound(SoundID.Item27 with {Pitch = 0.8f, MaxInstances = 1}, npc.Center);
+            }
+        }
+        public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
+        {
+            if (!WorldSavingSystem.EternityMode)
+                return;
+            OnHitEither(npc, Main.player[projectile.owner], damageDone);
+        }
+        public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
+        {
+            if (!WorldSavingSystem.EternityMode)
+                return;
+            OnHitEither(npc, player, damageDone);
+        }
+
         public static bool DemonCondition(Player player) =>  !Main.remixWorld || MathF.Abs(player.Center.X / 16f - Main.spawnTileX) > Main.maxTilesX / 3;
         public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
         {
@@ -275,9 +313,10 @@ namespace FargowiltasSouls.Core.Globals
             bool noEvent = Main.invasionType == 0 && !oldOnesArmy && !frostMoon && !pumpkinMoon && !solarEclipse && !lunarEvents;
             bool thunderstorm = Main.IsItStorming && surface && !snow && !spawnInfo.Player.ZoneSandstorm && noEvent;
 
-            bool noInvasion = FargowiltasSouls.NoInvasion(spawnInfo);
+            bool noInvasion = !spawnInfo.Invasion;//FargowiltasSouls.NoInvasion(spawnInfo);
             bool worldEvil = WorldGen.crimson;
-            bool normalSpawn = !spawnInfo.PlayerInTown && noInvasion && !oldOnesArmy && noEvent;
+            bool normalSpawn = !spawnInfo.PlayerInTown && noInvasion && !oldOnesArmy;
+            bool wallHackerSpawn = !spawnInfo.PlayerSafe;
 
 
             //MASOCHIST MODE
@@ -308,7 +347,7 @@ namespace FargowiltasSouls.Core.Globals
 
                             if (Main.moonPhase == 0) //full moon
                             {
-                                pool[NPCID.Raven] = .7f;
+                                pool[NPCID.Raven] = .3f;
                             }
 
                             if (jungle)
@@ -353,7 +392,6 @@ namespace FargowiltasSouls.Core.Globals
                                 pool[NPCID.DarkCaster] = .02f;
                             if (noBiome && (!pool.ContainsKey(NPCID.RockGolem) || pool[NPCID.RockGolem] < 0.01f))
                                 pool[NPCID.RockGolem] = 0.01f;
-                                
                         }
 
                         if (NPC.downedGoblins && !NPC.savedGoblin && !NPC.AnyNPCs(NPCID.BoundGoblin))
@@ -364,8 +402,14 @@ namespace FargowiltasSouls.Core.Globals
                     }
                     else if (underworld && normalSpawn)
                     {
-                        pool[NPCID.LeechHead] = .02f;
+                        if (wallHackerSpawn)
+                            pool[NPCID.LeechHead] = .02f;
                         pool[NPCID.BlazingWheel] = .05f;
+                    }
+                    else if (sky && normalSpawn)
+                    {
+                        if (NPC.downedBoss2 && wallHackerSpawn && (x / 16f < Main.maxTilesX * 0.45 || x / 16f > Main.maxTilesX * 0.55)) //harpy condition
+                            pool[NPCID.MeteorHead] = .1f;
                     }
 
                     //height-independent biomes
@@ -377,27 +421,36 @@ namespace FargowiltasSouls.Core.Globals
 
                     if (mushroom && normalSpawn)
                     {
-                        pool[NPCID.FungiBulb] = .02f;
                         pool[NPCID.MushiLadybug] = .02f;
                         pool[NPCID.ZombieMushroom] = .02f;
                         pool[NPCID.ZombieMushroomHat] = .02f;
                         pool[NPCID.AnomuraFungus] = .02f;
                         pool[NPCID.TruffleWorm] = .005f;
+                        if (wallHackerSpawn)
+                            pool[NPCID.FungiBulb] = .02f;
                     }
 
-                    if (ocean)
+                    if (ocean && normalSpawn)
                     {
-                        if (normalSpawn)
+                        if (spawnInfo.Water)
+                        {
+                            pool[NPCID.AnglerFish] = .1f;
+                        }
+
+                        if (wallHackerSpawn)
+                        {
                             pool[NPCID.PigronHallow] = .006f;
+                        }
 
                         if (Main.bloodMoon && spawnInfo.Water)
                         {
                             pool[NPCID.EyeballFlyingFish] = .02f;
-                            pool[NPCID.ZombieMerman] = .02f;
+                            if (wallHackerSpawn) //technically yeah he does
+                                pool[NPCID.ZombieMerman] = .02f;
                         }
                     }
 
-                    if (normalSpawn && (!surface || Main.tile[spawnInfo.SpawnTileX, spawnInfo.SpawnTileY].WallType == WallID.DirtUnsafe))
+                    if (normalSpawn && (!surface || Main.tile[x, y].WallType == WallID.DirtUnsafe))
                     {
                         pool[NPCID.Mimic] = .002f;
                     }
@@ -441,10 +494,10 @@ namespace FargowiltasSouls.Core.Globals
 
                                 if (Main.moonPhase == 0) //full moon
                                 {
-                                    pool[NPCID.Raven] = .3f;
+                                    pool[NPCID.Raven] = .1f;
                                 }
 
-                                if (NPC.downedMechBossAny)
+                                if (NPC.downedMechBossAny && wallHackerSpawn)
                                     pool[NPCID.Probe] = 0.01f;
 
                                 if (NPC.downedPlantBoss)
@@ -507,7 +560,7 @@ namespace FargowiltasSouls.Core.Globals
                             {
                                 pool[NPCID.CreatureFromTheDeep] = .02f;
                             }
-                            if (Main.bloodMoon && spawnInfo.Water)
+                            if (Main.bloodMoon && spawnInfo.Water && wallHackerSpawn)
                             {
                                 pool[NPCID.BloodEelHead] = .02f;
                                 pool[NPCID.GoblinShark] = .02f;
@@ -547,9 +600,10 @@ namespace FargowiltasSouls.Core.Globals
                     }
                     else if (sky && normalSpawn)
                     {
-                       if (NPC.CountNPCS(NPCID.AngryNimbus) < 2) //abide by vanilla limit
-                           pool[NPCID.AngryNimbus] = .1f;
-                       pool[NPCID.MartianProbe] = .01f;
+                        if (NPC.CountNPCS(NPCID.AngryNimbus) < 2) //abide by vanilla limit
+                            pool[NPCID.AngryNimbus] = .1f;
+                        pool[NPCID.MeteorHead] = .05f;
+                        pool[NPCID.MartianProbe] = .01f;
 
                         if (NPC.downedGolemBoss)
                         {
@@ -590,6 +644,8 @@ namespace FargowiltasSouls.Core.Globals
                 {
                     pool[NPCID.SnowFlinx] = .05f;
                 }
+
+                pool[NPCID.BartenderUnconscious] = 0f;
             }
         }
 
@@ -607,6 +663,12 @@ namespace FargowiltasSouls.Core.Globals
                 return;
             if (npc.type == NPCID.Painter && WorldSavingSystem.DownedMutant && NPC.AnyNPCs(ModContent.NPCType<MutantBoss>()))
                 Item.NewItem(npc.GetSource_Loot(), npc.Hitbox, ModContent.ItemType<ScremPainting>());
+
+            if (BeetleTimer > 0 && BeetleUtilAura)
+            {
+                int dmg = FargoSoulsUtil.ScaledProjectileDamage(40);
+                Projectile.NewProjectile(npc.GetSource_Death(), npc.Center, Vector2.Zero, ModContent.ProjectileType<LacBeetleCloud>(), dmg, 0);
+            }
 
             int closestP = Player.FindClosest(npc.Center, 1, 1);
             if (CrimsonEnemies.Contains(npc.type) && !FargoSoulsUtil.AnyBossAlive() && closestP >= 0 && Main.player[closestP].ZoneCrimson && (Main.player[closestP].ZoneOverworldHeight || Main.player[closestP].ZoneDirtLayerHeight))
@@ -841,8 +903,10 @@ namespace FargowiltasSouls.Core.Globals
                     break;
 
                 case NPCID.GraniteFlyer:
-                case NPCID.GraniteGolem:
                     TimsConcoctionDrop(ItemDropRule.Common(ItemID.IronskinPotion, 1, 1, 2));
+                    break;
+                case NPCID.GraniteGolem:
+                    TimsConcoctionDrop(ItemDropRule.Common(ItemID.EndurancePotion, 1, 1, 2));
                     break;
 
                 case NPCID.RockGolem:
@@ -858,7 +922,7 @@ namespace FargowiltasSouls.Core.Globals
                     break;
 
                 case NPCID.GoblinSorcerer:
-                    TimsConcoctionDrop(new CommonDrop(ItemID.ManaRegenerationPotion, 3, 1, 2, 2));
+                    TimsConcoctionDrop(new CommonDrop(ItemID.ManaRegenerationPotion, 1, 2, 2));
                     break;
 
                 case NPCID.PinkJellyfish:
@@ -1080,7 +1144,7 @@ namespace FargowiltasSouls.Core.Globals
         {
             if (WorldSavingSystem.EternityMode && BeetleOffenseAura)
             {
-                modifiers.FinalDamage *= 1.25f;
+                modifiers.FinalDamage *= 1.4f;
             }
         }
 
@@ -1255,6 +1319,22 @@ namespace FargowiltasSouls.Core.Globals
                 }
             }
         }*/
+        public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+        {
+            if (!WorldSavingSystem.EternityMode)
+                return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
+
+            if (BeetleTimer > 0)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+
+                int type = BeetleUtilAura ? ItemID.VioletDye : BeetleOffenseAura ? ItemID.RedDye : ItemID.CyanDye;
+                ArmorShaderData shader = GameShaders.Armor.GetShaderFromItemId(type);
+                shader.Apply(npc, new Terraria.DataStructures.DrawData?());
+            }
+            return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
+        }
         public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
         {
             bool ret = base.CanHitPlayer(npc, target, ref cooldownSlot);
@@ -1268,6 +1348,11 @@ namespace FargowiltasSouls.Core.Globals
                     return false;
             }
             return ret;
+        }
+        public override bool? CanFallThroughPlatforms(NPC npc)
+        {
+            if (BeingSuckedByDread) return true;
+            return base.CanFallThroughPlatforms(npc);
         }
         public static void CustomReflect(NPC npc, int dustID, int ratio = 1)
         {

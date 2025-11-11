@@ -59,7 +59,6 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.SwarmDrops
 
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 10;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
         }
 
         public override void AI()

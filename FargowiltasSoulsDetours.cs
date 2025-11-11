@@ -1,8 +1,11 @@
-﻿using FargowiltasSouls.Content.Bosses.VanillaEternity;
+﻿using Fargowiltas;
+using FargowiltasSouls.Common;
+using FargowiltasSouls.Content.Bosses.VanillaEternity;
 using FargowiltasSouls.Content.Buffs;
 using FargowiltasSouls.Content.Items;
 using FargowiltasSouls.Content.Items.Accessories.Enchantments;
 using FargowiltasSouls.Content.Items.Accessories.Eternity;
+using FargowiltasSouls.Content.Patreon.ParadoxWolf;
 using FargowiltasSouls.Content.PlayerDrawLayers;
 using FargowiltasSouls.Content.Projectiles;
 using FargowiltasSouls.Content.Projectiles.Accessories.DubiousCircuitry;
@@ -29,6 +32,7 @@ using Terraria.GameContent.Achievements;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.UI;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
@@ -37,8 +41,6 @@ namespace FargowiltasSouls
     public partial class FargowiltasSouls : ICustomDetourProvider
     {
         private static readonly MethodInfo? CombinedHooks_ModifyHitNPCWithProj_Method = typeof(CombinedHooks).GetMethod("ModifyHitNPCWithProj", LumUtils.UniversalBindingFlags);
-
-        private static readonly MethodInfo? On_NPC_StrikeNPC_HitInfo_bool_bool_Method = typeof(NPC).GetMethod("StrikeNPC", BindingFlags.Instance | BindingFlags.Public);
 
         private static readonly MethodInfo? On_Player_PickAmmo_Method = typeof(Player).GetMethod("PickAmmo", BindingFlags.Instance | BindingFlags.NonPublic);
 
@@ -59,6 +61,7 @@ namespace FargowiltasSouls
             On_Main.DrawMenu += DrawMenu;
 
             On_WorldGen.MakeDungeon += CheckBricks;
+            On_WorldGen.KillTile_GetItemDrops += JungleHerbDrop;
 
             On_Player.CheckSpawn_Internal += LifeRevitalizer_CheckSpawn_Internal;
             On_Player.AddBuff += AddBuff;
@@ -90,6 +93,11 @@ namespace FargowiltasSouls
             On_Player.ItemCheck_UseMiningTools_TryHittingWall += MinerEnchWallHammerSpeed;
             On_NPC.AI_123_Deerclops += AI_123_Deerclops;
             On_Projectile.StatusPlayer += StatusPlayer;
+
+            On_ItemSlot.PickItemMovementAction += AllowSouls;
+            On_Main.HoverOverNPCs += HoverOverNPCs;
+            On_Player.QuickGrapple += DontDismountOnGrappleShoot;
+            On_Player.GrappleMovement += DontDismountOnGrappleLand;
         }
 
         private void SetSpawnPlayer(On_NPC.orig_SpawnOnPlayer orig, int plr, int Type)
@@ -105,6 +113,7 @@ namespace FargowiltasSouls
             On_Main.DrawMenu -= DrawMenu;
 
             On_WorldGen.MakeDungeon -= CheckBricks;
+            On_WorldGen.KillTile_GetItemDrops -= JungleHerbDrop;
 
             On_Player.CheckSpawn_Internal -= LifeRevitalizer_CheckSpawn_Internal;
             On_Player.AddBuff -= AddBuff;
@@ -136,6 +145,29 @@ namespace FargowiltasSouls
             On_Player.ItemCheck_UseMiningTools_TryHittingWall -= MinerEnchWallHammerSpeed;
             On_NPC.AI_123_Deerclops -= AI_123_Deerclops;
             On_Projectile.StatusPlayer -= StatusPlayer;
+
+            On_ItemSlot.PickItemMovementAction -= AllowSouls;
+            On_Main.HoverOverNPCs -= HoverOverNPCs;
+            On_Player.QuickGrapple -= DontDismountOnGrappleShoot;
+            On_Player.GrappleMovement -= DontDismountOnGrappleLand;
+        }
+
+        private int AllowSouls(On_ItemSlot.orig_PickItemMovementAction orig, Item[] inv, int context, int slot, Item checkItem)
+        {
+            bool shouldAllow = (context == -10 || context == -11) && LoaderManager.Get<AccessorySlotLoader>().ModSlotCheck(checkItem, slot, context) && FargoSoulsSets.Items.AllowedSoulItemExceptions[checkItem.type];
+
+            if (!WorldSavingSystem.EternityMode)
+                return orig(inv, context, slot, checkItem);
+
+            if (shouldAllow)
+                return 1;
+
+            int result = orig(inv, context, slot, checkItem);
+
+            //if (shouldAllow)
+            //    checkItem.accessory = false;
+
+            return result;
         }
 
         private static void CheckBricks(On_WorldGen.orig_MakeDungeon orig, int x, int y)
@@ -147,11 +179,37 @@ namespace FargowiltasSouls
                 WorldSavingSystem.DungeonBrickType = "P";
         }
 
+        internal static void JungleHerbDrop(On_WorldGen.orig_KillTile_GetItemDrops orig, int x, int y, Tile tileCache, out int dropItem, out int dropItemStack, out int secondaryItem, out int secondaryItemStack, bool includeLargeObjectDrops)
+        {
+            Player tileplayer = Main.player[Player.FindClosest(new Vector2(x, y) * 16f, 16, 16)];
+            if (tileplayer.HasEffect<JungleHerbEffect>() && (tileCache.TileType == TileID.MatureHerbs || tileCache.TileType == TileID.BloomingHerbs))
+            {
+                int num = tileCache.TileFrameX / 18;
+                dropItem = 313 + num;
+                int tiledrop = 307 + num;
+                if (num == 6)
+                {
+                    dropItem = 2358;
+                    tiledrop = 2357;
+                }
+
+                bool flag = WorldGen.IsHarvestableHerbWithSeed(tileCache.TileType, num);
+                dropItemStack = Main.rand.Next(1, 3);
+                secondaryItem = tiledrop;
+                secondaryItemStack = Main.rand.Next(1, 6);
+                if (flag)
+                {
+                    secondaryItem = tiledrop;
+                    secondaryItemStack = Main.rand.Next(1, 4);
+                }
+                return;
+            }
+            orig(x, y, tileCache, out dropItem, out dropItemStack, out secondaryItem, out secondaryItemStack, includeLargeObjectDrops);
+        }
 
         void ICustomDetourProvider.ModifyMethods()
         {
             HookHelper.ModifyMethodWithDetour(CombinedHooks_ModifyHitNPCWithProj_Method, CombinedHooks_ModifyHitNPCWithProj);
-            HookHelper.ModifyMethodWithDetour(On_NPC_StrikeNPC_HitInfo_bool_bool_Method, UndoNinjaEnchCrit);
             HookHelper.ModifyMethodWithDetour(On_Player_PickAmmo_Method, NerfCoinGun);
             HookHelper.ModifyMethodWithDetour(On_TileLoader_PickPowerCheck_Method, MakeCommonTilesEasierToBreak);
         }
@@ -525,19 +583,6 @@ namespace FargowiltasSouls
                 self.shadowDodgeTimer = 60 * 45;
         }
 
-        public static int UndoNinjaEnchCrit(Orig_StrikeNPC_HitInfo_bool_bool orig, NPC self, NPC.HitInfo hit, bool fromNet, bool noPlayerInteraction)
-        {
-            ref var proj = ref FargoSoulsGlobalProjectile.globalProjectileField;
-            ref var ninjaCrit = ref FargoSoulsGlobalProjectile.ninjaCritIncrease;
-            if (proj is not null && ninjaCrit > 0)
-            {
-                proj.CritChance = Math.Max(proj.CritChance - ninjaCrit, 0);
-                // reset this
-                FargoSoulsGlobalProjectile.globalProjectileField = null;
-            }
-            return orig(self, hit, fromNet, noPlayerInteraction);
-        }
-
         internal void NerfCoinGun(Orig_PickAmmo orig, Player self, Item sItem, ref int projToShoot, ref float speed, ref bool canShoot, ref int totalDamage, ref float KnockBack, out int usedAmmoItemId, bool dontConsume)
         {
             orig(self, sItem, ref projToShoot, ref speed, ref canShoot, ref totalDamage, ref KnockBack, out usedAmmoItemId, dontConsume);
@@ -566,7 +611,7 @@ namespace FargowiltasSouls
         }
         public void RemoveAnnoyingNPCDebuffs(On_Player.orig_StatusFromNPC orig, Player self, NPC nPC)
         {
-            if (WorldSavingSystem.EternityMode && nPC.type is NPCID.SkeletronHead or NPCID.SkeletronHand)
+            if (WorldSavingSystem.EternityMode && nPC.type is NPCID.SkeletronHead or NPCID.SkeletronHand or NPCID.Creeper)
                 return;
             orig(self, nPC);
         }
@@ -645,9 +690,47 @@ namespace FargowiltasSouls
         }
         private void StatusPlayer(On_Projectile.orig_StatusPlayer orig, Projectile self, int playerIndex)
         {
-            if (self.type == ProjectileID.DeerclopsIceSpike && WorldSavingSystem.EternityMode && self.GetSourceNPC().type == NPCID.Deerclops)
+            if (self.type == ProjectileID.DeerclopsIceSpike && WorldSavingSystem.EternityMode && self.GetSourceNPC()?.type == NPCID.Deerclops)
                 return; // Remove annoying Frozen debuff from EMode+ Deer spikes
             orig(self, playerIndex);
+        }
+        private void HoverOverNPCs(On_Main.orig_HoverOverNPCs orig, Main self, Rectangle mouseRectangle)
+        {
+            orig(self, mouseRectangle);
+            if (WorldSavingSystem.EternityMode && WallofFleshEye.realLife > -1 && WallofFleshEye.realImmune != null)
+            {
+                Main.npc[WallofFleshEye.realLife].dontTakeDamage = (bool)WallofFleshEye.realImmune;
+                WallofFleshEye.realLife = -1;
+                WallofFleshEye.realImmune = null;
+            }
+        }
+        public void DontDismountOnGrappleShoot(On_Player.orig_QuickGrapple orig, Player self)
+        {
+            bool check = false;
+            if (self.FargoSouls().SquireEnchantItem != null && self.mount.Active)
+            {
+                check = true;
+                typeof(Mount).GetField("_active", LumUtils.UniversalBindingFlags)?.SetValue(self.mount, false);
+            }
+            orig(self);
+            if (check)
+            {
+                typeof(Mount).GetField("_active", LumUtils.UniversalBindingFlags)?.SetValue(self.mount, true);
+            }
+        }
+        public void DontDismountOnGrappleLand(On_Player.orig_GrappleMovement orig, Player self)
+        {
+            bool check = false;
+            if (self.FargoSouls().SquireEnchantItem != null && self.mount.Active)
+            {
+                check = true;
+                typeof(Mount).GetField("_active", LumUtils.UniversalBindingFlags)?.SetValue(self.mount, false);
+            }
+            orig(self);
+            if (check)
+            {
+                typeof(Mount).GetField("_active", LumUtils.UniversalBindingFlags)?.SetValue(self.mount, true);
+            }
         }
     }
 }

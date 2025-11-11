@@ -36,7 +36,6 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.FinalUpgrades
             Projectile.extraUpdates = 1;
             Projectile.alpha = 0;
             Projectile.DamageType = DamageClass.Ranged;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
             Projectile.FargoSouls().DeletionImmuneRank = 2;
         }
 

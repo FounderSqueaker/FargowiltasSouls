@@ -52,11 +52,11 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.WallOfFlesh
         public override bool? CanDamage() => Telegraphing || (Projectile.timeLeft <= 30 || Projectile.localAI[2] == 1 || BittenPlayer != -1) ? false : base.CanDamage();
         public override void SendExtraAI(BinaryWriter writer)
         {
-            writer.Write7BitEncodedInt(BittenPlayer);
+            writer.Write(BittenPlayer);
         }
         public override void ReceiveExtraAI(BinaryReader reader)
         {
-            BittenPlayer = reader.Read7BitEncodedInt();
+            BittenPlayer = reader.ReadInt32();
         }
         public override void AI()
         {

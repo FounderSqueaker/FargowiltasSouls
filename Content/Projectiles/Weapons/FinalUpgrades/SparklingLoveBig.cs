@@ -36,7 +36,6 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.FinalUpgrades
             Projectile.scale = 4f;
             Projectile.penetrate = -1;
             Projectile.FargoSouls().CanSplit = false;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
             Projectile.FargoSouls().DeletionImmuneRank = 2;
         }
 

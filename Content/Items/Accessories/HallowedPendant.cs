@@ -109,7 +109,7 @@ namespace FargowiltasSouls.Content.Items.Accessories
         }
         public static void PendantRays(Player player, int baseDamage, int maxDistance)
         {
-            List<NPC> enemies = Main.npc.Where(n => n.Alive() && n.CanBeChasedBy() && n.DistanceSQ(player.Center) < maxDistance * maxDistance && Collision.CanHitLine(player.Center, 0, 0, n.Center, 0, 0)).OrderBy(n => n.Distance(player.Center)).ToList();
+            List<NPC> enemies = Main.npc.Where(n => n.Alive() && n.CanBeChasedBy() && n.DistanceSQ(player.Center) < maxDistance * maxDistance && Collision.CanHitLine(player.Center, 0, 0, n.Center, 0, 0)).OrderBy(n => n.DistanceSQ(player.Center)).ToList();
             for (int i = 0; i < 4; i++)
             {
                 if (i >= enemies.Count)

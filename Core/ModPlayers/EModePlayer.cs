@@ -131,7 +131,6 @@ namespace FargowiltasSouls.Core.ModPlayers
             WallID.WroughtIronFence,
             WallID.MetalFence,
         ];
-
         public override void PostUpdateBuffs()
         {
             if (!WorldSavingSystem.EternityMode)
@@ -156,6 +155,16 @@ namespace FargowiltasSouls.Core.ModPlayers
                 Player.endurance -= 0.4f;
                 Player.GetDamage(DamageClass.Generic) *= 0.6f;
             }
+
+            if (!NPC.downedBoss2 && Player.HasBuff(BuffID.Wrath) && EmodeItemBalance.HasEmodeChange(Player, ItemID.WrathPotion).Contains("EarlyPotions"))
+            {
+                Player.GetDamage(DamageClass.Generic) -= 0.05f;
+            }
+
+            if (!NPC.downedBoss2 && Player.HasBuff(BuffID.Rage) && EmodeItemBalance.HasEmodeChange(Player, ItemID.RagePotion).Contains("EarlyPotions"))
+            {
+                Player.GetCritChance(DamageClass.Generic) -= 5f;
+            }
         }
 
         public override void UpdateBadLifeRegen()
@@ -174,7 +183,7 @@ namespace FargowiltasSouls.Core.ModPlayers
             if (!WorldSavingSystem.EternityMode)
                 return;
 
-            if (Player.longInvince && !Player.immune)
+            if (Player.longInvince && !Player.immune) // TODO: Check for HasEmodeChange just in case
             {
                 if (CrossNecklaceTimer < 20)
                 {

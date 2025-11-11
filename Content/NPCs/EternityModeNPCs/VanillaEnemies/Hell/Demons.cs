@@ -52,7 +52,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Hell
             }
             else
             {
-                if (Main.hardMode)
+                if (NPC.downedMechBossAny)
                 {
                     if (npc.lifeMax < 550)
                         npc.lifeMax = 550;
@@ -129,17 +129,20 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Hell
         public override bool SafePreAI(NPC npc)
         {
             bool lineOfSight = npc.HasPlayerTarget && Collision.CanHitLine(npc.Center, 0, 0, Main.player[npc.target].Center, 0, 0);
-            if (npc.HasPlayerTarget && Main.hardMode)
-            {
-                npc.noTileCollide = !lineOfSight;
-            }
 
             if (npc.type == NPCID.Demon || npc.type == NPCID.VoodooDemon)
             {
                 NPC devil = Main.npc.FirstOrDefault(n => n.TypeAlive(NPCID.RedDevil) && n.GetGlobalNPC<Demons>().DevilDemons.Contains(npc.whoAmI));
+
+                if (npc.HasPlayerTarget && (Main.hardMode || devil != null))
+                {
+                    npc.noTileCollide = !lineOfSight;
+                }
                 if (devil != null)
                 {
                     npc.target = devil.target;
+
+
                     if (Counter < 0) // dash attack
                     {
                         if (!npc.HasPlayerTarget)
@@ -292,6 +295,10 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Hell
             }
             else if (npc.type == NPCID.RedDevil)
             {
+                if (npc.HasPlayerTarget)
+                {
+                    npc.noTileCollide = !lineOfSight;
+                }
                 bool anyDemons = DevilDemons.Any(i => Main.npc[i].TypeAlive(NPCID.Demon));
                 if (anyDemons) // phase 1: demons
                 {

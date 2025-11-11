@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
@@ -22,7 +23,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.Cavern
             Projectile.timeLeft = 600;
             Projectile.hostile = true;
             Projectile.aiStyle = -1;
-            CooldownSlot = 0;
+            CooldownSlot = ImmunityCooldownID.TileContactDamage;
         }
 
         public override void AI()

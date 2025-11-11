@@ -1,8 +1,10 @@
-﻿using FargowiltasSouls.Content.Items.Accessories.Enchantments;
+﻿using System.Collections.Generic;
+using FargowiltasSouls.Content.Items.Accessories.Enchantments;
 using FargowiltasSouls.Core.AccessoryEffectSystem;
 using FargowiltasSouls.Core.Toggler.Content;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -12,6 +14,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Souls
     //[AutoloadEquip(EquipType.Back)]
     public class WorldShaperSoul : BaseSoul
     {
+        public override List<AccessoryEffect> ActiveSkillTooltips => [AccessoryEffectLoader.GetEffect<DCUEffect>()];
         public override void SetStaticDefaults()
         {
             base.SetStaticDefaults();
@@ -23,49 +26,18 @@ namespace FargowiltasSouls.Content.Items.Accessories.Souls
             base.SetDefaults();
 
             Item.value = 750000;
-
-            /*
-            Item.useStyle = ItemUseStyleID.HoldUp;
-            Item.UseSound = SoundID.Item6;
-            Item.useTime = Item.useAnimation = 90;
-            */
         }
         public static readonly Color ItemColor = new(255, 239, 2);
         protected override Color? nameColor => ItemColor;
-        /*
-        public override bool? UseItem(Player player) => false;
-
-        public override void UseItemFrame(Player player)
-        {
-            if (player.itemTime == player.itemTimeMax / 2)
-            {
-                player.Spawn(PlayerSpawnContext.RecallFromItem);
-
-                for (int d = 0; d < 70; d++)
-                    Dust.NewDust(player.position, player.width, player.height, DustID.MagicMirror, 0f, 0f, 150, default, 1.5f);
-            }
-        }
-        */
 
         public override void UpdateInventory(Player player)
         {
-            //cell phone
-            /*
-            player.accWatch = 3;
-            player.accDepthMeter = 1;
-            player.accCompass = 1;
-            player.accFishFinder = true;
-            player.accDreamCatcher = true;
-            player.accOreFinder = true;
-            player.accStopwatch = true;
-            player.accCritterGuide = true;
-            player.accJarOfSouls = true;
-            player.accThirdEye = true;
-            player.accCalendar = true;
-            player.accWeatherRadio = true;
-            */
-            player.chiselSpeed = true;
-            player.treasureMagnet = true;
+            //hand of creation
+            player.autoPaint = true;
+            //spectre goggles
+            player.CanSeeInvisibleBlocks = true;
+            //fpv sight
+            player.remoteVisionForDrone = true;
         }
 
         public override void UpdateAccessory(Player player, bool hideVisual)
@@ -74,66 +46,60 @@ namespace FargowiltasSouls.Content.Items.Accessories.Souls
         }
         public static void AddEffects(Player player, Item item, bool hideVisual)
         {
-            Player Player = player;
             player.FargoSouls().WorldShaperSoul = true;
-            //mining speed, spelunker, dangersense, light, hunter, pet
-            MinerEnchant.AddEffects(Player, .75f, item);
-            //placing speed up
-            Player.tileSpeed += 0.5f;
-            Player.wallSpeed += 0.5f;
+            //mining speed, spelunker, dangersense, light, hunter
+            MinerEnchant.AddEffects(player, .75f, item);
+            //hand of creation
+            player.autoPaint = true;
+            player.equippedAnyWallSpeedAcc = true;
+            player.equippedAnyTileSpeedAcc = true;
+            player.autoPaint = true;
+            player.equippedAnyTileRangeAcc = true;
+            player.treasureMagnet = true;
+            player.chiselSpeed = true;
+            player.portableStoolInfo.SetStats(26, 26, 26);
+            //placing speed up MORE
+            player.tileSpeed += 0.5f;
+            player.wallSpeed += 0.5f;
             //toolbox
-            if (Player.whoAmI == Main.myPlayer)
+            if (player.whoAmI == Main.myPlayer)
             {
                 Player.tileRangeX += 10;
                 Player.tileRangeY += 10;
             }
-            //gizmo pack
-            Player.autoPaint = true;
             //presserator
-            Player.autoActuator = true;
+            player.autoActuator = true;
+            //hand of creation
+            player.autoPaint = true;
+            //spectre goggles
+            player.CanSeeInvisibleBlocks = true;
+            //fpv sight
+            player.remoteVisionForDrone = true;
+            //dcu
+            player.AddEffect<DCUEffect>(item);
 
             player.AddEffect<BuilderEffect>(item);
-
-            //cell phone
-            /*
-            Player.accWatch = 3;
-            Player.accDepthMeter = 1;
-            Player.accCompass = 1;
-            Player.accFishFinder = true;
-            Player.accDreamCatcher = true;
-            Player.accOreFinder = true;
-            Player.accStopwatch = true;
-            Player.accCritterGuide = true;
-            Player.accJarOfSouls = true;
-            Player.accThirdEye = true;
-            Player.accCalendar = true;
-            Player.accWeatherRadio = true;
-            */
-            Player.chiselSpeed = true;
-            Player.treasureMagnet = true;
-            
+        }
+        public override void UpdateItemDye(Player player, int dye, bool hideVisual)
+        {
+            player.cPortableStool = dye; //zero clue how this works but vanilla does this so may as well throw here
         }
 
         public override void AddRecipes()
         {
             CreateRecipe()
 
-            //step stool
-            //greedy ring
-
             .AddIngredient(null, "MinerEnchant")
+            .AddIngredient(ItemID.HandOfCreation)
             .AddIngredient(ItemID.Toolbelt)
             .AddIngredient(ItemID.Toolbox)
-            .AddIngredient(ItemID.HandOfCreation)
             .AddIngredient(ItemID.ActuationAccessory)
-            .AddIngredient(ItemID.LaserRuler)
-            //.AddRecipeGroup("FargowiltasSouls:AnyShellphone")
-            //.AddIngredient(ItemID.Shellphone)
-            //.AddIngredient(ItemID.BloodHamaxe) //haemoraxe
+            .AddIngredient(ItemID.SpectreGoggles)
+            .AddIngredient(ItemID.JimsDroneVisor)
             .AddRecipeGroup("FargowiltasSouls:AnyDrax")
-            .AddIngredient(ItemID.ShroomiteDiggingClaw)
             .AddIngredient(ItemID.DrillContainmentUnit)
-            //.AddIngredient(ItemID.BallOfFuseWire) //dynamite kitten pet
+            //.AddRecipeGroup("FargowiltasSouls:AnyShellphone")
+            //.AddIngredient(ItemID.ShroomiteDiggingClaw)
 
             .AddTile(ModContent.Find<ModTile>("Fargowiltas", "CrucibleCosmosSheet"))
 
@@ -152,14 +118,10 @@ namespace FargowiltasSouls.Content.Items.Accessories.Souls
             player.FargoSouls().BuilderMode = true;
             //if (Main.netMode == NetmodeID.MultiplayerClient) NetMessage.SendData(MessageID.SyncPlayer, number: Player.whoAmI);
 
-            for (int i = 0; i < TileLoader.TileCount; i++)
+            /*for (int i = 0; i < TileLoader.TileCount; i++)
             {
                 player.adjTile[i] = true;
-            }
-
-            //placing speed up
-            player.tileSpeed += 0.5f;
-            player.wallSpeed += 0.5f;
+            }*/
 
             //toolbox
             if (player.HeldItem.createWall == 0) //tiles
@@ -171,6 +133,34 @@ namespace FargowiltasSouls.Content.Items.Accessories.Souls
             {
                 Player.tileRangeX += 20;
                 Player.tileRangeY += 20;
+            }
+        }
+    }
+    public class DCUEffect : AccessoryEffect
+    {
+        public override Header ToggleHeader => null;
+        public override int ToggleItemType => ModContent.ItemType<WorldShaperSoul>();
+        public override bool ActiveSkill => true;
+
+        public override void PostUpdateEquips(Player player)
+        {
+            if (player.mount.Active && player.mount.Type == MountID.Drill && player.whoAmI == Main.myPlayer && player.HasEffect<DCUEffect>())
+            {
+                Mount.amountOfBeamsAtOnce = 5; //2.5x speed increase
+            }
+        }
+        public override void ActiveSkillJustPressed(Player player, bool stunned)
+        {
+            if (stunned) return;
+
+            if (player.mount.Active && player.mount.Type == MountID.Drill)
+            {
+                player.mount.Dismount(player);
+            }
+            else
+            {
+                player.mount.SetMount(MountID.Drill, player);
+                if (!Main.dedServ) SoundEngine.PlaySound(SoundID.Item25, player.Center);
             }
         }
     }

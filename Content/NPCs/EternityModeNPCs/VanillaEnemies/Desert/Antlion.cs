@@ -24,15 +24,15 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Desert
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
-            binaryWriter.Write7BitEncodedInt(BiteTimer);
-            binaryWriter.Write7BitEncodedInt(BittenPlayer);
+            binaryWriter.Write(BiteTimer);
+            binaryWriter.Write(BittenPlayer);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-            BiteTimer = binaryReader.Read7BitEncodedInt();
-            BittenPlayer = binaryReader.Read7BitEncodedInt();
+            BiteTimer = binaryReader.ReadInt32();
+            BittenPlayer = binaryReader.ReadInt32();
         }
         public override void AI(NPC npc)
         {

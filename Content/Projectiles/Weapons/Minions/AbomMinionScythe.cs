@@ -35,7 +35,7 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.Minions
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 10;
 
-            CooldownSlot = -1;
+            CooldownSlot = ImmunityCooldownID.General;
         }
 
         public override void AI()

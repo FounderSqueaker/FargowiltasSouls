@@ -28,6 +28,8 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
             Projectile.scale = 0.5f;
             Projectile.hostile = true;
             Projectile.tileCollide = false;
+
+            Projectile.Opacity = 0f;
         }
 
         public ref float target => ref Projectile.ai[0];
@@ -35,7 +37,8 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
 
         public override void AI()
         {
-            if (!NPC.AnyNPCs(NPCID.DD2DarkMageT1))
+            Projectile.Opacity += 1f / 45;
+            if (!NPC.AnyNPCs(NPCID.DD2DarkMageT1) && !NPC.AnyNPCs(NPCID.DD2DarkMageT3))
             {
                 Projectile.Kill();
                 return;
@@ -97,7 +100,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
                 Main.EntitySpriteDraw(texture, drawPos, frame, color, Projectile.rotation, origin2, Projectile.scale, spriteEffects, 0);
             }
 
-            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, origin2, Projectile.scale, spriteEffects);
+            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, frame, Projectile.GetAlpha(Color.White), Projectile.rotation, origin2, Projectile.scale, spriteEffects);
             return false;
         }
     }

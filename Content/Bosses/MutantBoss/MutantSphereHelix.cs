@@ -18,7 +18,7 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
     {
         public override string Texture => FargoSoulsUtil.AprilFools ?
             "FargowiltasSouls/Content/Bosses/MutantBoss/MutantSphere_April" :
-            "Terraria/Images/Projectile_454";
+            "FargowiltasSouls/Content/Bosses/MutantBoss/MutantSphere";
 
         protected override float GlowLerpToClear => 0.9f;
 

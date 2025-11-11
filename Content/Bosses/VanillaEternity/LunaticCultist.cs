@@ -44,6 +44,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
         public int Phase = 1;
 
+        public static int LastAttack;
+        public static int AttackRepeat;
+
         public static bool Alone(NPC npc) => npc.type == NPCID.CultistBoss && !NPC.AnyNPCs(NPCID.CultistBossClone);
 
         public enum States
@@ -63,10 +66,10 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
             binaryWriter.Write(RitualRotation);
-            binaryWriter.Write7BitEncodedInt(MeleeDamageCounter);
-            binaryWriter.Write7BitEncodedInt(RangedDamageCounter);
-            binaryWriter.Write7BitEncodedInt(MagicDamageCounter);
-            binaryWriter.Write7BitEncodedInt(MinionDamageCounter);
+            binaryWriter.Write(MeleeDamageCounter);
+            binaryWriter.Write(RangedDamageCounter);
+            binaryWriter.Write(MagicDamageCounter);
+            binaryWriter.Write(MinionDamageCounter);
             bitWriter.WriteBit(EnteredPhase2);
 
             binaryWriter.Write(Timer);
@@ -81,10 +84,10 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
             RitualRotation = binaryReader.ReadSingle();
-            MeleeDamageCounter = binaryReader.Read7BitEncodedInt();
-            RangedDamageCounter = binaryReader.Read7BitEncodedInt();
-            MagicDamageCounter = binaryReader.Read7BitEncodedInt();
-            MinionDamageCounter = binaryReader.Read7BitEncodedInt();
+            MeleeDamageCounter = binaryReader.ReadInt32();
+            RangedDamageCounter = binaryReader.ReadInt32();
+            MagicDamageCounter = binaryReader.ReadInt32();
+            MinionDamageCounter = binaryReader.ReadInt32();
             EnteredPhase2 = bitReader.ReadBit();
 
             Timer = binaryReader.ReadInt32();
@@ -204,7 +207,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                     break;
                 case States.Reposition:
                     {
-                        int duration = WorldSavingSystem.MasochistModeReal ? 16 : 40;
+                        int duration = WorldSavingSystem.MasochistModeReal ? 16 : 30;
+                        if (EModeGlobalNPC.cultBoss.IsWithinBounds(Main.maxNPCs) && FargoSoulsUtil.NPCExists(EModeGlobalNPC.cultBoss, NPCID.CultistBoss) is NPC cultist && cultist.GetGlobalNPC<LunaticCultist>().Phase == 3)
+                            duration = WorldSavingSystem.MasochistModeReal ? 50 : 65;
                         if (alone)
                             duration = WorldSavingSystem.MasochistModeReal ? 8 : 30;
                         animation = (int)Animation.Float;
@@ -552,12 +557,23 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         }
         public static void GetAttack(NPC npc, ref int timer, ref int state, ref int oldAttack)
         {
-            List<States> randAttacks = [States.SolarCircle, States.IceShatter, States.Lightning, States.Shadow, States.AncientLight];
+            List<States> randAttacks = [States.SolarCircle, States.IceShatter, /*States.Lightning, */States.Shadow, States.AncientLight];
             randAttacks.Remove((States)oldAttack);
+            // no repeat my own attack
+            if (AttackRepeat >= 1)
+                randAttacks.Remove((States)LastAttack);
+            // no repeat solar attack
+            if (LastAttack == (int)States.SolarCircle)
+                randAttacks.Remove(States.SolarCircle);
+
             state = (int)Main.rand.NextFromCollection(randAttacks);
             timer = 0;
             npc.netUpdate = true;
-
+            if (LastAttack == state)
+                AttackRepeat++;
+            else
+                AttackRepeat = 0;
+            LastAttack = state;
             // debug
             //state = (int)States.IceShatter;
         }
@@ -667,14 +683,6 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 MinionDamageCounter += hit.Damage;
         }
 
-        public override void SafeModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
-        {
-            base.SafeModifyHitByProjectile(npc, projectile, ref modifiers);
-
-            if (ProjectileID.Sets.CultistIsResistantTo[projectile.type])
-                modifiers.FinalDamage *= 1 / 1.3f;
-        }
-
         public override void SafeOnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
         {
             base.SafeOnHitByProjectile(npc, projectile, hit, damageDone);
@@ -718,8 +726,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(TotalCultistCount);
-            binaryWriter.Write7BitEncodedInt(MyRitualPosition);
+            binaryWriter.Write(TotalCultistCount);
+            binaryWriter.Write(MyRitualPosition);
 
             binaryWriter.Write(Timer);
             binaryWriter.Write(State);
@@ -732,8 +740,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            TotalCultistCount = binaryReader.Read7BitEncodedInt();
-            MyRitualPosition = binaryReader.Read7BitEncodedInt();
+            TotalCultistCount = binaryReader.ReadInt32();
+            MyRitualPosition = binaryReader.ReadInt32();
 
             Timer = binaryReader.ReadInt32();
             State = binaryReader.ReadInt32();
@@ -894,6 +902,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
         public override bool CanHitPlayer(NPC npc, Player target, ref int CooldownSlot)
         {
+            if (!WorldSavingSystem.EternityMode)
+                return base.CanHitPlayer(npc, target, ref CooldownSlot);
+            CooldownSlot = ImmunityCooldownID.Bosses;
             return base.CanHitPlayer(npc, target, ref CooldownSlot) && npc.localAI[3] > 120;
         }
 
@@ -1001,7 +1012,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 npc.velocity.X = npc.ai[2];
                 npc.velocity.Y = npc.ai[3];
             }
-            else if (FargoSoulsUtil.BossIsAlive(ref EModeGlobalNPC.cultBoss, NPCID.CultistBoss) && !WorldSavingSystem.MasochistModeReal)
+            else if (FargoSoulsUtil.BossIsAlive(ref EModeGlobalNPC.cultBoss, NPCID.CultistBoss))
             {
                 if (++Timer < 40)
                 {
@@ -1034,7 +1045,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             if (!WorldSavingSystem.EternityMode)
                 return base.CanHitPlayer(npc, target, ref cooldownSlot);
 
-            if (SourceNPCType is NPCID.MoonLordCore or NPCID.MoonLordHead or NPCID.MoonLordHand)
+            if (SourceNPCType is NPCID.CultistBoss or NPCID.CultistBossClone or NPCID.MoonLordCore or NPCID.MoonLordHead or NPCID.MoonLordHand)
                 cooldownSlot = ImmunityCooldownID.Bosses;
 
             return base.CanHitPlayer(npc, target, ref cooldownSlot);

@@ -18,7 +18,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(TeleportTimer);
+            binaryWriter.Write(TeleportTimer);
             bitWriter.WriteBit(DoTeleport);
         }
 
@@ -26,7 +26,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            TeleportTimer = binaryReader.Read7BitEncodedInt();
+            TeleportTimer = binaryReader.ReadInt32();
             DoTeleport = bitReader.ReadBit();
         }
 

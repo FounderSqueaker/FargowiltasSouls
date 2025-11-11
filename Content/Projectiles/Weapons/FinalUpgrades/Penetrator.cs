@@ -33,7 +33,6 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.FinalUpgrades
             Projectile.alpha = 0;
             Projectile.FargoSouls().CanSplit = false;
             Projectile.FargoSouls().TimeFreezeImmune = true;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

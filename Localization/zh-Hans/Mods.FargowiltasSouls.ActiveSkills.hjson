@@ -198,3 +198,8 @@ TimsInspectEffect: {
 	// DisplayName: Potion Sense
 	// Tooltip: Grants an aura that reveals potions dropped by nearby enemies
 }
+
+DCUEffect: {
+	// DisplayName: Drill Containment Unit
+	// Tooltip: "[i:2768] Summons an improved Drill mount"
+}

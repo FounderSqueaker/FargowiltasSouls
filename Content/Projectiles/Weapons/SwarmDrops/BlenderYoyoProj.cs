@@ -44,7 +44,6 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.SwarmDrops
 
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 15;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
         }
 
         int soundtimer;

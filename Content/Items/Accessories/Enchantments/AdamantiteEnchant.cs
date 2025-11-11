@@ -103,7 +103,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
                 () => (float)Main.LocalPlayer.FargoSouls().AdamantiteSpread / SpreadCap, activeFunction: player.HasEffectEnchant<AdamantiteEffect>, displayAtFull: true);
 
         }
-        public override void PostUpdateEquips(Player player)
+        public override void PostUpdate(Player player)
         {
             if (!HasEffectEnchant(player))
                 return;
@@ -123,7 +123,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
             const float incSeconds = 10;
             const float decSeconds = 1.5f;
             if (modPlayer.WeaponUseTimer > 0)
-                modPlayer.AdamantiteSpread += (adaCap / 60f) / incSeconds; //ada spread change per frame, based on total amount of seconds to reach cap
+                modPlayer.AdamantiteSpread += player.FargoSouls().CachedAttackSpeed * (adaCap / 60f) / incSeconds; //ada spread change per frame, based on total amount of seconds to reach cap
             else
                 modPlayer.AdamantiteSpread -= (adaCap / 60f) / decSeconds;
 

@@ -2,10 +2,10 @@
 using FargowiltasSouls.Content.Buffs.Eternity;
 using FargowiltasSouls.Content.Buffs.Souls;
 using FargowiltasSouls.Content.Items.Accessories;
-using FargowiltasSouls.Content.Items.Armor.Masks;
 using FargowiltasSouls.Content.Items.BossBags;
 using FargowiltasSouls.Content.Items.Placables.Relics;
 using FargowiltasSouls.Content.Items.Placables.Trophies;
+using FargowiltasSouls.Content.Items.Vanity.Masks;
 using FargowiltasSouls.Content.Items.Weapons.Challengers;
 using FargowiltasSouls.Core.Systems;
 using Microsoft.CodeAnalysis;
@@ -196,8 +196,8 @@ namespace FargowiltasSouls.Content.Bosses.CursedCoffin
             writer.Write(NPC.localAI[1]);
             writer.Write(NPC.localAI[2]);
             writer.Write(NPC.localAI[3]);
-            writer.Write7BitEncodedInt(LastAttackChoice);
-            writer.Write7BitEncodedInt(Phase);
+            writer.Write(LastAttackChoice);
+            writer.Write(Phase);
             writer.Write(Timer);
             writer.WriteVector2(LockVector1);
 
@@ -213,8 +213,8 @@ namespace FargowiltasSouls.Content.Bosses.CursedCoffin
 			NPC.localAI[1] = reader.ReadSingle();
 			NPC.localAI[2] = reader.ReadSingle();
 			NPC.localAI[3] = reader.ReadSingle();
-			LastAttackChoice = reader.Read7BitEncodedInt();
-            Phase = reader.Read7BitEncodedInt();
+			LastAttackChoice = reader.ReadInt32();
+            Phase = reader.ReadInt32();
 			Timer = reader.ReadSingle();
             LockVector1 = reader.ReadVector2();
 
@@ -348,7 +348,7 @@ namespace FargowiltasSouls.Content.Bosses.CursedCoffin
 
             rule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<CoffinMask>(), 7));
 
-            rule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<SoulLantern>()));
+            //rule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<SoulLantern>()));
 
             rule.OnSuccess(ItemDropRule.OneFromOptions(1, ModContent.ItemType<SisypheanFist>(), ModContent.ItemType<SpiritLongbow>(), ModContent.ItemType<GildedSceptre>(), ModContent.ItemType<EgyptianFlail>()));
             // gems

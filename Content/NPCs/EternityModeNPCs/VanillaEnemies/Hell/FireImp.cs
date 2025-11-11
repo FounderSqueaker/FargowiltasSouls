@@ -14,7 +14,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Hell
 
         public override void SetDefaults(NPC npc)
         {
-            if (Main.hardMode && npc.lifeMax < 650)
+            if (NPC.downedMechBossAny && npc.lifeMax < 650)
             {
                 npc.lifeMax = 650;
             }

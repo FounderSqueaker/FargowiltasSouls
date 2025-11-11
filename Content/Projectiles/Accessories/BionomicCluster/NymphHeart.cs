@@ -22,6 +22,8 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.Souls
         public override void AI()
         {
             Player player = FargoSoulsUtil.PlayerExists(Projectile.ai[0]);
+            if (!player.Alive())
+                return;
             Vector2 dist = player.Center - Projectile.Center;
             dist.Normalize();
             dist *= 2;

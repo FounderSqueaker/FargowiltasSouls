@@ -115,9 +115,9 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
                                     Projectile.NewProjectile(Projectile.InheritSource(Projectile), center, projDir * 0.8f * speedModifier, ModContent.ProjectileType<MechElectricOrbSpaz>(),
                                         Projectile.damage, 0f, Main.myPlayer, ai0: player.whoAmI, ai2: MechElectricOrb.Green);
 
-                                    if (WorldSavingSystem.MasochistModeReal)
+                                    /*if (WorldSavingSystem.MasochistModeReal)
                                     {
-                                        speedModifier *= /*WorldSavingSystem.MasochistModeReal ? 0.65f :*/ 0.4f;
+                                        speedModifier *= 0.4f; // WorldSavingSystem.MasochistModeReal ? 0.65f : 0.4f;
 
                                         projDir = projDir.RotatedBy(MathHelper.PiOver2);
                                         Projectile.NewProjectile(Projectile.InheritSource(Projectile), center, projDir * 0.8f * speedModifier, ModContent.ProjectileType<MechElectricOrbSpaz>(),
@@ -126,7 +126,7 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
                                         projDir = projDir.RotatedBy(MathHelper.PiOver2);
                                         Projectile.NewProjectile(Projectile.InheritSource(Projectile), center, projDir * 1f * speedModifier, ModContent.ProjectileType<MechElectricOrbSpaz>(),
                                             Projectile.damage, 0f, Main.myPlayer, ai0: player.whoAmI, ai2: MechElectricOrb.Yellow);
-                                    }
+                                    }*/
                                 }
                             }
 

@@ -48,9 +48,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(HiveThrowTimer);
-            binaryWriter.Write7BitEncodedInt(StingerRingTimer);
-            binaryWriter.Write7BitEncodedInt(BeeSwarmTimer);
+            binaryWriter.Write(HiveThrowTimer);
+            binaryWriter.Write(StingerRingTimer);
+            binaryWriter.Write(BeeSwarmTimer);
             binaryWriter.WriteVector2(LockVector1);
             bitWriter.WriteBit(SpawnedRoyalSubjectWave1);
             bitWriter.WriteBit(SpawnedRoyalSubjectWave2);
@@ -62,9 +62,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            HiveThrowTimer = binaryReader.Read7BitEncodedInt();
-            StingerRingTimer = binaryReader.Read7BitEncodedInt();
-            BeeSwarmTimer = binaryReader.Read7BitEncodedInt();
+            HiveThrowTimer = binaryReader.ReadInt32();
+            StingerRingTimer = binaryReader.ReadInt32();
+            BeeSwarmTimer = binaryReader.ReadInt32();
             LockVector1 = binaryReader.ReadVector2();
             SpawnedRoyalSubjectWave1 = bitReader.ReadBit();
             SpawnedRoyalSubjectWave2 = bitReader.ReadBit();
@@ -186,6 +186,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             if (SubjectDR)
             {
                 npc.HitSound = SoundID.NPCHit4;
+                npc.chaseable = false;
 
                 int dustId = Dust.NewDust(npc.position, npc.width, npc.height, DustID.Stone, 0f, 0f, 100, default, 2f);
                 Main.dust[dustId].noGravity = true;
@@ -213,6 +214,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             else
             {
                 npc.HitSound = SoundID.NPCHit1;
+                npc.chaseable = true;
 
                 if (InPhase2 && HiveThrowTimer % 2 == 0)
                     HiveThrowTimer++; //throw hives faster when no royal subjects alive
@@ -439,19 +441,19 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
                     // speed
                     timer++;
-                    int duration = 60 * 6;
+                    int duration = 60 * 7;
                     float durationDiv = 1f;
                     float lifeFraction = npc.GetLifePercent();
                     if (lifeFraction < 0.75)
-                        durationDiv += 0.15f;
+                        durationDiv += 0.12f;
                     if (lifeFraction < 0.5)
-                        durationDiv += 0.15f;
+                        durationDiv += 0.12f;
                     if (lifeFraction < 0.25)
-                        durationDiv += 0.15f;
+                        durationDiv += 0.12f;
                     if (lifeFraction < 0.1)
-                        durationDiv += 0.15f;
+                        durationDiv += 0.12f;
                     if (NPC.AnyNPCs(ModContent.NPCType<RoyalSubject>()))
-                        durationDiv = 1.5f;
+                        durationDiv = 1f;
                     duration = (int)Math.Round(duration / durationDiv);
 
                     float progress = timer / duration;
@@ -468,7 +470,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                         speedMod = 0.8f;
                         float spread = MathHelper.PiOver2 * 0.05f;
 
-                        float baseFrequency = 15f;
+                        float baseFrequency = 13f;
                         float frequency = (int)Math.Round(baseFrequency / durationDiv);
                         if (timer % frequency == 0)
                         {
@@ -485,13 +487,14 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                         float spreadProgress = (progress - straightFrac) / (1f - straightFrac);
                         float spread = MathHelper.PiOver2 * 1.4f * spreadProgress;
 
-                        float baseFrequency = 7f;
+                        float baseFrequency = 5;
                         float frequency = (int)Math.Round(baseFrequency / durationDiv);
-                        if (frequency < 3)
-                            frequency = 3;
+                        if (frequency < 4)
+                            frequency = 4;
                         if (timer % frequency == 0)
                         {
-                            float angle = Main.rand.NextFloat(-spread, spread);
+                            float angleTimer = timer - straightFrac * duration;
+                            float angle = spread * MathF.Sin(MathF.Tau * angleTimer / 127f);
                             SoundEngine.PlaySound(SoundID.Item97, npc.position);
                             float speed = 12f;
                             Shot(angle, 0f, speed);
@@ -601,6 +604,12 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                             speedMod += 1f * enrageFactor;
                         }
                         speedMod += ((70f - shotFrequency) / 70f) * 0.4f;
+                        if (cycleProgress < 0.45f) // relock if too close
+                        {
+                            float threshold = 160;
+                            if (LockVector1.Distance(player.Center) < threshold)
+                                LockVector1 = player.Center + player.DirectionTo(LockVector1) * threshold;
+                        }
                         Vector2 desiredPos = LockVector1;
                         Movement(npc, desiredPos, speedMod, maxSpeed);
                     }
@@ -675,7 +684,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                     speed += 7f * enrageFactor;
                     Vector2 pos = new Vector2(npc.Center.X, npc.position.Y + npc.height * 0.8f);
                     int dmg = 11;
-                    int type = 719;
+                    int type = ProjectileID.QueenBeeStinger;
                     Vector2 vel = npc.DirectionTo(Main.player[npc.target].Center) * speed;
                     vel = vel.RotatedBy(angle);
                     int num688 = Projectile.NewProjectile(npc.GetSource_FromAI(), pos, vel, type, dmg, 0f, Main.myPlayer);

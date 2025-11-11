@@ -1,20 +1,21 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using ReLogic.Graphics;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria;
-using Terraria.GameContent.UI.Elements;
-using Terraria.Audio;
-using Terraria.Localization;
-using FargowiltasSouls.Core.Systems;
-using FargowiltasSouls.Content.Items;
-using Fargowiltas.Content.Projectiles;
-using FargowiltasSouls.Content.NPCs;
-using Terraria.GameContent.Creative;
-using static Terraria.GameContent.Creative.CreativePowers;
+﻿using Fargowiltas.Content.Projectiles;
 using Fargowiltas.Content.UI;
 using FargowiltasSouls.Assets.Textures;
+using FargowiltasSouls.Content.Items;
+using FargowiltasSouls.Content.NPCs;
+using FargowiltasSouls.Core.Systems;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Graphics;
+using Terraria;
+using Terraria.Audio;
+using Terraria.GameContent.Creative;
+using Terraria.GameContent.UI.Elements;
+using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader;
+using Terraria.ModLoader.UI;
+using static Terraria.GameContent.Creative.CreativePowers;
 
 namespace FargowiltasSouls.Content.UI.Elements
 {
@@ -68,17 +69,7 @@ namespace FargowiltasSouls.Content.UI.Elements
                     text += $"\n[c/787878:{leftClick}]";
                     text += "\n" + TooltipText();
 
-                    Item hoverItem = new(2)
-                    {
-                        createTile = -1,
-                        material = false,
-                        consumable = false
-                    };
-                    hoverItem.SetNameOverride(text);
-                    Main.HoverItem = hoverItem;
-                    Main.instance.MouseText("", 0, 0);
-                    Main.hoverItemName = text;
-                    Main.mouseText = true;
+                    UICommon.TooltipMouseText(text);
                     //Main.instance.MouseText(text, 0, 0);
                     /*
                     Utils.DrawBorderString(

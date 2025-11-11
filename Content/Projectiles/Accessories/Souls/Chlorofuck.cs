@@ -42,7 +42,7 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.Souls
             Player player = Main.player[Projectile.owner];
             FargoSoulsPlayer modPlayer = player.FargoSouls();
 
-            if (player.whoAmI == Main.myPlayer && (player.dead || !player.HasEffect<ChloroMinion>()))
+            if (player.whoAmI == Main.myPlayer && (player.dead /*|| !player.HasEffect<ChloroMinion>()*/))
             {
                 Projectile.Kill();
                 Projectile.netUpdate = true;
@@ -113,7 +113,7 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.Souls
                     num405 *= num406;
                     if (Projectile.TryGetOwner(out Player owner))
                     {
-                        Projectile.originalDamage = ChloroMinion.BaseDamage(owner);
+                        //Projectile.originalDamage = ChloroMinion.BaseDamage(owner);
                     }
                     if (Projectile.owner == Main.myPlayer)
                     {

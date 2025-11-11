@@ -25,6 +25,7 @@ namespace FargowiltasSouls.Content.Items.Accessories
 {
     public class SoulLantern : SoulsItem
     {
+        public override bool IsLoadingEnabled(Mod mod) => false;
         public override List<AccessoryEffect> ActiveSkillTooltips => 
             [AccessoryEffectLoader.GetEffect<SoulLanternEffect>()];
         public override string Texture => FargoAssets.GetAssetString("Content/Items/Accessories", Name);
@@ -108,6 +109,7 @@ namespace FargowiltasSouls.Content.Items.Accessories
 
     public class SoulLanternEffect : AccessoryEffect
     {
+        public override bool IsLoadingEnabled(Mod mod) => false;
         public override Header ToggleHeader => null;
         public override int ToggleItemType => ModContent.ItemType<SoulLantern>();
         public override bool ActiveSkill => true;
@@ -115,13 +117,13 @@ namespace FargowiltasSouls.Content.Items.Accessories
         public static int CurrentPlayerLanternID;
         public override void Load()
         {
-            On_NPC.SpawnNPC += SpawnNPCDetour;
-            On_NPC.NewNPC += NewNPCDetour;
+            //On_NPC.SpawnNPC += SpawnNPCDetour;
+            //On_NPC.NewNPC += NewNPCDetour;
         }
         public override void Unload()
         {
-            On_NPC.SpawnNPC -= SpawnNPCDetour;
-            On_NPC.NewNPC -= NewNPCDetour;
+            //On_NPC.SpawnNPC -= SpawnNPCDetour;
+            //On_NPC.NewNPC -= NewNPCDetour;
         }
         private static void SpawnNPCDetour(On_NPC.orig_SpawnNPC orig)
         {

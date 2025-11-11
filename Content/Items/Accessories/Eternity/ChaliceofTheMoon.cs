@@ -162,6 +162,10 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
         {
             if (ModContent.TryFind("Fargowiltas", "Omnistation", out ModBuff omnibuff))
                 ChaliceBuffs.Add(omnibuff.Type);
+        }
+        public override void PostUpdateEquips(Player player)
+        {
+
             foreach (int buff in ChaliceBuffs)
             {
                 int duration = buff == BuffID.Lucky ? 60 * 60 * 15 : 2;

@@ -1,24 +1,27 @@
-﻿using Fargowiltas.Content.Items.Explosives;
+﻿using System;
+using System.Linq;
+using Fargowiltas.Content.Items.Explosives;
 using Fargowiltas.Content.NPCs;
 using FargowiltasSouls.Common.Graphics.Particles;
+using FargowiltasSouls.Content.Bosses.VanillaEternity;
 using FargowiltasSouls.Content.Buffs;
 using FargowiltasSouls.Content.Buffs.Eternity;
 using FargowiltasSouls.Content.Items.Accessories.Enchantments;
+using FargowiltasSouls.Content.Items.Accessories.Eternity;
 using FargowiltasSouls.Content.Items.Accessories.Expert;
 using FargowiltasSouls.Content.Items.Accessories.Forces;
-using FargowiltasSouls.Content.Items.Accessories.Eternity;
+using FargowiltasSouls.Content.Items.Accessories.Souls;
 using FargowiltasSouls.Content.Items.Armor.Styx;
 using FargowiltasSouls.Content.Items.Consumables;
 using FargowiltasSouls.Content.Items.Weapons.Challengers;
 using FargowiltasSouls.Content.Items.Weapons.SwarmDrops;
+using FargowiltasSouls.Content.Projectiles.Accessories.HeartOfTheMaster;
 using FargowiltasSouls.Content.Projectiles.Accessories.Souls;
 using FargowiltasSouls.Core.AccessoryEffectSystem;
 using FargowiltasSouls.Core.Globals;
 using FargowiltasSouls.Core.Systems;
 using Luminance.Core.Graphics;
 using Microsoft.Xna.Framework;
-using System;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -26,7 +29,6 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
-using FargowiltasSouls.Content.Bosses.VanillaEternity;
 
 namespace FargowiltasSouls.Core.ModPlayers
 {
@@ -180,6 +182,11 @@ namespace FargowiltasSouls.Core.ModPlayers
                 SquireEnchant.ResetMountStats(this);
             }
 
+            if (!Player.HasEffect<DCUEffect>() || !Player.mount.Active || Player.mount.Type != MountID.Drill)
+            {
+                Mount.amountOfBeamsAtOnce = 2;
+            }
+
             ConcentratedRainbowMatterTryAutoHeal();
 
         }
@@ -281,8 +288,7 @@ namespace FargowiltasSouls.Core.ModPlayers
 
             if (!Player.HasEffect<TimsInspectEffect>())
                 Player.FargoSouls().TimsInspect = false;
-            if (Player.FargoSouls().TimsInspectCD > 0)
-                Player.FargoSouls().TimsInspectCD--;
+            Player.IncrementCooldownTowards<TimsInspectEffect>(-1, 0);
 
             Player.wingTimeMax = (int)(Player.wingTimeMax * WingTimeModifier);
 
@@ -347,9 +353,8 @@ namespace FargowiltasSouls.Core.ModPlayers
 
             if (BetsysHeartItem != null || QueenStingerItem != null || Player.HasEffect<SupremeDashEffect>())
             {
-                if (SpecialDashCD > 0)
-                    SpecialDashCD--;
-                if (SpecialDashCD == 1)
+                Player.IncrementCooldownTowards<SpecialDashEffect>(-1, 0);
+                if (Player.GetCooldown<SpecialDashEffect>() == 1)
                 {
                     SoundEngine.PlaySound(SoundID.Item9, Player.Center);
                     for (int i = 0; i < 10; i++)
@@ -376,8 +381,7 @@ namespace FargowiltasSouls.Core.ModPlayers
             }
             else
             {
-                if (SpecialDashCD > 0 && SpecialDashCD < LumUtils.SecondsToFrames(7))
-                    SpecialDashCD++;
+                Player.IncrementCooldownTowards<SpecialDashEffect>(1, LumUtils.SecondsToFrames(7));
             }
 
             if (SlimyShieldItem != null || LihzahrdTreasureBoxItem != null)
@@ -407,7 +411,6 @@ namespace FargowiltasSouls.Core.ModPlayers
                 Player.GetJumpState(ExtraJump.UnicornMount).Disable();*/
                 Player.ConsumeAllExtraJumps();
                 JungleJumping = false;
-                CanJungleJump = false;
                 DashCD = 2;
                 IsDashingTimer = 0;
                 HasDash = false;
@@ -426,6 +429,8 @@ namespace FargowiltasSouls.Core.ModPlayers
                 TryFastfallUpdate();
             if (Player.HasEffect<DeerclawpsEffect>() && IsInADashState)
                 DeerclawpsEffect.DeerclawpsAttack(Player, Player.Bottom);
+            if (Player.HasEffect<JungleSporesEffect>() && IsInADashState)
+                JungleSporesEffect.JungleAttack(Player, Player.Bottom);
 
             #endregion dashes
 
@@ -437,7 +442,7 @@ namespace FargowiltasSouls.Core.ModPlayers
                 //    Player.velocity.X *= 1.1f;
                 //}
 
-                float dashSpeedBoost = 0.3f * Player.velocity.X;
+                float dashSpeedBoost = 0.2f * Player.velocity.X;
                 Player.position.X += dashSpeedBoost;
                 if (Collision.SolidCollision(Player.position, Player.width, Player.height))
                     Player.position.X -= dashSpeedBoost;
@@ -455,7 +460,7 @@ namespace FargowiltasSouls.Core.ModPlayers
                 Player.fullRotation = 0f;
                 NecromanticBrewRotation = 0f;
             }
-            if (Player.FargoSouls().Toggler_ExtraJumpsDisabled && Player.wingTime > 0)
+            if (Player.FargoSouls().Toggler_ExtraJumpsDisabled && Player.wingTimeMax > 0)
                 Player.ConsumeAllExtraJumps();
         }
         public override void UpdateLifeRegen()
@@ -505,7 +510,7 @@ namespace FargowiltasSouls.Core.ModPlayers
                 DamageOverTime(2);
 
             if (CurseoftheMoon)
-                DamageOverTime(20);
+                DamageOverTime(10);
 
             if (MutantPresence)
             {
@@ -570,6 +575,11 @@ namespace FargowiltasSouls.Core.ModPlayers
         {
             TimeSinceHurt++;
 
+            if (SandsOfTimeChannel > 0 && Player.ItemTimeIsZero && !Player.ItemAnimationActive)
+                SandsOfTimeChannel = 0;
+            else if (SandsOfTimeChannel < 0)
+                SandsOfTimeChannel++;
+
             if (MinionSlotsNonstack > 0)
                 Player.maxMinions += MinionSlotsNonstack;
             if (SentrySlotsNonstack > 0)
@@ -586,15 +596,6 @@ namespace FargowiltasSouls.Core.ModPlayers
                     Player.GetDamage(DamageClass.Generic) += accessoryminioncount * 0.04f; // 4% each
                 if (minioncount > 0)
                     Player.GetDamage(DamageClass.Generic) += minioncount * 0.02f; // 2% each
-            }
-
-            if (Player.miscCounter % 150 == 0)
-            {
-                for (int i = OldPositionBig.Length - 1; i > 0; i--)
-                {
-                    OldPositionBig[i] = OldPositionBig[i - 1];
-                }
-                OldPositionBig[0] = Player.position;
             }
 
 
@@ -645,6 +646,15 @@ namespace FargowiltasSouls.Core.ModPlayers
 
             if (TinCrit > 0 && !Player.HasEffect<TinEffect>())
                 TinCrit = 0;
+
+            if (NinjaCounter > 0 && !Player.HasEffect<NinjaEffect>())
+                NinjaCounter = 0;
+
+            if (NinjaDecrementCD > 0)
+                NinjaDecrementCD--;
+
+            if (ShadewoodCharge > 0 && !Player.HasEffect<ShadewoodEffect>())
+                ShadewoodCharge = 0;
 
             if (!Player.HasEffectEnchant<BeetleEffect>())
             {
@@ -887,16 +897,6 @@ namespace FargowiltasSouls.Core.ModPlayers
 
             if (Player.HasEffect<CelestialRuneAttacks>() && AdditionalAttacksTimer > 0)
                 AdditionalAttacksTimer--;
-
-            if (Player.HasEffect<SpookyEffect>() && SpookyCD > 0)
-            {
-                SpookyCD--;
-                if (SpookyCD == 1)
-                    SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath with {Volume = 2f}, Player.Center);
-            }
-
-            if (Player.HasEffect<RemoteLightningEffect>() && RemoteCD > 0)
-                RemoteCD--;
 
             StatLifePrevious = Player.statLife;
         }

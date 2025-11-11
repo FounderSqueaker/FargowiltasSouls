@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace FargowiltasSouls.Content.Items.Accessories.Eternity
 {
-    //[AutoloadEquip(EquipType.Shoes)] //TODO: enable this when sheeted
+    [AutoloadEquip(EquipType.Shoes)]
     public class ZephyrBoots : SoulsItem
     {
         public override string Texture => FargoAssets.GetAssetString("Content/Items/Accessories/Eternity", Name);

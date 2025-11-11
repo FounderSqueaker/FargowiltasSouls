@@ -15,17 +15,6 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Desert
             NPCID.DuneSplicerTail
         );
 
-        public override bool SafePreAI(NPC npc)
-        {
-            int p = npc.HasPlayerTarget ? npc.target : npc.FindClosestPlayer();
-            if (p != -1 && npc.Distance(Main.player[p].Center) < 2400)
-            {
-                Main.player[p].ZoneUndergroundDesert = true; //always attack them
-            }
-
-            return base.SafePreAI(npc);
-        }
-
         public override void OnHitPlayer(NPC npc, Player target, Player.HurtInfo hurtInfo)
         {
             base.OnHitPlayer(npc, target, hurtInfo);

@@ -1,7 +1,10 @@
+using FargowiltasSouls.Core.Globals;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace FargowiltasSouls.Content.Bosses.MutantBoss
 {
@@ -26,9 +29,21 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
 
         public override void AI()
         {
-            base.AI();
+            if (++Projectile.localAI[1] > 10 && FargoSoulsUtil.BossIsAlive(ref EModeGlobalNPC.mutantBoss, ModContent.NPCType<MutantBoss>()))
+            {
+                float yOffset = Projectile.Center.Y - Main.npc[EModeGlobalNPC.mutantBoss].Center.Y;
+                if (Math.Sign(yOffset) == Math.Sign(Projectile.velocity.Y) && Projectile.Distance(Main.npc[EModeGlobalNPC.mutantBoss].Center) > 1200 + Projectile.ai[0])
+                    Projectile.timeLeft = 0;
+            }
 
-            Projectile.frame = (int)Projectile.ai[2];
+            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+
+            if (Projectile.localAI[2] == 0)
+            {
+                Projectile.localAI[2] = 1;
+                Projectile.frame = Main.rand.Next(3);
+            }
+            Projectile.frame = (int)MathHelper.Clamp(Projectile.frame, 0, 2);
         }
 
         public override bool PreDraw(ref Color lightColor)

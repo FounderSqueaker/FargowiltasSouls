@@ -1,21 +1,23 @@
-﻿using Terraria;
-using Terraria.ModLoader;
+﻿using FargowiltasSouls.Assets.Textures;
+using FargowiltasSouls.Common.Graphics.Particles;
 using Microsoft.Xna.Framework;
-using Terraria.ID;
-using Terraria.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.IO;
+using Terraria;
+using Terraria.Audio;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.Cavern
 {
     public class GranitePebble : ModProjectile
     {
-        public override string Texture => "Terraria/Images/Item_" + ItemID.Granite;
+        public override string Texture => FargoAssets.GetAssetString("Content/Projectiles/Eternity/Enemies/Vanilla/Cavern", Name);
         public override void SetDefaults()
         {
-            Projectile.width = 15;
-            Projectile.height = 15;
+            Projectile.width = 16;
+            Projectile.height = 16;
             Projectile.hostile = true;
             Projectile.tileCollide = false;
         }
@@ -25,16 +27,20 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.Cavern
         public ref float Index => ref Projectile.ai[2];
 
         public int State = 0;
+        public int Timer = 0;
+
         public override void SendExtraAI(BinaryWriter writer)
         {
             base.SendExtraAI(writer);
-            writer.Write7BitEncodedInt(State);
+            writer.Write(State);
+            writer.Write(Timer);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
             base.ReceiveExtraAI(reader);
-            State = reader.Read7BitEncodedInt();
+            State = reader.ReadInt32();
+            Timer = reader.ReadInt32();
         }
 
         public override void AI()
@@ -51,8 +57,14 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.Cavern
             {
                 Rotation += 0.1f;
                 Projectile.Center = npc.Center -  45 * Vector2.UnitY.RotatedBy(Rotation);
+                Projectile.rotation += 0.1f;
+
+                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.BlueTorch, Projectile.velocity * 0.3f, Scale: 0.75f * Projectile.scale);
+                d.noGravity = true;
+
                 if (npc.ai[2] >= 0)
                 {
+
                     if (!npc.HasValidTarget)
                     {
                         Projectile.Kill();
@@ -69,18 +81,36 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.Cavern
                 {
                     Player target = Main.player[npc.target];
                     float rot = (target.Center - Projectile.Center).ToRotation();
-                    rot += Main.rand.NextFloat(-0.3f, 0.3f);
-                    Projectile.velocity = 9 * Vector2.UnitX.RotatedBy(rot);
+                    rot += Main.rand.NextFloat(-0.15f, 0.15f);
+                    Projectile.velocity = 1f * Vector2.UnitX.RotatedBy(rot);
+                    SoundEngine.PlaySound(SoundID.Item91, npc.Center);
+
+                    for (int i = 0; i < 5; i++)
+                    {
+                        float sparkRot = Main.rand.NextFloat(0, MathHelper.TwoPi);
+
+
+                        new SparkParticle(Projectile.Center + 5 * Vector2.UnitX.RotatedBy(sparkRot), 3 * Vector2.UnitX.RotatedBy(sparkRot), Color.Lerp(Color.SkyBlue, Color.Blue, 0.8f), 0.3f, 15).Spawn();
+                    }
+
                     State = 2;
-                    Projectile.tileCollide = true;
                     Projectile.netUpdate = true;
                 }
+                Projectile.rotation += 0.15f;
             }
             // Traveling
             else
             {
+                if (!Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height))
+                    Projectile.tileCollide = true;
                 Projectile.rotation += 0.15f;
+                Projectile.velocity *= 1.044f;
+
+                Dust d = Dust.NewDustPerfect(Projectile.Center, DustID.BlueTorch, Projectile.velocity * 0.5f, Scale: 2f * Projectile.scale);
+                d.noGravity = true;
             }
+
+            Lighting.AddLight(Projectile.Center, TorchID.Blue);
         }
 
         public override void OnKill(int timeLeft)
@@ -97,8 +127,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.Cavern
         {
             Texture2D texture = ModContent.Request<Texture2D>(Texture, AssetRequestMode.ImmediateLoad).Value;
             Rectangle frame = new(0, 0, texture.Width, texture.Height);
-            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, frame, Color.DeepSkyBlue * 0.7f, Projectile.rotation, texture.Size() / 2, 1.5f * Projectile.scale, SpriteEffects.None);
-            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, texture.Size() / 2, Projectile.scale, SpriteEffects.None);
+            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, frame, lightColor, Rotation + Projectile.rotation, texture.Size() / 2, Projectile.scale, SpriteEffects.None);
             return false;
         }
     }

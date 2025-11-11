@@ -40,6 +40,10 @@ namespace FargowiltasSouls.Assets.Textures
         public static Asset<Texture2D> SoftEdgeRing => ModContent.Request<Texture2D>(Filepath + "AdditiveTextures/SoftEdgeRing");
         public static Asset<Texture2D> Scorch => ModContent.Request<Texture2D>(Filepath + "AdditiveTextures/Scorch");
         public static Asset<Texture2D> Smoke => ModContent.Request<Texture2D>(Filepath + "AdditiveTextures/Smoke");
+
+        public static Asset<Texture2D> BlurredLightTexture => ModContent.Request<Texture2D>(Filepath + "AdditiveTextures/BlurredLight");
+
+        public static Asset<Texture2D> LightRayTexture => ModContent.Request<Texture2D>(Filepath + "AdditiveTextures/LightRay");
         #endregion
 
         #region Misc Shader Textures

@@ -16,7 +16,6 @@ namespace FargowiltasSouls.Content.Bosses.AbomBoss
 
         public override void SetStaticDefaults()
         {
-            // DisplayName.SetDefault("Abominationn Scythe");
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }

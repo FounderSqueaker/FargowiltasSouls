@@ -14,7 +14,7 @@ using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Luminance.Core.Graphics;
-using FargowiltasSouls.Content.Items.Armor.Masks;
+using FargowiltasSouls.Content.Items.Vanity.Masks;
 
 namespace FargowiltasSouls.Content.Bosses.Champions.Earth
 {

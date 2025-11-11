@@ -24,7 +24,6 @@ namespace FargowiltasSouls.Content.Patreon.Sasha
 
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 7;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
         }
 
       /*public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

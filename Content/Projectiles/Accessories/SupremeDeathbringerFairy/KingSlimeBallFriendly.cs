@@ -1,8 +1,10 @@
-using System;
+using FargowiltasSouls.Assets.Textures;
 using FargowiltasSouls.Content.Projectiles.Eternity.Bosses.KingSlime;
 using Microsoft.Xna.Framework;
+using System;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -10,13 +12,8 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.SupremeDeathbringerFa
 {
     public class KingSlimeBallFriendly : KingSlimeBall
     {
-        public override string Texture => "FargowiltasSouls/Content/Bosses/MutantBoss/MutantSlimeBall_2";
-        public int BounceCount = 0;
-
-        public override void SetStaticDefaults()
-        {
-            base.SetStaticDefaults();
-        }
+        public override string Texture => FargoAssets.GetAssetString("Content/Projectiles/Eternity/Bosses/KingSlime", "KingSlimeBall");
+        public int BounceCount = 0; 
 
         public override void SetDefaults()
         {
@@ -26,6 +23,12 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.SupremeDeathbringerFa
             Projectile.penetrate = 1;
             Projectile.ignoreWater = false;
             Projectile.DamageType = DamageClass.Generic;
+        }
+
+        public override void OnSpawn(IEntitySource source)
+        {
+            if (Projectile.ai[2] == 1) Projectile.ai[0] = Main.rand.Next(15, 18); //sdf red
+            else Projectile.ai[0] = Main.rand.Next(0, 3); //slimy shield blue
         }
 
         public override void AI()
@@ -39,13 +42,6 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.SupremeDeathbringerFa
         public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
         {
             target.AddBuff(BuffID.Slimed, 240);
-        }
-
-        public override Color? GetAlpha(Color lightColor)
-        {
-            if (Projectile.ai[2] == 1)
-                return Color.Lerp(Color.DarkRed, Color.Transparent, 0.5f);
-            return base.GetAlpha(lightColor);
         }
 
         public override bool? CanCutTiles() => false;
@@ -64,11 +60,6 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.SupremeDeathbringerFa
                 return false;
             }
             else return true;
-        }
-
-        public override bool PreDraw(ref Color lightColor)
-        {
-            return base.PreDraw(ref lightColor);
         }
     }
 }

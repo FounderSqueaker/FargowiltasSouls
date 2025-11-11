@@ -210,7 +210,7 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.Minions
                 HoveringMovement(player.Top, player.Center);
             }
 
-            if (Projectile.Distance(player.Center) > 3200)
+            if (Projectile.Distance(player.Center) > 2000)
             {
                 AttackTimer = 0;
                 Projectile.Center = player.Center;

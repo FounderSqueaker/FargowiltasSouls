@@ -2,7 +2,9 @@
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent.Generation;
 using Terraria.ID;
+using Terraria.IO;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
@@ -104,7 +106,16 @@ namespace FargowiltasSouls.Core.Systems
 
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
         {
+            int mushroomIndex = getStepIndex(tasks, "Mushroom Patches");
+            tasks.Insert(mushroomIndex + 1, new PassLegacy("Bouncy Mushroom", addBouncyMushrooms));
+
+
             base.ModifyWorldGenTasks(tasks, ref totalWeight);
+        }
+
+        private int getStepIndex(List<GenPass> tasks, string name)
+        {
+            return tasks.FindIndex(genPass => genPass.Name.Equals(name));
         }
 
         public void addWaterToUGDesert()
@@ -114,10 +125,100 @@ namespace FargowiltasSouls.Core.Systems
             int j4 = undergroundDesertLocation.Top - 10;
 
 
-
+            //if (GenVars.UndergroundDesertLocation.Contains(new Point(num936, num937)))
 
 
             //    WorldGen.Pyramid(x15, j4);
+        }
+
+        private void addBouncyMushrooms(GenerationProgress progress, GameConfiguration configuration)
+        {
+            for (int i = 0; i < GenVars.numMushroomBiomes; i++)
+            {
+                Point mushroomPoint = GenVars.mushroomBiomesPosition[i];
+
+                //pick some random points close by the center point
+                for (int j = 0; j < 10; j++)
+                {
+                    int x = WorldGen.genRand.Next(mushroomPoint.X - 50, mushroomPoint.X + 50);
+                    int y = WorldGen.genRand.Next(mushroomPoint.Y - 50, mushroomPoint.Y + 50);
+
+                    //try to move to an open surface
+                    Tile tile;
+
+                    do
+                    {
+                        tile = Main.tile[x, y--];
+
+                    } while (tile.HasTile);
+
+                    y += 2;
+
+                    if (!Main.tile[x, y].HasTile)
+                    {
+                        continue;
+                    }
+
+                    //ore spot
+                    if (WorldGen.genRand.NextBool())
+                    {
+                        int strength = WorldGen.genRand.Next(5, 15);
+                        int steps = WorldGen.genRand.Next(5, 15);
+
+                        WorldGen.OreRunner(x, y, strength, steps, (ushort)ModContent.TileType<BouncyMushroomTile>());
+                    }
+                    else
+                    {
+                        int height = WorldGen.genRand.Next(2, 6);
+                        int width = WorldGen.genRand.Next(3, 8);
+
+                        createMarioMushroom(x, y, height, width);
+                    }
+                        
+                }
+
+                
+
+                
+            }
+
+            
+        }
+
+        private void createMarioMushroom(int x, int y, int height, int width)
+        {
+            if (width % 2 == 0)
+            {
+                width++;
+            }
+
+            y = y - height;
+
+            //surface
+            for (int i = x - width / 2; i <= x + width / 2; i++)
+            {
+                addBlock(i, y, ModContent.TileType<BouncyMushroomTile>());
+            }
+
+            //stalk
+            for (int i = y; i < y + height; i++)
+            {
+                addBlock(x, i, ModContent.TileType<BouncyMushroomTile>());
+            }
+        }
+
+        private void addBlock(int x, int y, int type)
+        {
+            WorldGen.PlaceTile(x, y, type, mute: true, forced: true);
+
+            //Main.tile[x, y].TileType = (ushort)type;
+            //Main.tile[x, y].ClearBlockPaintAndCoating();
+            //WorldGen.SquareTileFrame(x, y);
+
+            //if (Main.netMode == 2)
+            //{
+            //    NetMessage.SendTileSquare(-1, x, y);
+            //}
         }
     }
 }

@@ -34,6 +34,12 @@ namespace FargowiltasSouls.Common.Graphics.Particles
         {
             if (Player != null && Player.Alive())
                 Position = Player.Center;
+            if ((int)(LifetimeRatio * Lifetime) % 8 == 0)
+            {
+                CurrentFrame++;
+                CurrentFrame %= FrameCount;
+            }
+            /*
             if (LifetimeRatio > 0.6f)
             {
                 float decay = (LifetimeRatio - 0.6f) / 0.4f;
@@ -42,6 +48,7 @@ namespace FargowiltasSouls.Common.Graphics.Particles
             }
             else
                 CurrentFrame = 0;
+            */
         }
         public override void Draw(SpriteBatch spriteBatch)
         {

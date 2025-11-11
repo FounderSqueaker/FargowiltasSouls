@@ -1,4 +1,3 @@
-﻿
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\tModLoader.targets" />
   <PropertyGroup>
@@ -66,6 +65,7 @@
     <None Remove="Content\Items\Armor\TrojanMask_Head.png" />
     <None Remove="Content\Items\Armor\WillMask.png" />
     <None Remove="Content\Items\Armor\WillMask_Head.png" />
+    <None Remove="Content\Projectiles\Eternity\Bosses\EyeOfCthulhu\PhantasmalBoltEoC_Vanilla.png" />
     <None Remove="Content\Projectiles\Weapons\BossWeapons\MechFlailEye.png" />
     <None Remove="Content\Projectiles\Weapons\BossWeapons\PhantasmalEyeLeashProj.png" />
     <None Remove="Content\Projectiles\Weapons\BossWeapons\PhantasmalFlailEye.png" />
@@ -75,6 +75,7 @@
     <None Remove="Localization\en-US\Mods.FargowiltasSouls.ActiveSkills.hjson" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Assets\Textures\Content\NPCs\" />
     <Folder Include="Assets\Textures\Gores\Weapons\BigSting\" />
     <Folder Include="Assets\Sounds\Challengers\Trojan\" />
     <Folder Include="Assets\Sounds\VanillaEternity\KingSlime\" />

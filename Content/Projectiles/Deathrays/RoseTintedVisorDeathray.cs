@@ -52,6 +52,11 @@ namespace FargowiltasSouls.Content.Projectiles.Deathrays
             }
 
         }
+        public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+        {
+            if (Projectile.owner.IsWithinBounds(Main.maxPlayers) && Main.player[Projectile.owner] is Player owner)
+                modifiers.CritDamage += 2 * owner.ActualClassCrit(DamageClass.Magic) / 100;
+        }
         public override void AI()
         {
             Vector2? vector78 = null;

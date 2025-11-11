@@ -17,7 +17,7 @@ namespace FargowiltasSouls.Content.Patreon.Duck
         {
             base.SetDefaults();
 
-            CooldownSlot = -1;
+            CooldownSlot = ImmunityCooldownID.General;
             Projectile.hostile = false;
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Ranged;
@@ -29,7 +29,6 @@ namespace FargowiltasSouls.Content.Patreon.Duck
 
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 12;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

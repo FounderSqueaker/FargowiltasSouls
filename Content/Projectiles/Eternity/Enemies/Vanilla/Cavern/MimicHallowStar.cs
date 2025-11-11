@@ -21,7 +21,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.Cavern
             Projectile.timeLeft = 300;
             Projectile.tileCollide = false;
             Projectile.light = 1f;
-            CooldownSlot = ImmunityCooldownID.Bosses;
+            //CooldownSlot = ImmunityCooldownID.Bosses;
         }
 
         public override void PostAI()

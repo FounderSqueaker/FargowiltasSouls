@@ -4,11 +4,11 @@ using FargowiltasSouls.Common.Graphics.Particles;
 using FargowiltasSouls.Common.Utilities;
 using FargowiltasSouls.Content.Buffs.Boss;
 using FargowiltasSouls.Content.Buffs.Eternity;
-using FargowiltasSouls.Content.Items.Armor.Masks;
 using FargowiltasSouls.Content.Items.BossBags;
 using FargowiltasSouls.Content.Items.Placables.Relics;
 using FargowiltasSouls.Content.Items.Placables.Trophies;
 using FargowiltasSouls.Content.Items.Summons;
+using FargowiltasSouls.Content.Items.Vanity.Masks;
 using FargowiltasSouls.Content.Items.Weapons.Challengers;
 using FargowiltasSouls.Content.Projectiles;
 using FargowiltasSouls.Content.Projectiles.Deathrays;
@@ -183,22 +183,22 @@ namespace FargowiltasSouls.Content.Bosses.BanishedBaron
         public override void SendExtraAI(BinaryWriter writer)
         {
             writer.Write(NPC.localAI[0]);
-            writer.Write7BitEncodedInt(ArenaProjID);
-            writer.Write7BitEncodedInt(Phase);
+            writer.Write(ArenaProjID);
+            writer.Write(Phase);
             writer.WriteVector2(LockVector1);
             writer.WriteVector2(LockVector2);
-            writer.Write7BitEncodedInt(LastState);
+            writer.Write(LastState);
             writer.Write(DidWhirlpool);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
             NPC.localAI[0] = reader.ReadSingle();
-            ArenaProjID = reader.Read7BitEncodedInt();
-            Phase = reader.Read7BitEncodedInt();
+            ArenaProjID = reader.ReadInt32();
+            Phase = reader.ReadInt32();
             LockVector1 = reader.ReadVector2();
             LockVector2 = reader.ReadVector2();
-            LastState = reader.Read7BitEncodedInt();
+            LastState = reader.ReadInt32();
             DidWhirlpool = reader.ReadBoolean();
         }
         #endregion
@@ -503,7 +503,7 @@ namespace FargowiltasSouls.Content.Bosses.BanishedBaron
 
             if (Phase == 2)
             {
-                ThrusterLoop ??= LoopedSoundManager.CreateNew(FargosSoundRegistry.BaronThrusterLoop, () =>
+                ThrusterLoop ??= LoopedSoundManager.CreateNew(FargosSoundRegistry.BaronThrusterLoop with { PauseBehavior = PauseBehavior.StopWhenGamePaused }, () =>
                 {
                     return !NPC.active || State == (int)StateEnum.DeathAnimation;
                 });

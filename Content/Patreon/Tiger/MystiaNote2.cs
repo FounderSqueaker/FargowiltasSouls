@@ -29,7 +29,6 @@ namespace FargowiltasSouls.Content.Patreon.Tiger
             Projectile.scale = 0.8f;
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 20;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
         }
 
         public override void AI()

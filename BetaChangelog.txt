@@ -234,3 +234,27 @@ fixed abom cannonballs being able to kaizo you if you exploded them by making ab
 implemented framework for rumination tooltips
 fixed soe not being able to read full tooltips from ponderable materials
 fish ex p3 spawns invul bubble rings
+
+mutant dive nuke ends & explodes immediately if he falls to a certain height relative to player
+mutant rof cf tells are thicker
+tried fixing mutant rof rays drawing in front of ichor
+fixed ftw mutant still having contact damage in desp
+removed maso twins having double rings
+nerfed slime rain so you dont have to run as far
+adjusted number of dashes maso mutant can do for diagonal directs
+
+fixed mutant rof rays not rendering & adjusted color of rof rays
+actually fixed mutant chains not disappearing for desp trans
+
+flipped gizmos inputs (now left is box, right is unbox)
+gizmos wont box favorited items
+you can now consume the moon chalice (it doesnt do anything)
+
+slowed down emode mutant p1 a bit, longer window between some attacks
+tried fixing an extremely obscure edge case that caused mutant to do p2 boundary with no spin???
+
+nano core mage does 1.1x more damage, nobody uses this lol
+nano core summon probes inflict the kaleidoscope debuff (does anyone unironically use this?)
+dev aesth can have a little dust spam, as a treat
+nuke fishron does 3x damage, fires 3x slower, is bigger, nerfed homing detection range a lot, and screenshakes (diversifying it from ddemise and the best on tier takes SOME effort to use now)
+nerfed nano core ranged damage to 0.8x because apparently this does mind shattering damage??

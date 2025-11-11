@@ -17,8 +17,8 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.SkyAndRa
             base.OnFirstTick(npc);
 
 
-            if (Main.rand.NextBool(4) && npc.FargoSouls().CanHordeSplit && WorldSavingSystem.DownedAnyBoss)
-                EModeGlobalNPC.Horde(npc, Main.rand.Next(1, 5));
+            //if (Main.rand.NextBool(4) && npc.FargoSouls().CanHordeSplit && WorldSavingSystem.DownedAnyBoss)
+                //EModeGlobalNPC.Horde(npc, Main.rand.Next(1, 5));
 
         }
         public override bool SafePreAI(NPC npc)

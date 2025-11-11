@@ -490,7 +490,7 @@ namespace FargowiltasSouls.Content.Items
         public override bool WingUpdate(int wings, Player player, bool inUse)
         {
             FargoSoulsPlayer modPlayer = player.FargoSouls();
-            if (player.HasEffect<JungleJump>() && inUse)
+            /*if (player.HasEffect<JungleJump>() && inUse)
             {
                 modPlayer.CanJungleJump = false;
 
@@ -522,7 +522,7 @@ namespace FargowiltasSouls.Content.Items
 
                     modPlayer.JungleCD = 24;
                 }
-            }
+            }*/
 
             if (player.HasEffect<BeeEffect>() && inUse)
             {
@@ -594,22 +594,28 @@ namespace FargowiltasSouls.Content.Items
                 bool shroomite = Main.LocalPlayer.HasEffect<ShroomiteHealEffect>() && item.type == ItemID.Mushroom;
                 if (hallow || (shroomite))
                 {
-                    foreach (var tooltip in tooltips)
+                    if (tooltips.TryFindTooltipLine("HealLife", out var tooltip))
                     {
-                        if (tooltip.Name == "HealLife")
+                        if (hallow)
                         {
-                            if (hallow)
-                            {
-                                tooltip.Text = "[i:FargowiltasSouls/HallowEnchant] " + tooltip.Text;
-                                tooltip.Text += $" {Language.GetTextValue("Mods.FargowiltasSouls.Items.HallowEnchant.OverTime")}";
-                            }
-                            if (shroomite)
-                            {
-                                tooltip.Text = "[i:FargowiltasSouls/ShroomiteEnchant] " + tooltip.Text;
-                                tooltip.Text += $" {Language.GetTextValue("Mods.FargowiltasSouls.Items.ShroomiteEnchant.AndMushroomPower")}";
-                            }
+                            tooltip.Text = "[i:FargowiltasSouls/HallowEnchant] " + tooltip.Text;
+                            tooltip.Text += $" {Language.GetTextValue("Mods.FargowiltasSouls.Items.HallowEnchant.OverTime")}";
+                        }
+                        if (shroomite)
+                        {
+                            tooltip.Text = "[i:FargowiltasSouls/ShroomiteEnchant] " + tooltip.Text;
+                            tooltip.Text += $" {Language.GetTextValue("Mods.FargowiltasSouls.Items.ShroomiteEnchant.AndMushroomPower")}";
                         }
                     }
+                }
+            }
+
+            int craftsInto = FargoSoulsSets.Items.MaterialOfImportantItem[item.type];
+            if (craftsInto > 0)
+            {
+                if (tooltips.TryFindTooltipLine("Material", out var materialLine))
+                {
+                    materialLine.Text += $" [i:{craftsInto}]";
                 }
             }
 
@@ -691,7 +697,7 @@ namespace FargowiltasSouls.Content.Items
                 List<int> allowed = [PrefixID.Legendary, PrefixID.Legendary2, PrefixID.Mythical, PrefixID.Unreal, PrefixID.Godly, PrefixID.Demonic, PrefixID.Ruthless];
                 if (item.accessory)
                     allowed.AddRange([PrefixID.Violent, PrefixID.Quick, PrefixID.Menacing, PrefixID.Warding, PrefixID.Lucky, PrefixID.Arcane]);
-                if (item.pick > 0 || item.axe > 0 || item.hammer > 0)
+                if (item.pick > 0 || item.axe > 0 || item.hammer > 0 || item.type == ItemID.GravediggerShovel)
                     allowed.Add(PrefixID.Light);
                 allowed.Remove(item.prefix);
                 if (pre < 85 && !allowed.Contains(pre))

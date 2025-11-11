@@ -13,9 +13,15 @@ using Terraria.ModLoader;
 
 namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.SkyAndRain
 {
-    public class LightBall : ModProjectile
+    public class LightBall : ModProjectile, IPixelatedPrimitiveRenderer
     {
         public override string Texture => FargoAssets.GetAssetString("Content/Projectiles/Eternity/Enemies/Vanilla/SkyAndRain", "LightBall");
+        public override void SetStaticDefaults()
+        {
+            base.SetStaticDefaults();
+            ProjectileID.Sets.TrailingMode[Type] = 1;
+            ProjectileID.Sets.TrailCacheLength[Type] = 20;
+        }
         public override void SetDefaults()
         {
             Projectile.width = 16;

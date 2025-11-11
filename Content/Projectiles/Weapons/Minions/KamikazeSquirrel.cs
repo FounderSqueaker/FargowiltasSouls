@@ -101,7 +101,7 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.Minions
 
                 if (!Main.dedServ)
                 {
-                    int g = Gore.NewGore(Projectile.GetSource_FromThis(), Projectile.Center, 0.5f * Projectile.velocity.RotatedByRandom(MathHelper.PiOver4), ModContent.Find<ModGore>(Mod.Name, Main.rand.NextBool() ? "TrojanSquirrelGore2" : "TrojanSquirrelGore2_2").Type, Projectile.scale);
+                    int g = Gore.NewGore(Projectile.GetSource_FromThis(), Projectile.Center, 0.5f * Projectile.velocity.RotatedByRandom(MathHelper.PiOver4), ModContent.Find<ModGore>(Mod.Name, "TrojanSquirrelGore2_2").Type, Projectile.scale);
                     Main.gore[g].rotation = Main.rand.NextFloat(MathHelper.TwoPi);
                     Main.gore[g].velocity.Y -= 6f;
                 }

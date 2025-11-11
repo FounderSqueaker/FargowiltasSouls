@@ -40,9 +40,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(GeneralTimer);
-            binaryWriter.Write7BitEncodedInt(P3Timer);
-            binaryWriter.Write7BitEncodedInt(EXTornadoTimer);
+            binaryWriter.Write(GeneralTimer);
+            binaryWriter.Write(P3Timer);
+            binaryWriter.Write(EXTornadoTimer);
             bitWriter.WriteBit(RemovedInvincibility);
             bitWriter.WriteBit(TakeNoDamageOnHit);
             bitWriter.WriteBit(IsEX);
@@ -52,9 +52,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            GeneralTimer = binaryReader.Read7BitEncodedInt();
-            P3Timer = binaryReader.Read7BitEncodedInt();
-            EXTornadoTimer = binaryReader.Read7BitEncodedInt();
+            GeneralTimer = binaryReader.ReadInt32();
+            P3Timer = binaryReader.ReadInt32();
+            EXTornadoTimer = binaryReader.ReadInt32();
             RemovedInvincibility = bitReader.ReadBit();
             TakeNoDamageOnHit = bitReader.ReadBit();
             IsEX = bitReader.ReadBit();
@@ -412,6 +412,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                         break;
 
                     case 1: //p1 dash
+                        /*
                         if (++GeneralTimer > 5)
                         {
                             GeneralTimer = 0;
@@ -422,6 +423,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                                 FargoSoulsUtil.NewNPCEasy(npc.GetSource_FromThis(), spawnPos, NPCID.DetonatingBubble);
                             }
                         }
+                        */
                         break;
 
                     case 2: //p1 bubbles
@@ -528,7 +530,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                             }
                             if (npc.ai[2] == delayForTornadoSpawn)
                             {
-                                int max = WorldSavingSystem.MasochistModeReal ? 7 : 5;
+                                int max = WorldSavingSystem.MasochistModeReal ? 5 : 5;
                                 for (int i = 0; i < max; i++)
                                 {
                                     if (FargoSoulsUtil.HostCheck)
@@ -813,7 +815,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 }
             }
 
-            if (WorldSavingSystem.MasochistModeReal || EModeGlobalNPC.fishBossEX == npc.whoAmI)// && npc.ai[0] >= 10 || (npc.ai[0] == 9 && npc.ai[2] > 120)) //in phase 3, do this check in all stages
+            if (EModeGlobalNPC.fishBossEX == npc.whoAmI)// && npc.ai[0] >= 10 || (npc.ai[0] == 9 && npc.ai[2] > 120)) //in phase 3, do this check in all stages
             {
                 EXTornadoTimer--;
             }

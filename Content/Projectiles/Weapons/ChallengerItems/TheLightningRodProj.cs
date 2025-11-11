@@ -39,6 +39,7 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.ChallengerItems
             Projectile.FargoSouls().CanSplit = false;
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 10;
+            Projectile.FargoSouls().DeletionImmuneRank = 2;
         }
 
         public override void SendExtraAI(BinaryWriter writer)

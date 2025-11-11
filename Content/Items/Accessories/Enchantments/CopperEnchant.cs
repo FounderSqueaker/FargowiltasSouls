@@ -70,8 +70,9 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
             FargoSoulsPlayer modPlayer = player.FargoSouls();
             if (modPlayer.CopperProcCD > 0)
                 modPlayer.CopperProcCD--;
-            CooldownBarManager.Activate("CopperEnchantCooldown", FargoAssets.GetTexture2D("Content/Items/Accessories/Enchantments", "CopperEnchant").Value, new(213, 102, 23),
-                () => Main.LocalPlayer.FargoSouls().CopperProcCD / (60f * 4), true, activeFunction: player.HasEffect<CopperEffect>);
+            if (player.whoAmI == Main.myPlayer)
+                CooldownBarManager.Activate("CopperEnchantCooldown", FargoAssets.GetTexture2D("Content/Items/Accessories/Enchantments", "CopperEnchant").Value, new(213, 102, 23),
+                    () => Main.LocalPlayer.FargoSouls().CopperProcCD / (60f * 4), true, activeFunction: player.HasEffect<CopperEffect>);
         }
         public override void OnHitNPCEither(Player player, NPC target, NPC.HitInfo hitInfo, DamageClass damageClass, int baseDamage, Projectile projectile, Item item)
         {

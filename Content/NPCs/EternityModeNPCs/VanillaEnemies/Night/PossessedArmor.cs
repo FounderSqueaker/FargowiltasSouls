@@ -27,7 +27,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Night
         {
             base.AI(npc);
 
-            EModeGlobalNPC.Aura(npc, 400, BuffID.BrokenArmor, false, 37);
+            //EModeGlobalNPC.Aura(npc, 400, BuffID.BrokenArmor, false, 37);
 
             if (npc.GetLifePercent() < 0.5f && Timer == 0f)
             {
@@ -87,16 +87,16 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Night
             SpriteEffects spriteEffects = npc.spriteDirection > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             for (int i = 0; i < UsedDashPositions; i++)
             {
-                Color color = Color.White;
+                Color color = Color.Purple with {A = 0};
                 Vector2 value4 = DashPositions[i];
-                DrawData oldGlow = new(texture, value4 - screenPos + new Vector2(0, npc.gfxOffY), npc.frame, color * (npc.Opacity / 2f), npc.rotation, npc.frame.Size() / 2, npc.scale, spriteEffects, 0);
+                DrawData oldGlow = new(texture, value4 - screenPos + new Vector2(0, npc.gfxOffY), npc.frame, color * (npc.Opacity / 1.5f), npc.rotation, npc.frame.Size() / 2, npc.scale, spriteEffects, 0);
                 GameShaders.Misc["LCWingShader"].UseColor(Color.Purple).UseSecondaryColor(Color.White);
                 GameShaders.Misc["LCWingShader"].Apply(oldGlow);
                 oldGlow.Draw(spriteBatch);
             }
             if (Timer > 0)
             {
-                Main.spriteBatch.UseBlendState(BlendState.Additive);
+                //Main.spriteBatch.UseBlendState(BlendState.Additive);
             }
             return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
         }

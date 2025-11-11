@@ -1,8 +1,8 @@
 ﻿using FargowiltasSouls.Content.Buffs.Eternity;
 using FargowiltasSouls.Content.Items.Accessories.Forces;
-using FargowiltasSouls.Content.Items.Armor.Masks;
 using FargowiltasSouls.Content.Items.Pets;
 using FargowiltasSouls.Content.Items.Placables.Relics;
+using FargowiltasSouls.Content.Items.Vanity.Masks;
 using FargowiltasSouls.Content.Projectiles;
 using FargowiltasSouls.Content.Projectiles.Eternity.Bosses;
 using FargowiltasSouls.Core.Globals;
@@ -43,10 +43,10 @@ namespace FargowiltasSouls.Content.Bosses.Champions.Terra
             NPCID.Sets.NPCBestiaryDrawOffset.Add(NPC.type, new NPCID.Sets.NPCBestiaryDrawModifiers()
             {
                 CustomTexturePath = $"FargowiltasSouls/Content/Bosses/Champions/Terra/{Name}_Still",
-                Scale = 1.25f,
-                Position = new Vector2(16 * 10.5f * 1.25f, 0),
-                PortraitScale = 1.25f,
-                PortraitPositionXOverride = 16 * 8 * 1.25f
+                Scale = 1.5f,
+                Position = new Vector2(16 * 7 * 1.5f, 0),
+                PortraitScale = 1.5f,
+                PortraitPositionXOverride = 16 * 5 * 1.5f
             });
         }
 
@@ -60,8 +60,8 @@ namespace FargowiltasSouls.Content.Bosses.Champions.Terra
 
         public override void SetDefaults()
         {
-            NPC.width = 80;
-            NPC.height = 80;
+            NPC.width = 120;
+            NPC.height = 120;
             NPC.damage = 135;
             NPC.defense = 80;
             NPC.lifeMax = 155000;
@@ -83,7 +83,6 @@ namespace FargowiltasSouls.Content.Bosses.Champions.Terra
             NPC.behindTiles = true;
             NPC.trapImmune = true;
 
-            NPC.scale *= 1.5f;
         }
 
         public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)

@@ -1,10 +1,11 @@
-﻿using FargowiltasSouls.Assets.Sounds;
+﻿using System.IO;
+using FargowiltasSouls.Assets.Sounds;
 using FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.Snow;
 using FargowiltasSouls.Core.Globals;
 using FargowiltasSouls.Core.NPCMatching;
+using Luminance.Common.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -23,25 +24,25 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Snow
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
-            binaryWriter.Write7BitEncodedInt(AttackTimer);
+            binaryWriter.Write(AttackTimer);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-            AttackTimer = binaryReader.Read7BitEncodedInt();
+            AttackTimer = binaryReader.ReadInt32();
         }
 
         public override void OnFirstTick(NPC npc)
         {
             base.OnFirstTick(npc);
             if (Main.rand.NextBool(3) && npc.FargoSouls().CanHordeSplit)
-                EModeGlobalNPC.Horde(npc, Main.rand.Next(10) + 1);
+                EModeGlobalNPC.Horde(npc, 3);
         }
 
         public override bool SafePreAI(NPC npc)
         {
-            AttackTimer++;
+            if (npc.HasValidTarget) AttackTimer++;
             int timeToCharge = 220;
             if (AttackTimer >= 180)
             {
@@ -60,6 +61,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Snow
                     float distanceScale = MathHelper.Clamp(npc.Distance(targetPoint) / 1000f, 0f, 1f);
                     float vel = 5f + 20f * distanceScale;
                     npc.velocity = npc.DirectionTo(targetPoint) * vel;
+                    npc.spriteDirection = npc.direction = (int)npc.HorizontalDirectionTo(targetPoint);
                     SoundEngine.PlaySound(FargosSoundRegistry.ThrowShort with { Pitch = 0.5f }, npc.Center);
                 }
                 else if (AttackTimer >= timeToCharge)
@@ -88,7 +90,6 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Snow
             base.OnHitPlayer(npc, target, hurtInfo);
 
             target.AddBuff(BuffID.Bleeding, 300);
-            target.AddBuff(BuffID.Rabies, 900);
         }
 
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

@@ -19,14 +19,14 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
     {
         public override string Texture => FargoSoulsUtil.AprilFools ?
             "FargowiltasSouls/Content/Bosses/MutantBoss/MutantSphere_April" :
-            "Terraria/Images/Projectile_454";
+            "FargowiltasSouls/Content/Bosses/MutantBoss/MutantSphere";
 
         protected bool DieOutsideArena;
 
         public override void SetStaticDefaults()
         {
-            // DisplayName.SetDefault("Phantasmal Sphere");
-            Main.projFrames[Projectile.type] = 2;
+            
+            Main.projFrames[Projectile.type] = 11;
 
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
@@ -107,7 +107,7 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
             if (++Projectile.frameCounter >= 6)
             {
                 Projectile.frameCounter = 0;
-                if (++Projectile.frame > 1)
+                if (++Projectile.frame >= Main.projFrames[Type])
                     Projectile.frame = 0;
             }
 

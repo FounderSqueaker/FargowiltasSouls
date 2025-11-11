@@ -61,7 +61,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
         public override int ToggleItemType => ModContent.ItemType<WretchedPouch>();
         public override bool ExtraAttackEffect => true;
 
-        public override void PostUpdateEquips(Player player)
+        public override void PostUpdate(Player player) // PostUpdate necessary to be after attack speed
         {
             if (player.HasEffect<LithosphericEffect>()) // combined
                 return;
@@ -70,7 +70,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
             FargoSoulsPlayer modPlayer = player.FargoSouls();
             if (player.HeldItem != null && player.HeldItem.damage > 0 && player.controlUseItem) // build up charges
             {
-                modPlayer.WretchedPouchCD += 1;
+                modPlayer.WretchedPouchCD += 1 * player.FargoSouls().CachedAttackSpeed;
 
                 float charge = modPlayer.WretchedPouchCD / (float)MaxChargeTime;
                 charge = MathHelper.Clamp(charge, 0, 1);

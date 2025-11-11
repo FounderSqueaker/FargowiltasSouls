@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using FargowiltasSouls.Content.Bosses.CursedCoffin;
+using FargowiltasSouls.Content.NPCs.EternityModeNPCs.CustomEnemies.OOA;
 using FargowiltasSouls.Content.WorldGeneration;
 using FargowiltasSouls.Core.Globals;
 using Luminance.Core.Graphics;
@@ -27,6 +28,7 @@ namespace FargowiltasSouls.Core.Systems
         public static bool SeenRedDevilMessage;
         public static int CorruptWaterTimer;
         public static int CrimsonWaterTimer;
+        public static int TavernkeepPortalTimer;
 
         public override void PreUpdateNPCs() => SwarmActive = FargowiltasSouls.MutantMod is Mod fargo && (bool)fargo.Call("SwarmActive");
 
@@ -140,7 +142,7 @@ namespace FargowiltasSouls.Core.Systems
             {
                 if (Main.bloodMoon)
                 {
-                    if (!HaveForcedAbomFromGoblins && (!DownedAnyBoss || Main.LocalPlayer.statLifeMax >= 200) //pre boss, disable some events
+                    if (!HaveForcedAbomFromGoblins && (!DownedAnyBoss || Main.LocalPlayer.statLifeMax < 200) //pre boss, disable some events
                         && ModContent.TryFind("Fargowiltas", "Abominationn", out ModNPC abom) && !NPC.AnyNPCs(abom.Type))
                     {
                         FargoSoulsUtil.PrintLocalization($"Mods.{Mod.Name}.Message.{Name}.BloodMoonCancel", new Color(175, 75, 255));
@@ -301,7 +303,7 @@ namespace FargowiltasSouls.Core.Systems
                 int baseCooldown = LumUtils.SecondsToFrames(40);
                 int postSpawnCooldown = LumUtils.MinutesToFrames(5);
 
-                int hellBaseCooldown = NPC.downedBoss2 ? LumUtils.MinutesToFrames(10) : LumUtils.MinutesToFrames(2);
+                int hellBaseCooldown = NPC.downedBoss2 ? LumUtils.MinutesToFrames(5) : LumUtils.MinutesToFrames(2);
                 int hellPostSpawnCooldown = hellBaseCooldown * 2;
 
                 int messageDelay = LumUtils.SecondsToFrames(10);
@@ -461,6 +463,32 @@ namespace FargowiltasSouls.Core.Systems
 
                 //make water do stuff
                 //Main.SceneMetrics.ActiveFountainColor = 12;
+            }
+
+            if (NPC.downedBoss2 && !NPC.savedBartender)
+            {
+                Player? surfacePlayer = Main.player.FirstOrDefault(x => x.active && (x.ZoneOverworldHeight || (Main.remixWorld && x.ZoneUnderworldHeight)));
+                if (surfacePlayer != null && !NPC.AnyNPCs(ModContent.NPCType<TavernkeepPortal>()))
+                {
+                    int portalCD = LumUtils.MinutesToFrames(1.5f);
+
+                    TavernkeepPortalTimer++;
+                    if (TavernkeepPortalTimer >= portalCD && !NPC.AnyNPCs(NPCID.BartenderUnconscious))
+                    {
+                        FargoSoulsUtil.PrintLocalization($"Mods.{Mod.Name}.Message.{Name}.TavernkeepPortal", Color.HotPink);
+                        FargoSoulsUtil.SpawnOnPlayerNoMessage(surfacePlayer.whoAmI, ModContent.NPCType<TavernkeepPortal>());
+                        TavernkeepPortalTimer = -portalCD;
+                        if (Main.dedServ)
+                            NetMessage.SendData(MessageID.WorldData);
+                    }
+                }
+                else
+                {
+                    if (TavernkeepPortalTimer > 0)
+                        TavernkeepPortalTimer--;
+                    if (TavernkeepPortalTimer < 0)
+                        TavernkeepPortalTimer++;
+                }
             }
         }
         public static bool CanActuallyPlayMaso => (FargoSoulsUtil.WorldIsMaster() && CanPlayMaso) || Main.zenithWorld;

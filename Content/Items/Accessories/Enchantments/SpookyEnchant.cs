@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -71,19 +72,27 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
         public override int ToggleItemType => ModContent.ItemType<SpookyEnchant>();
         public override bool ActiveSkill => Main.LocalPlayer.HasEffectEnchant<SpookyEffect>();
         public static int BaseDamage(Player player) => (int)((player.ForceEffect<SpookyEffect>() ? 1250 : 750) * (((player.ActualClassDamage(DamageClass.Melee) + player.ActualClassDamage(DamageClass.Summon) - 2f) / 2f) + 1f)); // melee-summon 50-50 damage scaling
+        public override void PostUpdateEquips(Player player)
+        {
+            if (player.IncrementCooldownTowards<SpookyEffect>(-1, 0))
+            {
+                if (player.GetCooldown<SpookyEffect>() == 1)
+                    SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath with { Volume = 2f }, player.Center);
+            }
+        }
         public override void ActiveSkillJustPressed(Player player, bool stunned)
         {
             if (stunned)
                 return;
-            if (player.FargoSouls().SpookyCD > 0)
+            if (player.GetCooldown<SpookyEffect>() > 0)
                 return;
             bool wiz = player.ForceEffect<SpookyEffect>();
             if (Main.myPlayer == player.whoAmI)
                 Projectile.NewProjectile(GetSource_EffectItem(player), player.MountedCenter, Vector2.Zero, ModContent.ProjectileType<SpookySpinScythe>(), BaseDamage(player), 1f, player.whoAmI);
             int cd = wiz ? 8 : 12;
-            player.FargoSouls().SpookyCD = cd * 60;
+            player.SetCooldown<SpookyEffect>(cd * 60);
             CooldownBarManager.Activate("SpookyEnchantCooldown", FargoAssets.GetTexture2D("Content/Items/Accessories/Enchantments", "SpookyEnchant").Value, new(100, 78, 116),
-                () => Main.LocalPlayer.FargoSouls().SpookyCD / (cd * 60f), true, activeFunction: player.HasEffect<SpookyEffect>);
+                () => Main.LocalPlayer.GetCooldown<SpookyEffect>() / (cd * 60f), true, activeFunction: player.HasEffect<SpookyEffect>);
         }
     }
 }

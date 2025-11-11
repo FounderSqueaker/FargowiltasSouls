@@ -42,7 +42,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.PumpkinM
 
             if (FargoSoulsUtil.BossIsAlive(ref EModeGlobalNPC.abomBoss, ModContent.NPCType<AbomBoss>()))
             {
-                CooldownSlot = 1;
+                CooldownSlot = ImmunityCooldownID.Bosses;
                 renderTrail = true;
             }
         }

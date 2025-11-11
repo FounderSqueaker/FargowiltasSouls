@@ -33,7 +33,6 @@ namespace FargowiltasSouls.Content.Patreon.Sasha
 
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 7;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
         }
 
         public override void AI()

@@ -39,8 +39,8 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
         {
             base.OnHitPlayer(npc, target, hurtInfo);
 
-            target.AddBuff(ModContent.BuffType<ShadowflameBuff>(), 300);
-            target.AddBuff(ModContent.BuffType<RottingBuff>(), 1200);
+            target.AddBuff(ModContent.BuffType<ShadowflameBuff>(), 60 * 2);
+            //target.AddBuff(ModContent.BuffType<RottingBuff>(), 1200);
         }
     }
 }

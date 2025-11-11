@@ -67,7 +67,10 @@ namespace FargowiltasSouls.Content.Items.Weapons.Challengers
             //}
 
         }
-        
+        public override void ModifyWeaponCrit(Player player, ref float crit)
+        {
+            crit = 0;
+        }
         public override void ModifyHitNPC(Player player, NPC target, ref NPC.HitModifiers modifiers)
         {
             IEnumerable<Projectile> embeddedShrapnel = Main.projectile.Where(p => p.TypeAlive<BaronTuskShrapnel>() && p.owner == player.whoAmI && p.As<BaronTuskShrapnel>().EmbeddedNPC == target);
@@ -95,11 +98,16 @@ namespace FargowiltasSouls.Content.Items.Weapons.Challengers
                 SoundEngine.PlaySound(SoundID.Item68, target.Center);
                 modifiers.FlatBonusDamage += 15 * Item.damage / 2.5f + (shrapnel * Item.damage / 6);
                 modifiers.SetCrit();
+                modifiers.CritDamage += 2f * player.ActualClassCrit(DamageClass.Melee) / 100f;
                 foreach (Projectile proj in embeddedShrapnel)
                 {
                     proj.ai[1] = 2;
                     proj.netUpdate = true;
                 }
+            }
+            else
+            {
+                modifiers.DisableCrit();
             }
         }
         //this is ripped from my own game project

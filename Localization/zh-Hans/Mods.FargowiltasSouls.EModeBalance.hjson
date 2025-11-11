@@ -14,6 +14,7 @@ Split: 降低分裂频率
 WaterBolt: 在骷髅王被击败前无法使用
 SpaceGun: 在任意邪恶Boss被击败前无法使用
 DemonScythe: 任意邪恶Boss被击败前伤害和攻速会降低40%
+// EarlyPotions: Reduced effect until an evil boss is defeated
 // HolyDodge: Dodge cooldown increased to 45 seconds
 ZenithNone: 无削弱
 ZenithHitRate: 造成伤害的频率大幅降低，通过击败下列Boss可提高其输出能力：
@@ -76,3 +77,4 @@ MedusaHead: 击中的敌怪越少伤害越高，至多增加1.25倍伤害
 // AntiSpam: Held projectiles have increased hitrate
 // Tipsy: Tipsy buff additionally reduces defense by 2
 // Trimarang: Doubled projectile speed
+// SkyFracture: Increased projectile speed

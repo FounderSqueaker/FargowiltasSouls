@@ -2,6 +2,7 @@
 using FargowiltasSouls.Assets.Textures;
 using FargowiltasSouls.Content.Bosses.BanishedBaron;
 using FargowiltasSouls.Content.Bosses.Lifelight;
+using FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoon;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -202,6 +203,21 @@ namespace FargowiltasSouls.Content.Projectiles
                         Projectile.scale = 1f;
                         maxTime = (int)Projectile.ai[2];
 
+                        break;
+                    }
+                case 8: //dreadnautlius shotgun
+                    {
+                        NPC naut = FargoSoulsUtil.NPCExists(Projectile.ai[1], NPCID.BloodNautilus);
+                        if (naut.Alive())
+                        {
+                            Dreadnautilus.BloodNautilus_GetMouthPositionAndRotation(naut, out var mPos, out var mDir);
+                            Projectile.Center = mPos - mDir.ToRotationVector2() * 5f;
+                        }
+                        Projectile.rotation = Projectile.ai[2];
+                        color = Color.Crimson;
+                        alphaModifier = 0.6f;
+                        Projectile.scale = 0.5f;
+                        maxTime = 30;
                         break;
                     }
                 default:

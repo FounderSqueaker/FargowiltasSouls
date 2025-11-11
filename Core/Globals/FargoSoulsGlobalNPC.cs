@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using Fargowiltas.Content.Items.Ammos;
+using Fargowiltas.Content.Items.Misc;
 using Fargowiltas.Content.NPCs;
 using FargowiltasSouls.Assets.Textures;
 using FargowiltasSouls.Common.Graphics.Particles;
@@ -15,6 +10,7 @@ using FargowiltasSouls.Content.Items.Accessories;
 using FargowiltasSouls.Content.Items.Accessories.Enchantments;
 using FargowiltasSouls.Content.Items.Accessories.Eternity;
 using FargowiltasSouls.Content.Items.Accessories.Forces;
+using FargowiltasSouls.Content.Items.Consumables;
 using FargowiltasSouls.Content.Items.Materials;
 using FargowiltasSouls.Content.Items.Misc;
 using FargowiltasSouls.Content.Items.Summons;
@@ -33,6 +29,11 @@ using Luminance.Core.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
@@ -49,6 +50,7 @@ namespace FargowiltasSouls.Core.Globals
 {
     public class FargoSoulsGlobalNPC : GlobalNPC
     {
+        #region Variables
         public override bool InstancePerEntity => true;
 
 #pragma warning disable CA2211
@@ -128,6 +130,7 @@ namespace FargowiltasSouls.Core.Globals
 
         static HashSet<int> RareNPCs = [];
 
+        #endregion
         public override void Load()
         {
             //On_NPC.SetDefaults += PostSetDefaults;
@@ -332,12 +335,27 @@ namespace FargowiltasSouls.Core.Globals
                     }
                 }
             }
+
+            // TODO: actually sync these values (ideally don't use LocalPlayer).
+            if (Main.LocalPlayer.TryGetModPlayer<FargoSoulsPlayer>(out var modPlayer))
+            {
+                if (modPlayer.PureHeart && Main.LocalPlayer.HasEffect<PungentEyeballCursor>() && npc.active && !npc.dontTakeDamage && npc.lifeMax > 5 && !npc.friendly && !Main.gamePaused)
+                {
+                    if (Vector2.Distance(Main.MouseWorld, FargoSoulsUtil.ClosestPointInHitbox(npc.Hitbox, Main.MouseWorld)) < 80)
+                    {
+                        if (modPlayer.MasochistSoul) PureGazeTime = PungentGazeBuff.MAX_TIME;
+                        else PureGazeTime ++;
+                    }
+                    else if (PureGazeTime >= 3) PureGazeTime -= 3;
+
+                    if (PureGazeTime > PungentGazeBuff.MAX_TIME) PureGazeTime = PungentGazeBuff.MAX_TIME;
+                }
+                else if (PureGazeTime > 0) PureGazeTime -= 3;
+            }
         }
 
         public override void DrawEffects(NPC npc, ref Color drawColor)
         {
-            Player player = Main.player[Main.myPlayer];
-            FargoSoulsPlayer modPlayer = player.FargoSouls();
             if (LeadPoison)
             {
                 if (Main.rand.Next(4) < 3)
@@ -661,24 +679,6 @@ namespace FargowiltasSouls.Core.Globals
                     }
                 }
             }
-
-            if (player.FargoSouls().PureHeart && player.HasEffect<PungentEyeballCursor>() && npc.active && !npc.dontTakeDamage && npc.lifeMax > 5 && !npc.friendly && !Main.gamePaused)
-            {
-                if (Vector2.Distance(Main.MouseWorld, FargoSoulsUtil.ClosestPointInHitbox(npc.Hitbox, Main.MouseWorld)) < 80)
-                {
-                    if (player.FargoSouls().MasochistSoul)
-                        PureGazeTime = PungentGazeBuff.MAX_TIME;
-                    else
-                        PureGazeTime += 1;
-                }
-                    
-                else if (PureGazeTime >= 3)
-                    PureGazeTime -= 3;
-                if (PureGazeTime > PungentGazeBuff.MAX_TIME)
-                    PureGazeTime = PungentGazeBuff.MAX_TIME;
-            }
-            else if (PureGazeTime > 0)
-                PureGazeTime -= 3;
 
             if (DeathMarked)
             {
@@ -1062,6 +1062,7 @@ namespace FargowiltasSouls.Core.Globals
                 spawnRate /= 2;
                 maxSpawns *= 2;
             }
+            /*
             if (player.HasEffect<SoulLanternEffect>() && player.EffectItem<SoulLanternEffect>().ModItem is SoulLantern lantern && lantern.SoulLanternID > 0)
             {
                 spawnRate /= 4;
@@ -1069,6 +1070,7 @@ namespace FargowiltasSouls.Core.Globals
                 SoulLanternEffect.CurrentPlayerLanternID = lantern.SoulLanternID;
                 SoulLanternEffect.InSpawnNPC = true;
             }
+            */
 
             //if (modPlayer.BuilderMode) maxSpawns = 0;
         }
@@ -1172,7 +1174,7 @@ namespace FargowiltasSouls.Core.Globals
         {
             static IItemDropRule BossDrop(int item)
             {
-                return new DropBasedOnEMode(ItemDropRule.Common(item, 3), ItemDropRule.Common(item, 10));
+                return new DropBasedOnEMode(ItemDropRule.Common(item, 3), ItemDropRule.Common(item, 10), ItemDropRule.Common(item, 1));
             }
 
             switch (npc.type)
@@ -1208,8 +1210,9 @@ namespace FargowiltasSouls.Core.Globals
                     npcLoot.Add(BossDrop(ModContent.ItemType<TheSmallSting>()));
                     break;
 
-                case NPCID.SkeletronHead:
-                    var drop = new DropBasedOnEMode(ItemDropRule.Common(ModContent.ItemType<BoneZone>(), 3), ItemDropRule.Common(ModContent.ItemType<BoneZone>(), 10));
+               case NPCID.SkeletronHead:
+                    int item = ModContent.ItemType<BoneZone>();
+                    var drop = new DropBasedOnEMode(ItemDropRule.Common(item, 3), ItemDropRule.Common(item, 10), ItemDropRule.Common(item, 1));
                     drop.OnSuccess(ItemDropRule.Common(ModContent.ItemType<BrittleBone>(), 1, 200, 200));
                     npcLoot.Add(drop);
                     break;
@@ -1460,6 +1463,11 @@ namespace FargowiltasSouls.Core.Globals
             if (shop.NpcType == ModContent.NPCType<Deviantt>())
             {
                 shop.Add(new Item(ModContent.ItemType<EternityAdvisor>()) { shopCustomPrice = Item.buyPrice(copper: 10000) });
+            }
+
+            if (shop.NpcType == NPCID.Clothier)
+            {
+                shop.Add(new Item(ModContent.ItemType<TerrysChocolateOrange>()) { shopCustomPrice = Item.buyPrice(platinum: 1) });
             }
         }
         public override void ModifyActiveShop(NPC npc, string shopName, Item[] items)

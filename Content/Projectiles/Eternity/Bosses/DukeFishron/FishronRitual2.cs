@@ -18,13 +18,13 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.DukeFishron
 
             // DisplayName.SetDefault("Oceanic Ritual");
             Main.projFrames[Projectile.type] = 3;
-            CooldownSlot = 0;
+            CooldownSlot = ImmunityCooldownID.TileContactDamage;
         }
 
         public override void SetDefaults()
         {
             base.SetDefaults();
-            CooldownSlot = 0;
+            CooldownSlot = ImmunityCooldownID.TileContactDamage;
         }
         protected override void Movement(NPC npc)
         {

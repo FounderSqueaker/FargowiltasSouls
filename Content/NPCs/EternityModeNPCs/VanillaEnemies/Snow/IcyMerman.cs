@@ -33,14 +33,14 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Snow
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
-            binaryWriter.Write7BitEncodedInt(State);
+            binaryWriter.Write(State);
             binaryWriter.WriteVector2(targetPos);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-            State = binaryReader.Read7BitEncodedInt();
+            State = binaryReader.ReadInt32();
             targetPos = binaryReader.ReadVector2();
         }
 

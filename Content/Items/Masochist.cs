@@ -67,6 +67,7 @@ namespace FargowiltasSouls.Content.Items
             Item.useTime = 30;
             Item.useStyle = ItemUseStyleID.HoldUp;
             Item.consumable = false;
+            Item.material = false;
         }
 
         public override bool? UseItem(Player player)

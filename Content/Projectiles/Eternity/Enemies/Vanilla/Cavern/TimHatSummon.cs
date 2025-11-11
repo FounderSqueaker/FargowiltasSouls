@@ -30,6 +30,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.Cavern
             Projectile.height = 24;
             Projectile.hostile = true;
             Projectile.tileCollide = false;
+            Projectile.FargoSouls().DeletionImmuneRank = 1;
         }
         public ref float owner => ref Projectile.ai[0];
         public ref float target => ref Projectile.ai[1];

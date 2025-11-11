@@ -63,9 +63,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         };
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
-            binaryWriter.Write7BitEncodedInt(DeathTimer);
-            binaryWriter.Write7BitEncodedInt(TeleportCD);
-            binaryWriter.Write7BitEncodedInt(ExplosionCD);
+            binaryWriter.Write(DeathTimer);
+            binaryWriter.Write(TeleportCD);
+            binaryWriter.Write(ExplosionCD);
             for (int i = 0; i < CustomAI.Length; i++)
             {
                 binaryWriter.Write(CustomAI[i]);
@@ -74,9 +74,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         }
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
-            DeathTimer = binaryReader.Read7BitEncodedInt();
-            TeleportCD = binaryReader.Read7BitEncodedInt();
-            ExplosionCD = binaryReader.Read7BitEncodedInt();
+            DeathTimer = binaryReader.ReadInt32();
+            TeleportCD = binaryReader.ReadInt32();
+            ExplosionCD = binaryReader.ReadInt32();
             for (int i = 0; i < CustomAI.Length; i++)
             {
                 CustomAI[i] = binaryReader.ReadSingle();
@@ -96,8 +96,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                     npc.position.X += npc.width / 2;
                     npc.position.Y += npc.height;
                     npc.scale = scale;
-                    npc.width = (int)(98f * npc.scale);
-                    npc.height = (int)(92f * npc.scale);
+                    npc.width = Math.Clamp((int)(98f * npc.scale), 32, short.MaxValue);
+                    npc.height = Math.Clamp((int)(92f * npc.scale), 32, short.MaxValue);
                     npc.position.X -= npc.width / 2;
                     npc.position.Y -= npc.height;
                 }
@@ -150,8 +150,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 if (num255 < minScale)
                     num255 = minScale;
                 npc.scale = num255;
-                npc.width = (int)MathF.Round(98f * npc.scale);
-                npc.height = (int)MathF.Round(92f * npc.scale);
+                npc.width = Math.Clamp((int)MathF.Round(98f * npc.scale), 32, short.MaxValue);
+                npc.height = Math.Clamp((int)MathF.Round(92f * npc.scale), 32, short.MaxValue);
                 npc.position.X -= npc.width / 2;
                 npc.position.Y -= npc.height;
             }
@@ -309,7 +309,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 }
                 else
                 {
-                    if (NPC.velocity.Y < 18)
+                    if (Math.Abs(NPC.velocity.Y) < 3)
+                        NPC.velocity.Y += 0.4f;
+                    else if (NPC.velocity.Y < 18)
                         NPC.velocity.Y += 1;
                 }
                     
@@ -437,7 +439,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             {
                 if (Timer < fadeTime / 6)
                 {
-                    teleX = Target.Bottom.X + NPC.HorizontalDirectionTo(Target.Center) * 350;
+                    teleX = Target.Bottom.X + NPC.HorizontalDirectionTo(Target.Center) * 400;
                     teleY = Target.Bottom.Y;
                     bool InTerrain(float x, float y) => Collision.SolidCollision(new Vector2(x - NPC.width / 2, y - NPC.height), NPC.width, NPC.height);
                     for (int i = 0; i < 40; i++)
@@ -479,7 +481,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 NPC.scale *= lerp;
                 if (Timer > fadeTime * 2)
                 {
-                    TeleportCD = 4;
+                    TeleportCD = 2;
                     ResetToJumps();
                     return;
                 }
@@ -487,8 +489,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
             NPC.position.X += NPC.width / 2;
             NPC.position.Y += NPC.height;
-            NPC.width = (int)(98f * NPC.scale);
-            NPC.height = (int)(92f * NPC.scale);
+            NPC.width = Math.Clamp((int)(98f * NPC.scale), 32, short.MaxValue);
+            NPC.height = Math.Clamp((int)(92f * NPC.scale), 32, short.MaxValue);
             NPC.position.X -= NPC.width / 2;
             NPC.position.Y -= NPC.height;
 
@@ -687,7 +689,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
             // Draw the Ninja (Mutant).
             var ninjaOffset = new Vector2(-npc.velocity.X * 2f, -npc.velocity.Y);
+            ninjaOffset /= 3;
             var ninjaRotation = npc.velocity.X * 0.05f;
+            ninjaRotation /= 2;
             
             switch (npc.frame.Y)
             {
@@ -726,10 +730,10 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
             Vector2 scale = Vector2.One * npc.scale;
             if (Stretch > 0)
-                scale.Y *= 1 - Stretch * 0.45f;
+                scale.Y *= 1 - Stretch * 0.55f;
 
             float xStretch = MathF.Pow(Math.Abs(npc.velocity.Y) / 20f, 0.5f);
-            StretchX = MathHelper.Lerp(StretchX, xStretch, 0.1f);
+            StretchX = MathHelper.Lerp(StretchX, xStretch, 0.3f);
             if (StretchX > 0)
                 scale.X *= 1 - StretchX * 0.42f;
             
@@ -743,7 +747,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             
             // Render the crown normally without the shader.
             var crownTexture = TextureAssets.Extra[39].Value;
-            var center = npc.Center;
+            var center = npc.IsABestiaryIconDummy ? npc.Bottom - screenPos + new Vector2(212f, 20f) : npc.Center;
 
             var yOffset = (npc.frame.Y / (ksTexture.Height / Main.npcFrameCount[NPCID.KingSlime])) switch
             {
@@ -759,18 +763,23 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             var spriteEffects = npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             center.Y += npc.gfxOffY - (70f - yOffset) * scale.Y;
 
+            float crownUp = 30 * StretchX;
             spriteBatch.UseBlendState(BlendState.Additive);
             if (PhaseTwo && P2Visuals < 1)
                 P2Visuals += 0.025f;
-            for (int j = 0; j < 12; j++)
+            if (P2Visuals > 0)
             {
-                Vector2 afterimageOffset = (MathHelper.TwoPi * j / 12f).ToRotationVector2() * 2f * P2Visuals * npc.scale;
-                Color color = Color.Red;
+                for (int j = 0; j < 12; j++)
+                {
+                    Vector2 afterimageOffset = (MathHelper.TwoPi * j / 12f).ToRotationVector2() * 2f * P2Visuals * npc.scale;
+                    Color color = Color.Red;
 
-                spriteBatch.Draw(crownTexture, center + afterimageOffset - screenPos, null, color, 0f, crownTexture.Size() / 2f, 1f, spriteEffects, 0f);
+                    spriteBatch.Draw(crownTexture, center + afterimageOffset- screenPos - Vector2.UnitY * crownUp, null, color, 0f, crownTexture.Size() / 2f, 1f, spriteEffects, 0f);
+                }
             }
             spriteBatch.ResetToDefault();
-            spriteBatch.Draw(crownTexture, center - screenPos, null, drawColor, 0f, crownTexture.Size() / 2f, 1f, spriteEffects, 0f);
+            
+            spriteBatch.Draw(crownTexture, center - screenPos - Vector2.UnitY * crownUp, null, drawColor, 0f, crownTexture.Size() / 2f, 1f, spriteEffects, 0f);
             return false;
         }
 

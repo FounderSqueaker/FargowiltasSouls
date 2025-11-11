@@ -23,7 +23,6 @@ namespace FargowiltasSouls.Content.Patreon.Catsounds
 
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 10;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
         }
     }
 }

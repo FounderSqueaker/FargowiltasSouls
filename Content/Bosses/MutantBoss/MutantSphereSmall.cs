@@ -13,12 +13,11 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
     {
         public override string Texture => FargoSoulsUtil.AprilFools ?
             "FargowiltasSouls/Content/Bosses/MutantBoss/MutantSphere_April" :
-            "Terraria/Images/Projectile_454";
+            "FargowiltasSouls/Content/Bosses/MutantBoss/MutantSphere";
 
         public override void SetStaticDefaults()
         {
-            // DisplayName.SetDefault("Phantasmal Sphere");
-            Main.projFrames[Projectile.type] = 2;
+            Main.projFrames[Projectile.type] = 11;
 
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
@@ -45,13 +44,12 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
         public ref float Variant => ref Projectile.ai[2];
         public override void AI()
         {
-            //dust!
-            /*int dustId = Dust.NewDust(Projectile.position, Projectile.width / 2, Projectile.height + 5, 56, Projectile.velocity.X * 0.2f,
-                Projectile.velocity.Y * 0.2f, 100, default(Color), .5f);
-            Main.dust[dustId].noGravity = true;
-            int dustId3 = Dust.NewDust(Projectile.position, Projectile.width / 2, Projectile.height + 5, 56, Projectile.velocity.X * 0.2f,
-                Projectile.velocity.Y * 0.2f, 100, default(Color), .5f);
-            Main.dust[dustId3].noGravity = true;*/
+            if (++Projectile.frameCounter >= 6)
+            {
+                Projectile.frameCounter = 0;
+                if (++Projectile.frame >= Main.projFrames[Type])
+                    Projectile.frame = 0;
+            }
 
             if (Variant == 0)
             {
@@ -85,13 +83,6 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
                     Projectile.alpha = 0;
             }
             Projectile.scale = (1f - Projectile.alpha / 255f) * .75f;
-
-            if (++Projectile.frameCounter >= 6)
-            {
-                Projectile.frameCounter = 0;
-                if (++Projectile.frame > 1)
-                    Projectile.frame = 0;
-            }
         }
 
         public override void OnHitPlayer(Player target, Player.HurtInfo info)

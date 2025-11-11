@@ -29,13 +29,12 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.Minions
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.DamageType = DamageClass.Summon;
-            CooldownSlot = -1;
+            CooldownSlot = ImmunityCooldownID.General;
 
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 10;
 
             Projectile.FargoSouls().CanSplit = false;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
         }
 
         public override void AI()

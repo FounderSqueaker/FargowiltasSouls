@@ -91,7 +91,7 @@ namespace FargowiltasSouls.Content.Bosses.AbomBoss
                 NPC.width = Player.defaultWidth;
                 NPC.height = Player.defaultHeight;
             }
-            NPC.damage = 200;
+            NPC.damage = 250;
             NPC.defense = 80;
             // more expert hp to compensate universe core
             NPC.lifeMax = Main.expertMode ? 1100000 : 700000;

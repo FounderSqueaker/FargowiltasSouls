@@ -29,7 +29,7 @@ namespace FargowiltasSouls.Content.Bosses.AbomBoss
         public override void SetDefaults()
         {
             base.SetDefaults();
-            CooldownSlot = 0;
+            CooldownSlot = ImmunityCooldownID.TileContactDamage;
         }
         protected override void Movement(NPC npc)
         {

@@ -9,6 +9,7 @@ using Fargowiltas.Content.Projectiles;
 using Fargowiltas.Content.UI;
 using FargowiltasSouls.Assets.Textures;
 using FargowiltasSouls.Content.Bosses.CursedCoffin;
+using FargowiltasSouls.Content.Bosses.TrojanSquirrel;
 using FargowiltasSouls.Content.Bosses.VanillaEternity;
 using FargowiltasSouls.Content.Buffs;
 using FargowiltasSouls.Content.Buffs.Boss;
@@ -25,10 +26,10 @@ using FargowiltasSouls.Content.NPCs.EternityModeNPCs.Accessories;
 using FargowiltasSouls.Content.NPCs.EternityModeNPCs.BossMinions;
 using FargowiltasSouls.Content.NPCs.EternityModeNPCs.CustomEnemies.Desert;
 using FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Jungle;
+using FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA;
 using FargowiltasSouls.Content.Patreon.Volknet;
 using FargowiltasSouls.Content.Projectiles.Eternity.Environment;
 using FargowiltasSouls.Content.Projectiles.Weapons.ChallengerItems;
-using FargowiltasSouls.Content.Quests;
 using FargowiltasSouls.Content.Sky;
 using FargowiltasSouls.Content.Tiles;
 using FargowiltasSouls.Content.UI;
@@ -63,9 +64,8 @@ namespace FargowiltasSouls
 {
     public partial class FargowiltasSouls : Mod
     {
-        internal static DeviQuestTracker questTracker;
-
         public static Mod MutantMod;
+        public static Mod BOBW;
         public static Mod CalamityMod;
         public static Mod MusicDisplay;
 
@@ -109,6 +109,8 @@ namespace FargowiltasSouls
 
         public static bool DrawingTooltips = false;
 
+        private static bool MoveDeerclopsChecklistEntry = true;
+
         internal struct TextureBuffer
         {
             public static readonly Dictionary<int, Asset<Texture2D>> NPC = [];
@@ -136,8 +138,11 @@ namespace FargowiltasSouls
         {
             Instance = this;
             ModLoader.TryGetMod("Fargowiltas", out MutantMod);
+            ModLoader.TryGetMod("FargoSeeds", out BOBW);
             ModLoader.TryGetMod("CalamityMod", out CalamityMod);
             ModLoader.TryGetMod("MusicDisplay", out MusicDisplay);
+
+            TrojanSquirrel.LoadHeadIcon();
 
             List<TitleLinkButton> titleLinks = fargoTitleLinks;
             titleLinks.Add(MakeSimpleButton("TitleLinks.Discord", "https://discord.gg/fargo", 0));
@@ -178,8 +183,6 @@ namespace FargowiltasSouls
 
             ToggleLoader.Load();
             FargoUIManager.LoadUI();
-
-            questTracker = new DeviQuestTracker();
 
             if (Main.netMode != NetmodeID.Server)
             {
@@ -571,7 +574,7 @@ namespace FargowiltasSouls
                 //}
 
                 //mutant shop
-                Mod fargos = FargowiltasSouls.MutantMod;
+                Mod fargos = MutantMod;
                 fargos.Call("AddSummon", 0.5f, "FargowiltasSouls", "SquirrelCoatofArms", new Func<bool>(() => WorldSavingSystem.DownedBoss[(int)WorldSavingSystem.Downed.TrojanSquirrel]), Item.buyPrice(0, 4));
                 fargos.Call("AddSummon", 2.79f, "FargowiltasSouls", "CoffinSummon", new Func<bool>(() => WorldSavingSystem.DownedBoss[(int)WorldSavingSystem.Downed.CursedCoffin]), Item.buyPrice(0, 9));
                 fargos.Call("AddSummon", 6.9f, "FargowiltasSouls", "DevisCurse", new Func<bool>(() => WorldSavingSystem.DownedDevi), Item.buyPrice(0, 17, 50));
@@ -586,12 +589,20 @@ namespace FargowiltasSouls
                 fargos.Call("AddPermaUpgrade", new Item(ModContent.ItemType<RabiesVaccine>()), () => Main.LocalPlayer.FargoSouls().RabiesVaccine);
                 fargos.Call("AddPermaUpgrade", new Item(ModContent.ItemType<MutantsDiscountCard>()), () => Main.LocalPlayer.FargoSouls().MutantsDiscountCard);
                 fargos.Call("AddPermaUpgrade", new Item(ModContent.ItemType<MutantsCreditCard>()), () => Main.LocalPlayer.FargoSouls().MutantsCreditCard);
+
+                // emode world gen screen toggle
+                Action<bool> setEmode = (value) => WorldSavingSystem.QueueEnableEternityMode = value;
+                BOBW.Call("AddWorldGenToggle", Name, "Mods.FargoSeeds.WorldGenMenu.HeaderGeneral", "Mods.FargowiltasSouls.UI.Eternity", "Mods.FargowiltasSouls.UI.TogglesEternity", new Color(28, 222, 152), FargoAssets.Filepath + "UI/OncomingMutant", false, setEmode);
+
+                //symbols
+                fargos.Call("AddSymbolPath", Name, $"{Name}/Assets/Textures/Symbols");
             }
             catch (Exception e)
             {
                 Logger.Warn("FargowiltasSouls PostSetupContent Error: " + e.StackTrace + e.Message);
             }
         }
+
 
         public static void ManageMusicTimestop(bool playMusicAgain)
         {
@@ -670,8 +681,7 @@ namespace FargowiltasSouls
             WakeUpMutant,
             SyncSoulVortexHit,
             ClearNPCBuffFromClient,
-
-            RequestDeviQuestReward
+            GoblinDodgeRoll
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
@@ -834,7 +844,7 @@ namespace FargowiltasSouls
                     case PacketID.SyncNanoCoreMode:
                         {
                             Player player = Main.player[reader.ReadByte()];
-                            player.GetModPlayer<NanoPlayer>().NanoCoreMode = reader.Read7BitEncodedInt();
+                            player.GetModPlayer<NanoPlayer>().NanoCoreMode = reader.ReadInt32();
                         }
                         break;
 
@@ -1030,7 +1040,7 @@ namespace FargowiltasSouls
                     case PacketID.SyncSoulVortexHit:
                         {
                             NPC npc = FargoSoulsUtil.NPCExists(reader.ReadByte());
-                            int ai2 = reader.Read7BitEncodedInt();
+                            int ai2 = reader.ReadInt32();
                             float ai3 = reader.ReadSingle();
                             Vector2 velocity = reader.ReadVector2();
                             if (npc != null && npc.active && npc.ModNPC is SoulVortex && Main.netMode == NetmodeID.Server)
@@ -1054,15 +1064,14 @@ namespace FargowiltasSouls
                             }
                         }
                         break;
-                    case PacketID.RequestDeviQuestReward:
-                        if (Main.netMode == NetmodeID.Server)
+                    case PacketID.GoblinDodgeRoll: // client to server
                         {
-                            Player player = Main.player[reader.ReadByte()];
-                            string key = reader.ReadString();
-                            DeviQuest? quest = DeviQuestRegistry.GetQuest(key);
-                            if (quest == null)
-                                break;
-                            quest.GiveQuestRewards(player);
+                            NPC npc = FargoSoulsUtil.NPCExists(reader.ReadByte(), new int[] { NPCID.DD2GoblinT1, NPCID.DD2GoblinT2, NPCID.DD2GoblinT3 });
+                            DD2Goblin goblin = npc.GetGlobalNPC<DD2Goblin>();
+                            goblin.State = -1;
+                            goblin.Timer = -1;
+                            npc.HideStrikeDamage = true;
+                            npc.netUpdate = true;
                         }
                         break;
                     default:

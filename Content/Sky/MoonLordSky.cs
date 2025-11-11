@@ -32,6 +32,7 @@ namespace FargowiltasSouls.Content.Sky
                     {
                         if (vulState != neededState)
                             Filters.Scene.Deactivate($"FargowiltasSouls:{name}");
+                        else if (!bossAlive) Filters.Scene.Deactivate($"FargowiltasSouls:{name}");
                         return false;
                     }
                     return true;

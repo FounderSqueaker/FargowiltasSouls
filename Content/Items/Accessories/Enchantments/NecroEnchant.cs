@@ -66,7 +66,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
             if (player.ownedProjectileCounts[ModContent.ProjectileType<NecroGrave>()] < 15)
             {
                 int damage = npc.lifeMax / 4;
-                if (damage > 0)
+                if (damage > 5)
                     Projectile.NewProjectile(player.GetSource_Accessory(player.EffectItem<NecroEffect>()), npc.Bottom, new Vector2(0, -4), ModContent.ProjectileType<NecroGrave>(), 0, 0, player.whoAmI, damage);
 
                 //if (modPlayer.ShadowForce || modPlayer.WizardEnchantActive)

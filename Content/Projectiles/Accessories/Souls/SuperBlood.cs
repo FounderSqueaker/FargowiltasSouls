@@ -20,8 +20,10 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.Souls
             Projectile.timeLeft = 300;
             AIType = 48;
 
-            Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = -1;
+            Projectile.usesIDStaticNPCImmunity = true;
+            Projectile.idStaticNPCHitCooldown = 120;
+
+            Projectile.extraUpdates = 1;
         }
 
         public override void AI()

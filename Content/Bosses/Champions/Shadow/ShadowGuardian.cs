@@ -30,7 +30,7 @@ namespace FargowiltasSouls.Content.Bosses.Champions.Shadow
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
             Projectile.aiStyle = -1;
-            CooldownSlot = ImmunityCooldownID.Bosses;
+            //CooldownSlot = ImmunityCooldownID.Bosses;
 
             Projectile.timeLeft = 600;
             Projectile.hide = true;

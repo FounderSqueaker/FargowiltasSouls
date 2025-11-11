@@ -1,5 +1,5 @@
-SoulToggler: "[i:FargowiltasSouls/EffectTogglerItem] Переключатель эффектов"
-ActiveSkillMenu: "[i:FargowiltasSouls/ActiveSkillMenuItem] Активные умения"
+SoulToggler: "[s:FargowiltasSouls/EffectToggler] Переключатель эффектов"
+ActiveSkillMenu: "[s:FargowiltasSouls/ActiveSkillMenu] Активные умения"
 Standard: Обычный режим
 Eternity: Режим Вечность
 Masochist: Режим Мазохиста
@@ -54,7 +54,8 @@ ExpandedFeatures:
 	– Новые эксклюзивные для режима выпадающие предметы
 	– Стартовый набор и советы по прохождению от Девиантт
 	– Улучшенные базовые характеристики
-	– Переработку сопротивления урону: теперь каждый источник СУ уменьшает урон после других уменьшений
+	– Переработку сопротивления урону:
+	  Каждые 15% СУ уменьшают урон на 15% после других уменьшений, а не складываются с ними
 	– Дебаффы спадают быстрее, пока вы не атакуете
 	  Также вы не можете умереть от постепенного урона (не в режиме Мазохиста)
 	– Изменённые функционал и силу некоторых предметов
@@ -77,13 +78,8 @@ ActiveSkills: Активные умения
 AvailableSkills: Доступные умения
 SelectDifficulty: Выбрать сложность
 NoRespawn: "{0}: Вы можете возродиться только один раз за битву!"
-
-DeviQuestBoard: {
-	// Title: Quest Board
-	// InfoBlank: Select a Quest!
-	// TaskButton: Tasks
-	// RewardButton: Rewards
-	// SubmitButton: Submit
-	// TasksHeader: Current Tasks
-	// RewardsHeader: Completion Rewards
-}
+TogglesEternity:
+	'''
+	Переключает режим Вечность, перерабатывающий многие аспекты игры.
+	Если включить вместе с режимом мастера, будет включен режим Мазохиста.
+	'''

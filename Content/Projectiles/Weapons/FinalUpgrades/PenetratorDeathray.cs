@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace FargowiltasSouls.Content.Projectiles.Weapons.FinalUpgrades
@@ -23,7 +24,7 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.FinalUpgrades
         public override void SetDefaults()
         {
             base.SetDefaults();
-            CooldownSlot = -1;
+            CooldownSlot = ImmunityCooldownID.General;
             Projectile.hostile = false;
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Melee;

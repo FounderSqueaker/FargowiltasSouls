@@ -39,7 +39,8 @@ namespace FargowiltasSouls.Core.ModSupport
             AddMusic("Assets/Music/LieflightNoCum", "IllustriousIlluminescence");
             AddMusic("Assets/Music/PlatinumStar", "PlatinumStar");
             AddMusic("Assets/Music/Laevateinn_P1", "Laevateinn");
-            
+            //if (musicMod.Version >= Version.Parse("0.1.7.4"))
+            //    AddMusic("Assets/Music/WillChampion", "FinalWave");
         }
     }
 }

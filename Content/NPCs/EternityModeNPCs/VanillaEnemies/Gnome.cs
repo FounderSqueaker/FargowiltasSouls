@@ -14,8 +14,8 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies
         {
             base.OnFirstTick(npc);
 
-            if (Main.rand.NextBool(3) && npc.FargoSouls().CanHordeSplit)
-                EModeGlobalNPC.Horde(npc, Main.rand.Next(2, 10));
+            //if (Main.rand.NextBool(3) && npc.FargoSouls().CanHordeSplit)
+                //EModeGlobalNPC.Horde(npc, Main.rand.Next(2, 10));
         }
 
         public override void OnHitPlayer(NPC npc, Player target, Player.HurtInfo hurtInfo)
@@ -23,7 +23,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies
             base.OnHitPlayer(npc, target, hurtInfo);
 
             target.AddBuff(Terraria.ModLoader.ModContent.BuffType<UnluckyBuff>(), 60 * 30);
-            target.FargoSouls().AddBuffNoStack(BuffID.Stoned, 60);
+            //target.FargoSouls().AddBuffNoStack(BuffID.Stoned, 60);
         }
     }
 }

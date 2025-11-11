@@ -28,7 +28,7 @@ namespace FargowiltasSouls.Content.Projectiles.Deathrays
         public override void SetDefaults()
         {
             base.SetDefaults();
-            CooldownSlot = -1;
+            CooldownSlot = ImmunityCooldownID.General;
         }
         public override void AI()
         {

@@ -44,7 +44,6 @@ namespace FargowiltasSouls.Content.Patreon.GreatestKraken
 
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 10;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -65,8 +64,8 @@ namespace FargowiltasSouls.Content.Patreon.GreatestKraken
 
         public override void SendExtraAI(BinaryWriter writer)
         {
-            writer.Write7BitEncodedInt(Projectile.width);
-            writer.Write7BitEncodedInt(Projectile.height);
+            writer.Write(Projectile.width);
+            writer.Write(Projectile.height);
             writer.Write(Projectile.scale);
             writer.Write(mousePos.X);
             writer.Write(mousePos.Y);
@@ -74,8 +73,8 @@ namespace FargowiltasSouls.Content.Patreon.GreatestKraken
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
-            Projectile.width = reader.Read7BitEncodedInt();
-            Projectile.height = reader.Read7BitEncodedInt();
+            Projectile.width = reader.ReadInt32();
+            Projectile.height = reader.ReadInt32();
             Projectile.scale = reader.ReadSingle();
 
             Vector2 buffer;

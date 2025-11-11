@@ -16,6 +16,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.UI;
 using Terraria.UI;
 
 namespace FargowiltasSouls.Content.UI.Elements
@@ -49,7 +50,7 @@ namespace FargowiltasSouls.Content.UI.Elements
             bool disabledByPresence = modPlayer.MutantPresence && (Effect.MutantsPresenceAffects || Effect.MinionEffect);
             bool disabledByMinionToggle = Effect.MinionEffect && modPlayer.Toggler_MinionsDisabled;
             bool disabledByAttackToggle = Effect.ExtraAttackEffect && modPlayer.Toggler_ExtraAttacksDisabled;
-            bool disabledByJumpToggle = Effect.ExtraJumpEffect && modPlayer.Toggler_ExtraJumpsDisabled;
+            bool disabledByJumpToggle = Effect.ExtraJumpEffect && player.wingTimeMax > 0 && modPlayer.Toggler_ExtraJumpsDisabled;
             bool disabledByGlobalToggle = disabledByMinionToggle || disabledByAttackToggle || disabledByJumpToggle;
             bool toggled = Main.LocalPlayer.GetToggleValue(Effect, true);
 
@@ -74,15 +75,7 @@ namespace FargowiltasSouls.Content.UI.Elements
                     disabledText = Language.GetTextValue("Mods.FargowiltasSouls.Toggler.DisabledByToggle", Language.GetTextValue("Mods.FargowiltasSouls.Toggler.DisableAllExtraJumpEffects"));
                 if (disabledText != "")
                 {
-                    Item hoverItem = new(2);
-                    hoverItem.createTile = -1;
-                    hoverItem.material = false;
-                    hoverItem.consumable = false;
-                    hoverItem.SetNameOverride(disabledText);
-                    Main.HoverItem = hoverItem;
-                    Main.instance.MouseText("", 0, 0);
-                    Main.hoverItemName = disabledText;
-                    Main.mouseText = true;
+                    UICommon.TooltipMouseText(disabledText);
                 }
             }
 

@@ -40,6 +40,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Forces
             player.AddEffect<FrostEffect>(Item);
             // chloro
             //player.AddEffect<ChloroMinion>(Item);
+            player.AddEffect<JungleHerbEffect>(Item);
             // shroomite
             player.AddEffect<ShroomiteHealEffect>(Item);
             if (player.HasEffect<ShroomiteHealEffect>())

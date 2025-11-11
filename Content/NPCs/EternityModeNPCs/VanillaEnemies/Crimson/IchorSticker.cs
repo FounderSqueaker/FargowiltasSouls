@@ -27,8 +27,18 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Crimson
                 realrotation = FargoSoulsUtil.NPCRotateTowards(npc, Main.player[npc.target].Center, 3, realrotation);
                 npc.rotation = realrotation - MathHelper.PiOver2;
             }
-            else realrotation = npc.rotation + MathHelper.PiOver2;
-
+            else
+            {
+                realrotation = npc.rotation + MathHelper.PiOver2;
+                for (int i = 0; i < (hitcooldown > 0 ? 3 : 1); i++)
+                {
+                    float randRot = Main.rand.NextFloat(0, MathHelper.TwoPi);
+                    Vector2 pos = npc.Center + new Vector2(0, -5);
+                    Dust d = Dust.NewDustPerfect(pos + (npc.velocity * 1.5f) + 50 * Vector2.UnitX.RotatedBy(randRot), DustID.Ichor, -5 * Vector2.UnitX.RotatedBy(randRot) + (npc.velocity * 1.5f), Scale: (hitcooldown > 0 ? 1.5f : 0.5f));
+                    d.noLight = true;
+                    d.noGravity = true;
+                }
+            }
             if (SpitTimer <= -60 && SpitTimer % -30 == 0)
             {
                 if (FargoSoulsUtil.HostCheck)

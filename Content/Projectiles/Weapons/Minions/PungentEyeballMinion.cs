@@ -85,7 +85,7 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.Minions
             {
                 if (Projectile.localAI[1] == 0)
                 {
-                    Projectile.localAI[0]++;
+                    Projectile.localAI[0] += 1f * player.FargoSouls().CachedAttackSpeed;
                     if (player.whoAmI == Main.myPlayer && !player.FargoSouls().MasochistSoul)
                         CooldownBarManager.Activate("FleshLumpMinionCharge", FargoAssets.GetTexture2D("Content/Items/Accessories/Eternity", "LithosphericCluster").Value, Color.Purple, () => Projectile.localAI[0] / chargeTime, displayAtFull: true, activeFunction: Projectile.Alive, animationFrames: 5);
                 }

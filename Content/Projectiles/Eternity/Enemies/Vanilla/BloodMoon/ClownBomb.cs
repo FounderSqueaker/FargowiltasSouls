@@ -22,7 +22,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.BloodMoo
 
             Projectile.timeLeft = 300;
             Projectile.tileCollide = true;
-            CooldownSlot = ImmunityCooldownID.Bosses;
+            //CooldownSlot = ImmunityCooldownID.Bosses;
         }
 
         public override Color? GetAlpha(Color lightColor)

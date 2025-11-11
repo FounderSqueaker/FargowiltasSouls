@@ -31,7 +31,6 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.Minions
 
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 10;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
 
             FargowiltasSouls.MutantMod.Call("LowRenderProj", Projectile);
         }

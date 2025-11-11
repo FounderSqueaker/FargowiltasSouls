@@ -117,10 +117,13 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
                     }
                     if (modPlayer.FallthroughTimer < player.FargoSouls().IsDashingTimer)
                         modPlayer.FallthroughTimer = player.FargoSouls().IsDashingTimer;
-                        
+
                     if (modPlayer.FallthroughTimer < player.FargoSouls().ValhallaVerticalDashing)
                         modPlayer.FallthroughTimer = player.FargoSouls().ValhallaVerticalDashing;
                 }
+
+                if (player.FargoSouls().ValhallaVerticalDashing != 0)
+                    player.maxFallSpeed = 16;
             }
         }
         public static void ValhallaDash(Player player, int direction)

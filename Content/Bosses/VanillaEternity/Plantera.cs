@@ -83,11 +83,11 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(DicerTimer);
-            binaryWriter.Write7BitEncodedInt(RingTossTimer);
-            binaryWriter.Write7BitEncodedInt(TentacleTimer);
-            binaryWriter.Write7BitEncodedInt(CrystalRedirectTimer);
-            //binaryWriter.Write7BitEncodedInt(TentacleTimerMaso);
+            binaryWriter.Write(DicerTimer);
+            binaryWriter.Write(RingTossTimer);
+            binaryWriter.Write(TentacleTimer);
+            binaryWriter.Write(CrystalRedirectTimer);
+            //binaryWriter.Write(TentacleTimerMaso);
             binaryWriter.Write(npc.localAI[0]);
             binaryWriter.Write(npc.localAI[1]);
             binaryWriter.Write(npc.localAI[2]);
@@ -96,7 +96,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             bitWriter.WriteBit(EnteredPhase2);
             bitWriter.WriteBit(EnteredPhase3);
 
-            binaryWriter.Write7BitEncodedInt(DashTimer);
+            binaryWriter.Write(DashTimer);
             binaryWriter.Write(Dashing);
         }
 
@@ -104,11 +104,11 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            DicerTimer = binaryReader.Read7BitEncodedInt();
-            RingTossTimer = binaryReader.Read7BitEncodedInt();
-            TentacleTimer = binaryReader.Read7BitEncodedInt();
-            CrystalRedirectTimer = binaryReader.Read7BitEncodedInt();
-            //TentacleTimerMaso = binaryReader.Read7BitEncodedInt();
+            DicerTimer = binaryReader.ReadInt32();
+            RingTossTimer = binaryReader.ReadInt32();
+            TentacleTimer = binaryReader.ReadInt32();
+            CrystalRedirectTimer = binaryReader.ReadInt32();
+            //TentacleTimerMaso = binaryReader.ReadInt32();
             npc.localAI[0] = binaryReader.ReadSingle();
             npc.localAI[1] = binaryReader.ReadSingle();
             npc.localAI[2] = binaryReader.ReadSingle();
@@ -117,7 +117,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             EnteredPhase2 = bitReader.ReadBit();
             EnteredPhase3 = bitReader.ReadBit();
 
-            DashTimer = binaryReader.Read7BitEncodedInt();
+            DashTimer = binaryReader.ReadInt32();
             Dashing = binaryReader.ReadBoolean();
         }
         public override void SetDefaults(NPC npc)
@@ -1065,20 +1065,20 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(ChangeDirectionTimer);
-            binaryWriter.Write7BitEncodedInt(RotationDirection);
-            binaryWriter.Write7BitEncodedInt(MaxDistanceFromPlantera);
-            binaryWriter.Write7BitEncodedInt(CanHitTimer);
+            binaryWriter.Write(ChangeDirectionTimer);
+            binaryWriter.Write(RotationDirection);
+            binaryWriter.Write(MaxDistanceFromPlantera);
+            binaryWriter.Write(CanHitTimer);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            ChangeDirectionTimer = binaryReader.Read7BitEncodedInt();
-            RotationDirection = binaryReader.Read7BitEncodedInt();
-            MaxDistanceFromPlantera = binaryReader.Read7BitEncodedInt();
-            CanHitTimer = binaryReader.Read7BitEncodedInt();
+            ChangeDirectionTimer = binaryReader.ReadInt32();
+            RotationDirection = binaryReader.ReadInt32();
+            MaxDistanceFromPlantera = binaryReader.ReadInt32();
+            CanHitTimer = binaryReader.ReadInt32();
         }
 
         public override void SetDefaults(NPC npc)

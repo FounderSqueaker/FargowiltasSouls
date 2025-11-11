@@ -98,8 +98,8 @@ namespace FargowiltasSouls.Content.Bosses.CursedCoffin
             writer.Write(NPC.localAI[1]);
             writer.Write(NPC.localAI[2]);
             writer.Write(NPC.localAI[3]);
-            writer.Write7BitEncodedInt(BiteTimer);
-            writer.Write7BitEncodedInt(BittenPlayer);
+            writer.Write(BiteTimer);
+            writer.Write(BittenPlayer);
             writer.WriteVector2(LockVector1);
         }
 
@@ -109,8 +109,8 @@ namespace FargowiltasSouls.Content.Bosses.CursedCoffin
             NPC.localAI[1] = reader.ReadSingle();
             NPC.localAI[2] = reader.ReadSingle();
             NPC.localAI[3] = reader.ReadSingle();
-            BiteTimer = reader.Read7BitEncodedInt();
-            BittenPlayer = reader.Read7BitEncodedInt();
+            BiteTimer = reader.ReadInt32();
+            BittenPlayer = reader.ReadInt32();
             LockVector1 = reader.ReadVector2();
         }
         public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)

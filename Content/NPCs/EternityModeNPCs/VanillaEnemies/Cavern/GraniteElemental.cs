@@ -1,4 +1,7 @@
-﻿using FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.Cavern;
+﻿using FargowiltasSouls.Common.Graphics.Particles;
+using FargowiltasSouls.Content.Patreon.DanielTheRobot;
+using FargowiltasSouls.Content.Projectiles;
+using FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.Cavern;
 using FargowiltasSouls.Core.Globals;
 using FargowiltasSouls.Core.NPCMatching;
 using Microsoft.Xna.Framework;
@@ -19,19 +22,20 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern
 
         public int AttackTimer = 0;
         public int DamageStored = 0;
+        public bool wasInvul = false;
 
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
-            binaryWriter.Write7BitEncodedInt(AttackTimer);
-            binaryWriter.Write7BitEncodedInt(DamageStored);
+            binaryWriter.Write(AttackTimer);
+            binaryWriter.Write(DamageStored);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-            AttackTimer = binaryReader.Read7BitEncodedInt();
-            DamageStored = binaryReader.Read7BitEncodedInt();
+            AttackTimer = binaryReader.ReadInt32();
+            DamageStored = binaryReader.ReadInt32();
         }
 
         public override void AI(NPC npc)
@@ -43,19 +47,23 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern
             {
                 float distance = 2f * 16;
 
-                Main.projectile.Where(x => x.active && x.friendly && x.FargoSouls().DeletionImmuneRank == 0 && !FargoSoulsUtil.IsSummonDamage(x, false)).ToList().ForEach(x =>
+                Main.projectile.Where(x => EModeGlobalProjectile.CanBeAbsorbed(x)).ToList().ForEach(x =>
                 {
                     if (Vector2.Distance(x.Center, npc.Center) <= distance)
                     {
-                        for (int i = 0; i < 5; i++)
+                        for (int i = 0; i < 10; i++)
                         {
+                            float rot = Main.rand.NextFloat(0, MathHelper.TwoPi);
                             int dustId = Dust.NewDust(new Vector2(x.position.X, x.position.Y + 2f), x.width, x.height + 5, DustID.BlueTorch, x.velocity.X * 0.2f, x.velocity.Y * 0.2f, 100, default, 1.5f);
                             Main.dust[dustId].noGravity = true;
+                            float scale = Main.rand.NextFloat(2, 4);
+
+                            new SparkParticle(npc.Center + 5 * Vector2.UnitX.RotatedBy(rot), scale * Vector2.UnitX.RotatedBy(rot), Color.Lerp(Color.SkyBlue, Color.Blue, 0.8f), 0.1f * scale, 15).Spawn();
                         }
 
-                        SoundEngine.PlaySound(SoundID.MaxMana, npc.Center);
+                        SoundEngine.PlaySound(SoundID.MaxMana with {MaxInstances = 2}, npc.Center);
                         DamageStored += x.damage;
-                        x.Kill();
+                        x.active = false;
                     }
                 });
             }
@@ -67,31 +75,32 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern
             base.SafePostAI(npc);
             if (npc.dontTakeDamage)
             {
-                const int timeToAttack = 50;
-
-                npc.velocity *= AttackTimer >= timeToAttack ? 0.99f : 0f;
+                npc.velocity *= 0.99f;
                 npc.noGravity = true;
-                AttackTimer++;
-                if (AttackTimer == timeToAttack - 25)
-                {
-                    SoundEngine.PlaySound(SoundID.Item91, npc.Center);
-                    FargoSoulsUtil.DustRing(npc.Center, 20, 180, 5f, scale: 2f);
-                }
-                if (AttackTimer == timeToAttack && npc.HasValidTarget)
-                {
-                    SoundEngine.PlaySound(SoundID.Item72, npc.Center);
-                    Vector2 vel = (Main.player[npc.target].Center - npc.Center);
-                    vel.Normalize();
-                    if (FargoSoulsUtil.HostCheck)
-                    {
-                        float scale = 1 + (DamageStored / 80f);
-                        Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, 3f * vel, ModContent.ProjectileType<GraniteBolt>(), (int)(scale * npc.damage / 6), 0f);
-                    }
-                    npc.velocity = -vel;
-                }
+                wasInvul = true;
+
+                float randRot = Main.rand.NextFloat(0, MathHelper.TwoPi);
+                new SparkParticle(npc.Center + 50 * Vector2.UnitX.RotatedBy(randRot), -8 * Vector2.UnitX.RotatedBy(randRot), Color.Lerp(Color.SkyBlue, Color.Blue, 0.6f), 0.2f, 5).Spawn();
+                Lighting.AddLight(npc.Center, TorchID.Blue);
             }
             else
             {
+                if (wasInvul)
+                {
+                    if (npc.HasValidTarget)
+                    {
+                        SoundEngine.PlaySound(SoundID.Item72, npc.Center);
+                        float rot = (Main.player[npc.target].Center - npc.Center).ToRotation();
+                        if (FargoSoulsUtil.HostCheck)
+                        {
+                            float scale = 1 + (DamageStored / 80f);
+                            Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, 0.5f * Vector2.UnitX.RotatedBy(rot), ModContent.ProjectileType<GraniteBolt>(), (int)(scale * npc.damage / 6), 0f);
+                        }
+                        npc.velocity = -Vector2.UnitX.RotatedBy(rot);
+                    }
+
+                    wasInvul = false;
+                }
                 DamageStored = 0;
                 AttackTimer = 0;
             }

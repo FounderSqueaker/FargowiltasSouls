@@ -1,6 +1,7 @@
 ﻿using FargowiltasSouls.Assets.Textures;
 using FargowiltasSouls.Content.Projectiles.Weapons.SwarmDrops;
 using Microsoft.Xna.Framework;
+using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -16,16 +17,16 @@ namespace FargowiltasSouls.Content.Items.Weapons.SwarmDrops
         public override void SetDefaults()
         {
             Item.noMelee = true;
-            Item.damage = 200;
+            Item.damage = 600;
             Item.DamageType = DamageClass.Magic;
             Item.mana = 20;
-            Item.rare = ItemRarityID.Orange;
-            Item.width = 36;
-            Item.height = 40;
+            Item.rare = ItemRarityID.Purple;
+            Item.width = 44;
+            Item.height = 48;
             Item.useTime = 45;
             Item.useAnimation = 45;
             Item.useStyle = ItemUseStyleID.Shoot;
-            Item.UseSound = SoundID.DD2_DarkMageAttack;
+            Item.UseSound = SoundID.Item8;
             Item.shoot = ModContent.ProjectileType<TwilightStar>();
             Item.shootSpeed = 10f;
             Item.knockBack = 2f;
@@ -35,17 +36,24 @@ namespace FargowiltasSouls.Content.Items.Weapons.SwarmDrops
             Item.value = Item.sellPrice(0, 2, 50, 0);
         }
 
+        public override Vector2? HoldoutOffset()
+        {
+            return null;
+        }
+
         public override bool CanUseItem(Player player)
         {
-            bool sigilCount = player.ownedProjectileCounts[Item.shoot] < 3;
-            Item.UseSound = SoundID.Item8 with { Volume = sigilCount ? 1f : 0.5f };
+            bool starCount = Main.projectile.Where(p => p.active && p.type == Item.shoot && p.ai[1] < 4).Count() < 3;
+            Item.UseSound = SoundID.Item8 with { Volume = starCount ? 1f : 0f };
             return base.CanUseItem(player) && timer == 0;
         }
 
         public override bool CanShoot(Player player)
         {
-            return player.ownedProjectileCounts[Item.shoot] < 3 && base.CanShoot(player);
+            return Main.projectile.Where(p => p.active && p.type == Item.shoot && p.ai[1] < 4).Count() < 3 && base.CanShoot(player);
         }
+
+
 
         public override void HoldItem(Player player)
         {

@@ -20,15 +20,20 @@ using FargowiltasSouls.Content.Projectiles.Weapons;
 using FargowiltasSouls.Core.Globals;
 using FargowiltasSouls.Core.Systems;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
@@ -50,7 +55,28 @@ namespace FargowiltasSouls.Content.Projectiles
 
         public bool isADD2Proj = false;
         public bool Jammed = false;
+        public int beingWraithReflectBy = -1;
         public int JammedRecoverTime = 0;
+
+        public static readonly List<int> PierceResistImmuneAiStyles =
+        [
+            ProjAIStyleID.Yoyo,
+            ProjAIStyleID.Spear,
+            ProjAIStyleID.ShortSword,
+            ProjAIStyleID.Flail,
+            ProjAIStyleID.Drill,
+            ProjAIStyleID.HeldProjectile,
+            ProjAIStyleID.NightsEdge, // all physical fancy sword swings
+            ProjAIStyleID.Vilethorn, // vilethorn likes
+            ProjAIStyleID.CursedFlameWall, // clinger staff
+            ProjAIStyleID.Rainbow, // rainbow gun
+            ProjAIStyleID.MechanicalPiranha,
+            ProjAIStyleID.SleepyOctopod, // ooa batons
+            ProjAIStyleID.ForwardStab, // ooa spears
+            ProjAIStyleID.ThickLaser, // last prism beams likes
+            ProjAIStyleID.AncientStorm, // forbidden armor tornado
+            ProjAIStyleID.Zenith
+        ];
 
         /// <summary>
         /// Performs common safety checks used to run specialized EMode vanilla player projectile balance changes.
@@ -195,10 +221,28 @@ namespace FargowiltasSouls.Content.Projectiles
                     if (EmodeItemBalance.HasEmodeChange(Main.player[projectile.owner], ItemID.SuperStarCannon))
                         projectile.penetrate = 7;
                     break;*/
+
+                case ProjectileID.QueenBeeStinger:
+                    projectile.ignoreWater = true;
+                    break;
                 default:
                     break;
             }
         }
+
+        public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter)
+        {
+            base.SendExtraAI(projectile, bitWriter, binaryWriter);
+            binaryWriter.Write(Jammed);
+        }
+
+        public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
+        {
+            base.ReceiveExtraAI(projectile, bitReader, binaryReader);
+            Jammed = binaryReader.ReadBoolean();
+        }
+
+        
 
         private static bool NonSwarmFight(Projectile projectile, params int[] types)
         {
@@ -213,7 +257,7 @@ namespace FargowiltasSouls.Content.Projectiles
 
             Projectile? sourceProj = null;
 
-            if (projectile is not null && projectile.owner.IsWithinBounds(Main.maxPlayers) && (projectile.friendly || FargoSoulsUtil.IsSummonDamage(projectile, false, false)))
+            if (projectile.owner.IsWithinBounds(Main.maxPlayers) && (projectile.friendly || FargoSoulsUtil.IsSummonDamage(projectile, false, false)))
             {
                 if (source is not null)
                 {
@@ -229,6 +273,8 @@ namespace FargowiltasSouls.Content.Projectiles
                         projectile.FargoSouls().ItemSource = true;
                     }
                     projectile.FargoSouls().Homing = projectile.IsHoming(Main.player[projectile.owner], source);
+                if (source is not EntitySource_ItemUse_WithAmmo && source is EntitySource_ItemUse && ContentSamples.ItemsByType[SourceItemType].IsWeaponWithDamageClass())
+                    projectile.FargoSouls().IsOnHitSource = true;
                 }
             }
 
@@ -321,6 +367,13 @@ namespace FargowiltasSouls.Content.Projectiles
                     }
                     break;
 
+                case ProjectileID.SkyFracture:
+                    if (PerformSafetyChecks(projectile, ItemID.SkyFracture, out _, "SkyFracture"))
+                    {
+                        projectile.extraUpdates += 1;
+                    }
+                    break;
+
                 case ProjectileID.SporeGas:
                 case ProjectileID.SporeGas2:
                 case ProjectileID.SporeGas3:
@@ -358,8 +411,6 @@ namespace FargowiltasSouls.Content.Projectiles
                             projectile.idStaticNPCHitCooldown = 3;
                         else
                             projectile.idStaticNPCHitCooldown = 5;
-
-                        projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
                     }
                     break;
 
@@ -662,7 +713,7 @@ namespace FargowiltasSouls.Content.Projectiles
             switch (projectile.type)
             {
                 case ProjectileID.ChlorophyteBullet:
-                    if (PerformSafetyChecks(projectile, ItemID.ChlorophyteBullet, out _, "ChlorophyteBullet"))
+                    if (projectile.owner.IsWithinBounds(Main.maxPlayers) && EmodeItemBalance.HasEmodeChange(Main.player[projectile.owner], ItemID.ChlorophyteBullet).Contains("ChlorophyteBullet"))
                     {
                         // vanilla Chlorophyte Bullet AI imitation to apply more elaborate tweaks.
                         if (projectile.alpha < 170)
@@ -764,7 +815,7 @@ namespace FargowiltasSouls.Content.Projectiles
                     }
                     break;
                 case ProjectileID.AmberBolt:
-                    if (PerformSafetyChecks(projectile, ItemID.AmberStaff, out Player player, "AmberStaff") && counter > 30 && counter < 50)
+                    if (PerformSafetyChecks(projectile, ItemID.AmberStaff, out Player player, "AmberStaff") && counter > 30 && counter < 60)
                     {
                         projectile.velocity += projectile.DirectionTo(player.Center) * 0.9f;
                     }
@@ -804,11 +855,19 @@ namespace FargowiltasSouls.Content.Projectiles
             // OOA Sentry Jamming
             if (Jammed)
             {
-                JammedRecoverTime = 90;
-                if (Main.rand.NextBool(4))
+                if (!ProjectileID.Sets.IsADD2Turret[projectile.type])
                 {
-                    float rot = Main.rand.NextFloat(0, MathHelper.TwoPi);
-                    new ElectricSpark(projectile.Center, 5 * Vector2.UnitX.RotatedBy(rot), Color.Purple, 1f, 25).Spawn();
+                    Jammed = false;
+                    JammedRecoverTime = 0;
+                }
+                else
+                {
+                    JammedRecoverTime = 90;
+                    if (Main.rand.NextBool(4))
+                    {
+                        float rot = Main.rand.NextFloat(0, MathHelper.TwoPi);
+                        new ElectricSpark(projectile.Center, 5 * Vector2.UnitX.RotatedBy(rot), Color.Purple, 1f, 25).Spawn();
+                    }
                 }
             }
             if (JammedRecoverTime > 0)
@@ -899,9 +958,6 @@ namespace FargowiltasSouls.Content.Projectiles
                     if (!Collision.SolidTiles(projectile.Center, 0, 0))
                     {
                         Lighting.AddLight(projectile.Center, TorchID.Crimson);
-
-                        if (counter > 180)
-                            projectile.tileCollide = true;
                     }
                     break;
 
@@ -1012,7 +1068,7 @@ namespace FargowiltasSouls.Content.Projectiles
                     break;
 
                 case ProjectileID.QueenBeeStinger:
-                    projectile.velocity.Y -= 0.1f; //negate gravity
+                    projectile.velocity.Y -= 0.1f; // negate gravity
                     break;
 
                 case ProjectileID.BeeHive:
@@ -1306,13 +1362,19 @@ namespace FargowiltasSouls.Content.Projectiles
                                     projectile.localAI[0] = 1;
                                     projectile.velocity.Normalize();
 
+                                    /*
                                     if (FargoSoulsUtil.HostCheck && !WorldSavingSystem.MasochistModeReal)
                                     {
                                         Projectile.NewProjectile(Entity.InheritSource(projectile), projectile.Center, projectile.velocity, ModContent.ProjectileType<PhantasmalSphereDeathray>(),
                                             0, 0f, Main.myPlayer, 0f, projectile.identity);
                                     }
+                                    */
 
                                     projectile.netUpdate = true;
+                                }
+                               if (projectile.localAI[0] != 0 && projectile.velocity.Length() > 9)
+                                {
+                                    projectile.velocity = projectile.velocity.ClampLength(0, 9);
                                 }
                             }
                         }
@@ -1334,7 +1396,7 @@ namespace FargowiltasSouls.Content.Projectiles
                             : Main.rand.NextFloat(4f, 6f);
 
                         if (!Main.dedServ && Main.LocalPlayer.active)
-                            FargoSoulsUtil.ScreenshakeRumble(6);
+                            FargoSoulsUtil.ScreenshakeRumble(4);
                     }
                     break;
 
@@ -1351,6 +1413,7 @@ namespace FargowiltasSouls.Content.Projectiles
                     break;
 
                 case ProjectileID.DD2BetsyFireball: //when spawned, also spawn a phoenix
+                    break;
                     if (!firstTickAICheckDone && NonSwarmFight(projectile, NPCID.DD2Betsy))
                     {
                         bool phase2 = sourceNPC.GetGlobalNPC<Betsy>().InPhase2;
@@ -1369,6 +1432,7 @@ namespace FargowiltasSouls.Content.Projectiles
                     break;
 
                 case ProjectileID.DD2BetsyFlameBreath:
+                    break;
                     if (NonSwarmFight(projectile, NPCID.DD2Betsy))
                     {
                         bool phase2 = sourceNPC.GetGlobalNPC<Betsy>().InPhase2;
@@ -1436,7 +1500,7 @@ namespace FargowiltasSouls.Content.Projectiles
             }*/
         }
         private int FadeTimer = 0;
-        public static int[] FancySwings => [
+        public static HashSet<int> FancySwings => [
             ProjectileID.Excalibur,
             ProjectileID.TrueExcalibur,
             ProjectileID.TerraBlade2,
@@ -1738,7 +1802,7 @@ namespace FargowiltasSouls.Content.Projectiles
                 case ProjectileID.PalladiumPike:
                     if (PerformSafetyChecks(projectile, ItemID.PalladiumPike, out Player pl, "PalladiumPikeRework"))
                     {
-                        if (target.type != NPCID.TargetDummy && !target.friendly) //may add more checks here idk
+                        if (target.Hostile()) //may add more checks here idk
                         {
                             pl.AddBuff(BuffID.RapidHealing, 60 * 5);
                             if (pl.Eternity().PalladiumHealTimer <= 0)
@@ -1939,7 +2003,7 @@ namespace FargowiltasSouls.Content.Projectiles
                     break;
 
                 case ProjectileID.HarpyFeather:
-                    target.AddBuff(ModContent.BuffType<ClippedWingsBuff>(), 300);
+                    //target.AddBuff(ModContent.BuffType<ClippedWingsBuff>(), 300);
                     break;
 
                 case ProjectileID.SandBallFalling:
@@ -1951,7 +2015,7 @@ namespace FargowiltasSouls.Content.Projectiles
 
                 case ProjectileID.Stinger:
                 case ProjectileID.QueenBeeStinger:
-                    target.AddBuff(ModContent.BuffType<SwarmingBuff>(), 300);
+                    //target.AddBuff(ModContent.BuffType<SwarmingBuff>(), 300);
                     break;
 
                 case ProjectileID.Skull:
@@ -2317,11 +2381,11 @@ namespace FargowiltasSouls.Content.Projectiles
 
             switch (projectile.type)
             {
-                case ProjectileID.BloodNautilusTears:
+                /*case ProjectileID.BloodNautilusTears:
                 case ProjectileID.BloodNautilusShot:
                     if (FargoSoulsUtil.HostCheck)
                         Projectile.NewProjectile(Entity.InheritSource(projectile), projectile.Center, Vector2.Zero, ModContent.ProjectileType<BloodFountain>(), projectile.damage, 0f, Main.myPlayer, Main.rand.Next(16, 48));
-                    break;
+                    break;*/
 
                 default:
                     break;
@@ -2344,14 +2408,39 @@ namespace FargowiltasSouls.Content.Projectiles
         }
         public override bool PreDraw(Projectile projectile, ref Color lightColor)
         {
-            if (projectile.type == ProjectileID.PoisonSeedPlantera || projectile.type == ProjectileID.SeedPlantera)
+            if (!WorldSavingSystem.EternityMode)
+                return base.PreDraw(projectile, ref lightColor);
+            switch (projectile.type)
             {
-                projectile.Opacity = 1f;
-                FargoSoulsUtil.GenericProjectileDraw(projectile, lightColor);
+                case ProjectileID.PoisonSeedPlantera:
+                case ProjectileID.SeedPlantera:
+                    projectile.Opacity = 1f;
+                    FargoSoulsUtil.GenericProjectileDraw(projectile, lightColor);
+                    break;
+
+                case ProjectileID.QueenBeeStinger:
+                    if (FargoSoulsUtil.BossIsAlive(ref EModeGlobalNPC.beeBoss, NPCID.QueenBee) && Main.npc[EModeGlobalNPC.beeBoss] is NPC n && n.TryGetGlobalNPC(out QueenBee qb) && qb.RunEmodeAI)
+                    {
+                        FargoSoulsUtil.ProjectileWithGlowDraw(projectile, lightColor, glowColor: Color.Goldenrod, glowRadius: 2f);
+                        return false;
+                    }
+                    break;
             }
-            else if (JammedRecoverTime > 0)
+                
+            if (JammedRecoverTime > 0)
                 lightColor = Color.Lerp(lightColor, Color.Purple, JammedRecoverTime / 90f);
             return base.PreDraw(projectile, ref lightColor);
+        }
+
+        public static bool CanBeAbsorbed(Projectile p)
+        {
+            if (!p.Alive())
+                return false;
+
+            if (!p.friendly || !p.FargoSouls().HasRanPostAI)
+                return false;
+
+            return p.CanBeReflected() || (!p.FargoSouls().IsAHeldProj && p.FargoSouls().DeletionImmuneRank == 0 && !p.FargoSouls().IsOnHitSource && !FargoSoulsUtil.IsSummonDamage(p, false));
         }
     }
 }

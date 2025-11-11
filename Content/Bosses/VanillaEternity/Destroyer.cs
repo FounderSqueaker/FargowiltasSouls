@@ -64,12 +64,12 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(AttackModeTimer);
-            binaryWriter.Write7BitEncodedInt(CoilRadius);
-            binaryWriter.Write7BitEncodedInt(LaserTimer);
-            binaryWriter.Write7BitEncodedInt(SecondaryAttackTimer);
-            binaryWriter.Write7BitEncodedInt(RotationDirection);
-            binaryWriter.Write7BitEncodedInt(LightshowSlowTimer);
+            binaryWriter.Write(AttackModeTimer);
+            binaryWriter.Write(CoilRadius);
+            binaryWriter.Write(LaserTimer);
+            binaryWriter.Write(SecondaryAttackTimer);
+            binaryWriter.Write(RotationDirection);
+            binaryWriter.Write(LightshowSlowTimer);
             bitWriter.WriteBit(InPhase2);
             bitWriter.WriteBit(IsCoiling);
             bitWriter.WriteBit(PrepareToCoil);
@@ -79,12 +79,12 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            AttackModeTimer = binaryReader.Read7BitEncodedInt();
-            CoilRadius = binaryReader.Read7BitEncodedInt();
-            LaserTimer = binaryReader.Read7BitEncodedInt();
-            SecondaryAttackTimer = binaryReader.Read7BitEncodedInt();
-            RotationDirection = binaryReader.Read7BitEncodedInt();
-            LightshowSlowTimer = binaryReader.Read7BitEncodedInt();
+            AttackModeTimer = binaryReader.ReadInt32();
+            CoilRadius = binaryReader.ReadInt32();
+            LaserTimer = binaryReader.ReadInt32();
+            SecondaryAttackTimer = binaryReader.ReadInt32();
+            RotationDirection = binaryReader.ReadInt32();
+            LightshowSlowTimer = binaryReader.ReadInt32();
             InPhase2 = bitReader.ReadBit();
             IsCoiling = bitReader.ReadBit();
             PrepareToCoil = bitReader.ReadBit();
@@ -98,8 +98,11 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             npc.buffImmune[BuffID.Chilled] = false;
             npc.buffImmune[ModContent.BuffType<TimeFrozenBuff>()] = false;
         }
-
-        private static int ProjectileDamage(NPC npc) => FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 4f / 9);
+        public override void ModifyHitPlayer(NPC npc, Player target, ref Player.HurtModifiers modifiers)
+        {
+            modifiers.SourceDamage /= 3; // fuck you
+        }
+        private static int ProjectileDamage(NPC npc) => FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 4f / 10);
 
         private void CoilAI(NPC npc)
         {
@@ -551,7 +554,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 if (FargoSoulsUtil.HostCheck)
                 {
                     float angle = MathHelper.Pi * 0.7f;
-                    int p = Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Center, npc.velocity, ModContent.ProjectileType<DestroyerScanTelegraph>(), 0, 0f, Main.myPlayer, 0, angle, 1000);
+                    int p = Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Center, npc.velocity, ModContent.ProjectileType<DestroyerScanTelegraph>(), 0, 0f, Main.myPlayer, 500, angle, 0);
                     if (p != Main.maxProjectiles)
                         Main.projectile[p].timeLeft = telegraphTime;
                     //Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Center, Vector2.Zero, ModContent.ProjectileType<GlowRingHollow>(), 0, 0f, Main.myPlayer, 9, npc.whoAmI);
@@ -867,20 +870,20 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(ProjectileCooldownTimer);
-            binaryWriter.Write7BitEncodedInt(AttackTimer);
-            binaryWriter.Write7BitEncodedInt(ProbeReleaseTimer);
-            binaryWriter.Write7BitEncodedInt(DisabledTime);
+            binaryWriter.Write(ProjectileCooldownTimer);
+            binaryWriter.Write(AttackTimer);
+            binaryWriter.Write(ProbeReleaseTimer);
+            binaryWriter.Write(DisabledTime);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            ProjectileCooldownTimer = binaryReader.Read7BitEncodedInt();
-            AttackTimer = binaryReader.Read7BitEncodedInt();
-            ProbeReleaseTimer = binaryReader.Read7BitEncodedInt();
-            DisabledTime = binaryReader.Read7BitEncodedInt();
+            ProjectileCooldownTimer = binaryReader.ReadInt32();
+            AttackTimer = binaryReader.ReadInt32();
+            ProbeReleaseTimer = binaryReader.ReadInt32();
+            DisabledTime = binaryReader.ReadInt32();
         }
 
         public override void SetDefaults(NPC npc)
@@ -1003,7 +1006,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                         delay = 0;
 
                     int type = ModContent.ProjectileType<MechElectricOrbHoming>();
-                    Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Center, Vector2.Normalize(distance) * modifier, type, FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage), 0f, Main.myPlayer, npc.target, -delay, ai2: MechElectricOrb.Blue);
+                    Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Center, Vector2.Normalize(distance) * modifier, type, FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 0.8f), 0f, Main.myPlayer, npc.target, -delay, ai2: MechElectricOrb.Blue);
                 }
             }
 
@@ -1096,26 +1099,20 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             modifiers.FinalDamage *= 0.7f;
         }
-        private static readonly int[] PierceResistImmuneAiStyles =
-        [
-            ProjAIStyleID.Yoyo,
-            ProjAIStyleID.Spear,
-            ProjAIStyleID.ShortSword,
-            ProjAIStyleID.Drill,
-            ProjAIStyleID.HeldProjectile,
-            ProjAIStyleID.NightsEdge, // all fancy sword swings
-            ProjAIStyleID.CursedFlameWall, // clinger staff
-            ProjAIStyleID.Rainbow, // rainbow gun
-            ProjAIStyleID.MechanicalPiranha,
-            ProjAIStyleID.SleepyOctopod
-        ];
         public static void PierceResistance(Projectile projectile, ref NPC.HitModifiers modifiers)
         {
-            if (projectile.numHits > 0 && !FargoSoulsUtil.IsSummonDamage(projectile) && !FargoSoulsSets.Projectiles.PierceResistImmune[projectile.type] && !PierceResistImmuneAiStyles.Contains(projectile.aiStyle))
-                modifiers.FinalDamage *= 1f / MathF.Pow(1.75f, projectile.numHits);
-
-            if ((projectile.maxPenetrate >= 20 || projectile.maxPenetrate <= -1) && PierceResistImmuneAiStyles.Contains(projectile.aiStyle))
-            { //only affects projs of the type that are effectively infinite pierce
+            if (!FargoSoulsUtil.IsSummonDamage(projectile)
+            && !FargoSoulsSets.Projectiles.PierceResistImmune[projectile.type]
+            && !EModeGlobalProjectile.PierceResistImmuneAiStyles.Contains(projectile.aiStyle)
+            && !projectile.FargoSouls().IsAHeldProj)
+            {
+                if (projectile.numHits > 0)
+                    modifiers.FinalDamage *= 1f / MathF.Pow(1.75f, projectile.numHits);
+            }
+            else if (projectile.maxPenetrate >= 20 || projectile.maxPenetrate <= -1)
+            { 
+                //generic damage decrease so projectiles that needed to be exempted dont overpower
+                //only affects projs of the type that are effectively infinite pierce
                 modifiers.FinalDamage *= 0.7f;
             }
         }
@@ -1174,10 +1171,10 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(OrbitChangeTimer);
-            binaryWriter.Write7BitEncodedInt(OrbitDirection);
-            binaryWriter.Write7BitEncodedInt(AttackTimer);
-            binaryWriter.Write7BitEncodedInt(GlowmaskFadeTimer);
+            binaryWriter.Write(OrbitChangeTimer);
+            binaryWriter.Write(OrbitDirection);
+            binaryWriter.Write(AttackTimer);
+            binaryWriter.Write(GlowmaskFadeTimer);
             binaryWriter.Write(TargetOrbitRotation);
             bitWriter.WriteBit(ShootLaser);
         }
@@ -1186,10 +1183,10 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            OrbitChangeTimer = binaryReader.Read7BitEncodedInt();
-            OrbitDirection = binaryReader.Read7BitEncodedInt();
-            AttackTimer = binaryReader.Read7BitEncodedInt();
-            GlowmaskFadeTimer = binaryReader.Read7BitEncodedInt();
+            OrbitChangeTimer = binaryReader.ReadInt32();
+            OrbitDirection = binaryReader.ReadInt32();
+            AttackTimer = binaryReader.ReadInt32();
+            GlowmaskFadeTimer = binaryReader.ReadInt32();
             TargetOrbitRotation = binaryReader.ReadSingle();
             ShootLaser = bitReader.ReadBit();
         }
@@ -1287,21 +1284,33 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             {
                 if (ShootLaser)
                 {
+                    Vector2 towardsPlayer = 6f * npc.SafeDirectionTo(Main.player[npc.target].Center);
+                    const int attackTime = 110;
+
                     if (AttackTimer == 0)
                     {
                         TargetOrbitRotation = Main.player[npc.target].SafeDirectionTo(npc.Center).ToRotation(); //when shooting laser, stop orbiting
                         
                         npc.netUpdate = true;
                         NetSync(npc);
-                    }
-                        
-                    const int attackTime = 110;
 
-                    Vector2 towardsPlayer = 6f * npc.SafeDirectionTo(Main.player[npc.target].Center);
+                        float angle = MathHelper.Pi * 0.3f;
+                        if (FargoSoulsUtil.HostCheck)
+                        {
+                            int p = Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Center, npc.velocity, ModContent.ProjectileType<DestroyerScanTelegraph>(), 0, 0f, Main.myPlayer, 100, angle, 0);
+                            if (p != Main.maxProjectiles)
+                                Main.projectile[p].timeLeft = attackTime;
+                        }
+                            
+                    }
+                       
+
+                    /*
                     int dustID = WorldSavingSystem.EternityMode && SoulConfig.Instance.BossRecolors ? DustID.GemSapphire : DustID.GemRuby;
                     float dustScale = 0.5f + 2.5f * AttackTimer / attackTime;
                     int d = Dust.NewDust(npc.position, npc.width, npc.height, dustID, 2f * towardsPlayer.X, 2f * towardsPlayer.Y, 0, default, dustScale);
                     Main.dust[d].noGravity = true;
+                    */
 
                     if (++AttackTimer > attackTime)
                     {
@@ -1410,6 +1419,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 opacity = 0;
             Rectangle rectangle = npc.frame;
             Vector2 origin2 = rectangle.Size() / 2f;
+
+
+
             Main.EntitySpriteDraw(TextureAssets.Npc[npc.type].Value, npc.Center - Main.screenPosition, new Rectangle?(rectangle), drawColor, npc.rotation, rectangle.Size() / 2, npc.scale, npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
 
             Main.EntitySpriteDraw(TextureAssets.Probe.Value, npc.Center - Main.screenPosition, new Rectangle?(rectangle), Color.White * opacity, npc.rotation, rectangle.Size() / 2, npc.scale, npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None);

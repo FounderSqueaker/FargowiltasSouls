@@ -120,7 +120,7 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
                 float opacity = Projectile.Opacity;
                 Main.EntitySpriteDraw(line.Value, origin - Main.screenPosition + new Vector2(0, Projectile.gfxOffY),
                     null, new Color(150, 255, 25) * opacity, Projectile.rotation,
-                    new Vector2(0, line.Height() * 0.5f), new Vector2(5f, 12f), SpriteEffects.None);
+                    new Vector2(0, line.Height() * 0.5f), new Vector2(8f, 12f), SpriteEffects.None);
             }
             return false;
         }

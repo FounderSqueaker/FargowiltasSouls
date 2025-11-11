@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
@@ -611,11 +612,23 @@ namespace FargowiltasSouls //lets everything access it without using
             return (currentTargetPosition - startingPosition).SafeNormalize(Vector2.UnitY) * shootSpeed;
         }
 
-        public static float NPCRotateTowards(NPC npc, Vector2 target, float speed, float overriderotation = -999)
+        public static float NPCRotateTowards(NPC npc, Vector2 target, float speed, float rotation = default)
         {
-            float rot = overriderotation != -999 ? overriderotation : npc.rotation;
+            float rot = rotation != default ? rotation : npc.rotation;
             Vector2 LV = rot.ToRotationVector2();
             Vector2 PV = npc.SafeDirectionTo(target);
+            float anglediff = RotationDifference(LV, PV);
+            if (anglediff == 0)
+                return rot; //no change
+            //change rotation towards target
+            return rot.ToRotationVector2().RotatedBy(Math.Sign(anglediff) * Math.Min(Math.Abs(anglediff), speed * MathHelper.Pi / 180)).ToRotation();
+        }
+
+        public static float ProjectileRotateTowards(Projectile projectile, Vector2 target, float speed, float rotation = default)
+        {
+            float rot = rotation != default ? rotation : projectile.rotation; 
+            Vector2 LV = rot.ToRotationVector2();
+            Vector2 PV = projectile.SafeDirectionTo(target);
             float anglediff = RotationDifference(LV, PV);
             if (anglediff == 0)
                 return rot; //no change
@@ -808,6 +821,153 @@ namespace FargowiltasSouls //lets everything access it without using
                 }
             }
         }
+
+        public static void SpawnOnPlayerNoMessage(int plr, int Type)
+        {
+            if (!HostCheck)
+                return;
+
+            Player p = Main.player[plr];
+
+            int spawnRangeX = (int)((double)(NPC.sWidth / 16) * 0.7);
+            int spawnRangeY = (int)((double)(NPC.sHeight / 16) * 0.7);
+
+            bool flag = false;
+            int num10 = 0;
+            int num11 = 0;
+            int num12 = (int)(p.position.X / 16f) - spawnRangeX * 2;
+            int num13 = (int)(p.position.X / 16f) + spawnRangeX * 2;
+            int num14 = (int)(p.position.Y / 16f) - spawnRangeY * 2;
+            int num15 = (int)(p.position.Y / 16f) + spawnRangeY * 2;
+            int num16 = (int)(p.position.X / 16f) - NPC.safeRangeX;
+            int num17 = (int)(p.position.X / 16f) + NPC.safeRangeX;
+            int num18 = (int)(p.position.Y / 16f) - NPC.safeRangeY;
+            int num19 = (int)(p.position.Y / 16f) + NPC.safeRangeY;
+            if (num12 < 0)
+                num12 = 0;
+
+            if (num13 > Main.maxTilesX)
+                num13 = Main.maxTilesX;
+
+            if (num14 < 0)
+                num14 = 0;
+
+            if (num15 > Main.maxTilesY)
+                num15 = Main.maxTilesY;
+
+            for (int m = 0; m < 1000; m++)
+            {
+                for (int n = 0; n < 100; n++)
+                {
+                    int num20 = Main.rand.Next(num12, num13);
+                    int num21 = Main.rand.Next(num14, num15);
+                    if (!Main.tile[num20, num21].HasUnactuatedTile || !Main.tileSolid[Main.tile[num20, num21].TileType])
+                    {
+                        if ((Main.wallHouse[Main.tile[num20, num21].WallType] && m < 999) || (Type == 50 && m < 500 && Main.tile[num21, num21].WallType > 0))
+                            continue;
+
+                        for (int num22 = num21; num22 < Main.maxTilesY; num22++)
+                        {
+                            if (Main.tile[num20, num22].HasUnactuatedTile && Main.tileSolid[Main.tile[num20, num22].TileType])
+                            {
+                                if ((num20 < num16 || num20 > num17 || num22 < num18 || num22 > num19 || m == 999) && ((num20 >= num12 && num20 <= num13 && num22 >= num14 && num22 <= num15) || m == 999))
+                                {
+                                    _ = Main.tile[num20, num22].TileType;
+                                    num10 = num20;
+                                    num11 = num22;
+                                    flag = true;
+                                }
+
+                                break;
+                            }
+                        }
+
+                        if (flag && Type == 50 && m < 900)
+                        {
+                            int num23 = 20;
+                            if (!Collision.CanHit(new Vector2(num10, num11 - 1) * 16f, 16, 16, new Vector2(num10, num11 - 1 - num23) * 16f, 16, 16) || !Collision.CanHit(new Vector2(num10, num11 - 1 - num23) * 16f, 16, 16, Main.player[plr].Center, 0, 0))
+                            {
+                                num10 = 0;
+                                num11 = 0;
+                                flag = false;
+                            }
+                        }
+
+                        if (flag && m < 999)
+                        {
+                            int num24 = num10 - 3 / 2;
+                            int num25 = num10 + 3 / 2;
+                            int num26 = num11 - 3;
+                            int num27 = num11;
+                            if (num24 < 0)
+                                flag = false;
+
+                            if (num25 > Main.maxTilesX)
+                                flag = false;
+
+                            if (num26 < 0)
+                                flag = false;
+
+                            if (num27 > Main.maxTilesY)
+                                flag = false;
+
+                            if (flag)
+                            {
+                                for (int num28 = num24; num28 < num25; num28++)
+                                {
+                                    for (int num29 = num26; num29 < num27; num29++)
+                                    {
+                                        if (Main.tile[num28, num29].HasUnactuatedTile && Main.tileSolid[Main.tile[num28, num29].TileType])
+                                        {
+                                            flag = false;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (flag || flag)
+                        break;
+                }
+
+                if (flag && m < 999)
+                {
+                    Rectangle rectangle = new Rectangle(num10 * 16, num11 * 16, 16, 16);
+                    for (int num30 = 0; num30 < 255; num30++)
+                    {
+                        if (Main.player[num30].active)
+                        {
+                            Rectangle rectangle2 = new Rectangle((int)(Main.player[num30].position.X + (float)(Main.player[num30].width / 2) - (float)(NPC.sWidth / 2) - (float)NPC.safeRangeX), (int)(Main.player[num30].position.Y + (float)(Main.player[num30].height / 2) - (float)(NPC.sHeight / 2) - (float)NPC.safeRangeY), NPC.sWidth + NPC.safeRangeX * 2, NPC.sHeight + NPC.safeRangeY * 2);
+                            if (rectangle.Intersects(rectangle2))
+                                flag = false;
+                        }
+                    }
+                }
+
+                if (flag)
+                    break;
+            }
+
+            if (flag)
+            {
+                int spawnPositionX = num10 * 16 + 8;
+                int spawnPositionY = num11 * 16;
+                int num = NPC.NewNPC(NPC.GetBossSpawnSource(plr), spawnPositionX, spawnPositionY, Type);
+                if (num == Main.maxNPCs)
+                    return;
+
+                Main.npc[num].target = plr;
+                Main.npc[num].timeLeft *= 20;
+                if (Main.dedServ && num < 200)
+                {
+                    NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, num);
+                }
+            }
+
+        }
+
 
         /// <summary>
         /// Useful for defining the SourceItemType of a player projectile using its source.

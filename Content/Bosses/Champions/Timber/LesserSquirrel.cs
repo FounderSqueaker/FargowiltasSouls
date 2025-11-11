@@ -81,7 +81,7 @@ namespace FargowiltasSouls.Content.Bosses.Champions.Timber
 
             if (++counter > 900)
             {
-                NPC.SimpleStrikeNPC(int.MaxValue, 0, false, 0, null, false, 0, true);
+                NPC.SimpleStrikeNPC(NPC.lifeMax, 0, false, 0, null, false, 0, true);
             }
 
             if (!NPC.dontTakeDamage && WorldSavingSystem.EternityMode)
@@ -160,7 +160,7 @@ namespace FargowiltasSouls.Content.Bosses.Champions.Timber
 
                 if (!Main.dedServ)
                 {
-                    int g = Gore.NewGore(NPC.GetSource_FromThis(), NPC.Center, Main.rand.NextFloat(6f) * -Vector2.UnitY.RotatedByRandom(MathHelper.PiOver4), ModContent.Find<ModGore>(Mod.Name, Main.rand.NextBool() ? "TrojanSquirrelGore2" : "TrojanSquirrelGore2_2").Type, NPC.scale);
+                    int g = Gore.NewGore(NPC.GetSource_FromThis(), NPC.Center, Main.rand.NextFloat(6f) * -Vector2.UnitY.RotatedByRandom(MathHelper.PiOver4), ModContent.Find<ModGore>(Mod.Name, "TrojanSquirrelGore2_2").Type, NPC.scale);
                     Main.gore[g].rotation = Main.rand.NextFloat(MathHelper.TwoPi);
                 }
             }

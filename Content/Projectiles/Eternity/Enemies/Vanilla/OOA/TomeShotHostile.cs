@@ -50,9 +50,21 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
 
             SpriteEffects spriteEffects = Projectile.spriteDirection < 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
+            Color glowColor = Color.White * 0.7f;
+            Vector2 drawPosition = Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
+            Main.spriteBatch.UseBlendState(BlendState.Additive);
+            for (int j = 0; j < 12; j++)
+            {
+                Vector2 afterimageOffset = (MathHelper.TwoPi * j / 12).ToRotationVector2() * 4f * Projectile.scale;
+
+                Main.EntitySpriteDraw(texture2D13, drawPosition + afterimageOffset, rectangle, glowColor, Projectile.rotation, origin2, Projectile.scale, spriteEffects, 0);
+            }
+            Main.spriteBatch.ResetToDefault();
+
+            Color drawColor = Projectile.GetAlpha(lightColor);
             if (Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height))
-                Main.EntitySpriteDraw(texture2D13, Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY), new Microsoft.Xna.Framework.Rectangle?(rectangle), Color.White, Projectile.rotation, origin2, Projectile.scale * 1.2f, spriteEffects, 0);
-            Main.EntitySpriteDraw(texture2D13, Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY), new Microsoft.Xna.Framework.Rectangle?(rectangle), lightColor, Projectile.rotation, origin2, Projectile.scale, spriteEffects, 0);
+                drawColor = Projectile.GetAlpha(Color.White);
+            Main.EntitySpriteDraw(texture2D13, drawPosition, rectangle, drawColor, Projectile.rotation, origin2, Projectile.scale, spriteEffects, 0);
             
             return false;
         }

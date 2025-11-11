@@ -23,7 +23,7 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.Souls
         public override void SetDefaults()
         {
             base.SetDefaults();
-            CooldownSlot = -1;
+            CooldownSlot = ImmunityCooldownID.General;
             Projectile.hostile = false;
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Ranged;

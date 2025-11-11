@@ -31,13 +31,13 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Corrupti
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
-            binaryWriter.Write7BitEncodedInt(AttackTimer);
+            binaryWriter.Write(AttackTimer);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-            AttackTimer = binaryReader.Read7BitEncodedInt();
+            AttackTimer = binaryReader.ReadInt32();
         }
 
         public override NPCMatcher CreateMatcher() =>
@@ -45,20 +45,13 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Corrupti
                 NPCID.EaterofSouls,
                 NPCID.BigEater,
                 NPCID.LittleEater
-                //NPCID.Crimera,
-                //NPCID.BigCrimera,
-                //NPCID.LittleCrimera
             );
 
         public override void OnFirstTick(NPC npc)
         {
             base.OnFirstTick(npc);
 
-            if (NPC.downedBoss2 && Main.rand.NextBool(5) && npc.FargoSouls().CanHordeSplit)
-                EModeGlobalNPC.Horde(npc, 5);
-
-            if (npc.type == NPCID.EaterofSouls || npc.type == NPCID.BigEater || npc.type == NPCID.LittleEater)
-                npc.buffImmune[BuffID.CursedInferno] = true;
+            npc.buffImmune[BuffID.CursedInferno] = true;
 
             AttackTimer = Main.rand.Next(-80, 80);
         }
@@ -115,7 +108,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Corrupti
             spriteBatch.Draw(Eater, npc.Center - Main.screenPosition, npc.frame, drawColor, npc.rotation, npc.frame.Size() / 2, npc.scale, SpriteEffects.None, 0f);
             spriteBatch.Draw(Jaw, position, null, drawColor, JawRot + npc.rotation, Origin , npc.scale, SpriteEffects.None, 0f);
             spriteBatch.Draw(Jaw, position, null, drawColor, -JawRot + npc.rotation, Origin, npc.scale, SpriteEffects.FlipHorizontally, 0f);
-            return false;
+            return npc.IsABestiaryIconDummy && base.PreDraw(npc, spriteBatch, screenPos, drawColor);
         }
 
         public override void OnHitPlayer(NPC npc, Player target, Player.HurtInfo hurtInfo)

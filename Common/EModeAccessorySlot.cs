@@ -14,28 +14,18 @@ namespace FargowiltasSouls.Common
 {
     public class EModeAccessorySlot : ModAccessorySlot
     {
-        int[] AllowedItemExceptions =
-        //technically these are souls so should legally go in the slot that allows souls
-        [
-            ModContent.ItemType<ParadoxWolfSoul>(),
-            ItemID.RareEnchantment,
-            ItemID.SoulofLight,
-            ItemID.SoulofNight,
-            ItemID.SoulofFlight,
-            ItemID.SoulofFright,
-            ItemID.SoulofSight,
-            ItemID.SoulofMight,
-        ];
 
         public override bool HasEquipmentLoadoutSupport => true;      
 
+        
+
         public override bool CanAcceptItem(Item checkItem, AccessorySlotType context)
         {
-            if ((context == AccessorySlotType.FunctionalSlot || context == AccessorySlotType.VanitySlot) && (base.CanAcceptItem(checkItem, context) || AllowedItemExceptions.Contains(checkItem.type)))
+            bool allowedType = FargoSoulsSets.Items.AllowedSoulItemExceptions[checkItem.type];
+            if ((context == AccessorySlotType.FunctionalSlot || context == AccessorySlotType.VanitySlot) && (base.CanAcceptItem(checkItem, context) || allowedType))
             {
-                if ((checkItem.ModItem != null && (checkItem.ModItem is BaseEnchant || checkItem.ModItem is BaseForce || checkItem.ModItem is BaseSoul) || AllowedItemExceptions.Contains(checkItem.type)))
+                if ((checkItem.ModItem != null && (checkItem.ModItem is BaseEnchant || checkItem.ModItem is BaseForce || checkItem.ModItem is BaseSoul)) || allowedType)
                 {
-
                     return true;
                 }
                 return false;

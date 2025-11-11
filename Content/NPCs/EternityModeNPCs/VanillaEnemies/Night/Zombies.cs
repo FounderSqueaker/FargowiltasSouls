@@ -45,7 +45,8 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Night
             NPCID.BigSlimedZombie,
             NPCID.ZombieMerman,
             NPCID.TheGroom,
-            NPCID.TheBride
+            NPCID.TheBride,
+            NPCID.MaggotZombie
         );
         public static List<int> RegularZombies = //no halloween/christmas or biome variants 
         [
@@ -122,6 +123,8 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Night
             base.OnHitPlayer(npc, target, hurtInfo);
 
             target.AddBuff(ModContent.BuffType<RottingBuff>(), 300);
+            if (npc.type == NPCID.TheBride || npc.type == NPCID.TheGroom)
+                target.AddBuff(ModContent.BuffType<UnluckyBuff>(), 60 * 30);
         }
 
         public override void OnHitNPC(NPC npc, NPC target, NPC.HitInfo hit)

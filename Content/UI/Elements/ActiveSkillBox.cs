@@ -9,6 +9,7 @@ using Terraria.Audio;
 using Terraria.Localization;
 using FargowiltasSouls.Assets.Textures;
 using Fargowiltas.Assets.Textures;
+using Terraria.ModLoader.UI;
 
 namespace FargowiltasSouls.Content.UI.Elements
 {
@@ -99,9 +100,12 @@ namespace FargowiltasSouls.Content.UI.Elements
 
                     if (!Main.LocalPlayer.AccessoryEffects().Equipped(effect))
                         text = "[c/BC5252:" + unequipped + "]" + "\n" + text;
+
                     
                     if (!text.Contains($"Mods.{effect.Mod.Name}"))
                     {
+                        UICommon.TooltipMouseText(text);
+                        /*
                         Item hoverItem = new(2);
                         hoverItem.createTile = -1;
                         hoverItem.material = false;
@@ -111,6 +115,7 @@ namespace FargowiltasSouls.Content.UI.Elements
                         Main.instance.MouseText("", 0, 0);
                         Main.hoverItemName = text;
                         Main.mouseText = true;
+                        */
                         //Main.instance.MouseText(text, 0, 0);
                         /*
                         Utils.DrawBorderString(

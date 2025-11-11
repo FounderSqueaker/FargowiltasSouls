@@ -65,14 +65,15 @@ namespace FargowiltasSouls.Core.ModPlayers
 
         public bool HasEquippedSkill;
 
-        /// <summary>
-        /// Old player positions up to 1 minute ago. Updated once every 2.5 seconds.
-        /// </summary>
-        public Vector2[] OldPositionBig = new Vector2[24];
         public Vector2 SandsOfTimePosition;
+        public int SandsOfTimeChannel;
 
         public bool IsStandingStill;
         public float AttackSpeed;
+        /// <summary>
+        /// Caches the attack speed every frame. Ensures that attack speed is properly calculated for any given place during the update loop, by retrieving the last frame's speed otherwise.
+        /// </summary>
+        public float CachedAttackSpeed;
         public float UseTimeDebt;
         public float WingTimeModifier = 1f;
 
@@ -212,7 +213,15 @@ namespace FargowiltasSouls.Core.ModPlayers
             Toggler.LoadPlayerToggles(Player);
             disabledToggles.Clear();
             CooldownBarManager.Instance.RemoveAllChildren();
-            ResetOldPosition();
+
+            if (WorldSavingSystem.QueueEnableEternityMode)
+            {
+                WorldSavingSystem.QueueEnableEternityMode = false;
+                if (Main.masterMode)
+                    MasoDifficultyOption.EnableMasochist();
+                else
+                    EternityDifficultyOption.EnableEternity();
+            }
 
             if (ClientConfig.Instance.MusicModNotification && !ModLoader.TryGetMod("FargowiltasMusic", out Mod _))
             {
@@ -341,7 +350,6 @@ namespace FargowiltasSouls.Core.ModPlayers
             ShinobiEnchantActive = false;
             PlatinumEffect = null;
             CobaltEnchantActive = false;
-            AncientShadowEnchantActive = false;
             SquireEnchantItem = null;
             ValhallaEnchantActive = false;
             TitaniumDRBuff = false;
@@ -553,7 +561,6 @@ namespace FargowiltasSouls.Core.ModPlayers
         {
             if (NymphsPerfumeRespawn)
                 NymphsPerfumeRestoreLife = 6;
-            ResetOldPosition();
         }
         public override void ModifyScreenPosition()
         {
@@ -634,7 +641,7 @@ namespace FargowiltasSouls.Core.ModPlayers
 
 
             DeviGrazeBonus = 0;
-            MutantEyeCD = 60;
+            Player.SetCooldown<BombKeyEffect>(60);
 
             MythrilTimer = 0;
             MythrilDelay = 20;
@@ -720,19 +727,24 @@ namespace FargowiltasSouls.Core.ModPlayers
         }
         public override void ModifyShootStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
-            if (Player.HasEffect<NinjaEffect>()
-                && item.IsWeapon()
-                && !ProjectileID.Sets.IsAWhip[item.shoot]
-                && !ProjectileID.Sets.NoMeleeSpeedVelocityScaling[item.shoot]
-                && item.shoot > ProjectileID.None
-                && item.shoot != ProjectileID.WireKite
-                && item.shoot != ModContent.ProjectileType<Retiglaive>()
-                && ContentSamples.ProjectilesByType[item.shoot].aiStyle != ProjAIStyleID.Spear)
+            if (Player.HasEffect<NinjaEffect>() && item.IsWeapon())
             {
-                if (NinjaEffect.PlayerCanHaveBuff(Player))
+                if (NinjaCounter >= 1)
                 {
-                    velocity *= 2f;
-                    knockback *= 2f;
+                    //velocity *= 2f;
+                    //knockback *= 2f;
+                    NinjaCounter--;
+                    NinjaDecrementCD = NinjaDecrementMaxCD;
+                }
+            }
+        }
+        public override void ModifyWeaponCrit(Item item, ref float crit)
+        {
+            if (Player.HasEffect<NinjaEffect>() && item.IsWeapon())
+            {
+                if (NinjaCounter >= 1)
+                {
+                    crit += Player.ForceEffect<NinjaEffect>() ? 30 : 16;
                 }
             }
         }
@@ -811,7 +823,7 @@ namespace FargowiltasSouls.Core.ModPlayers
                 Player.GetAttackSpeed(DamageClass.SummonMeleeSpeed) += AttackSpeed - 1f;
                 return 1f;
             }
-
+            CachedAttackSpeed = AttackSpeed;
             return AttackSpeed;
         }
         public override void OnConsumeMana(Item item, int manaConsumed)
@@ -874,7 +886,7 @@ namespace FargowiltasSouls.Core.ModPlayers
                 if (drawInfo.shadow == 0f)
                 {
                     Color color = Main.DiscoColor;
-                    int index2 = Dust.NewDust(Player.position, Player.width, Player.height, DustID.GemDiamond, 0.0f, 0.0f, 100, color, 2.5f);
+                    int index2 = Dust.NewDust(Player.position, Player.width, Player.height, DustID.GemDiamond, 0.0f, 0.0f, 100, color, 1f);
                     Main.dust[index2].velocity *= 2f;
                     Main.dust[index2].noGravity = true;
                     drawInfo.DustCache.Add(index2);
@@ -1206,17 +1218,6 @@ namespace FargowiltasSouls.Core.ModPlayers
 
             return retVal;
         }
-        public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
-        {
-            base.Kill(damage, hitDirection, pvp, damageSource);
-            SandsOfTimePosition = OldPositionBig[^1];
-
-        }
-        public void ResetOldPosition()
-        {
-            for (int i = 0; i < OldPositionBig.Length; i++)
-                OldPositionBig[i] = Player.Center;
-        }
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
         {
             if (GaiaOffense) //set armor and accessory shaders to gaia shader if set bonus is triggered
@@ -1289,26 +1290,11 @@ namespace FargowiltasSouls.Core.ModPlayers
 
         public override void OnExtraJumpStarted(ExtraJump jump, ref bool playSound)
         {
-            if (Player.HasEffect<CobaltEffect>())
+            if (Player.HasEffect<CobaltEffect>() && Player.whoAmI == Main.myPlayer)
             {
-                if (Player.whoAmI == Main.myPlayer)
-                {
-                    int baseDamage = 75;
-
-                    if (Player.ForceEffect<CobaltEffect>())
-                    {
-                        baseDamage = 150;
-                    }
-
-                    if (Player.HasEffect<EarthForceEffect>() || TerrariaSoul)
-                    {
-                        baseDamage = 600;
-                    }
-
-                    Projectile p = FargoSoulsUtil.NewProjectileDirectSafe(Player.GetSource_EffectItem<CobaltEffect>(), Player.Center, Vector2.Zero, ModContent.ProjectileType<CobaltExplosion>(), (int)(baseDamage * Player.ActualClassDamage(DamageClass.Melee)), 0f, Main.myPlayer);
-                    if (p != null)
-                        p.FargoSouls().CanSplit = false;
-                }
+                Projectile p = FargoSoulsUtil.NewProjectileDirectSafe(Player.GetSource_EffectItem<CobaltEffect>(), Player.Center, Vector2.Zero, ModContent.ProjectileType<CobaltExplosion>(), AncientCobaltEffect.BaseDamage(Player) / 2, 0f, Main.myPlayer);
+                if (p != null)
+                    p.FargoSouls().CanSplit = false;
             }
             if (Player.HasEffect<GelicWingSpikes>())
             {

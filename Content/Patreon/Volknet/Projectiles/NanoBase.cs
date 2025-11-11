@@ -147,7 +147,7 @@ namespace FargowiltasSouls.Content.Patreon.Volknet.Projectiles
                                         damage = (int)(damage * 2f);
                                         speed = 3;
                                     }
-                                    damage = (int)(damage / 1.5);
+                                    damage = (int)(damage / 1.5 * 0.8);
                                     //damage = (int)(damage * RangedDamageModifier);
                                     if (cs)
                                     {
@@ -206,7 +206,7 @@ namespace FargowiltasSouls.Content.Patreon.Volknet.Projectiles
                                         SoundEngine.PlaySound(new SoundStyle("FargowiltasSouls/Assets/Sounds/Zombie_104"), Projectile.Center);
                                     }
 
-                                    Projectile.NewProjectile(owner.GetSource_ItemUse(owner.HeldItem), owner.Center, Vector2.Zero, ModContent.ProjectileType<PlasmaDeathRay>(), (int)(Projectile.damage * 2.5), Projectile.knockBack, owner.whoAmI);
+                                    Projectile.NewProjectile(owner.GetSource_ItemUse(owner.HeldItem), owner.Center, Vector2.Zero, ModContent.ProjectileType<PlasmaDeathRay>(), (int)(Projectile.damage * 2.5 * 1.1), Projectile.knockBack, owner.whoAmI);
                                 }
                             }
 

@@ -38,7 +38,6 @@ namespace FargowiltasSouls.Content.Projectiles
             Projectile.extraUpdates = 1;
 
             Projectile.FargoSouls().CanSplit = false;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
         }
 
         public override void AI()

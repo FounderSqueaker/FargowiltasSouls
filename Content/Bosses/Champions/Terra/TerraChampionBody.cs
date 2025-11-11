@@ -29,8 +29,8 @@ namespace FargowiltasSouls.Content.Bosses.Champions.Terra
 
         public override void SetDefaults()
         {
-            NPC.width = 45;
-            NPC.height = 45;
+            NPC.width = 56;
+            NPC.height = 56;
             NPC.damage = 140;
             NPC.defense = 80;
             NPC.lifeMax = 170000;
@@ -45,7 +45,6 @@ namespace FargowiltasSouls.Content.Bosses.Champions.Terra
             NPC.behindTiles = true;
             NPC.chaseable = false;
 
-            NPC.scale *= 1.25f;
             NPC.trapImmune = true;
             NPC.dontCountMe = true;
         }
@@ -118,9 +117,9 @@ namespace FargowiltasSouls.Content.Bosses.Champions.Terra
 
             NPC.Center = segment.oldPos[pastPos] + segment.Size / 2;
             NPC.rotation = NPC.SafeDirectionTo(segment.Center).ToRotation();
-            if (NPC.Distance(NPC.oldPos[pastPos - 1] + NPC.Size / 2) > 45 * NPC.scale)
+            if (NPC.Distance(NPC.oldPos[pastPos - 1] + NPC.Size / 2) > 45)
             {
-                NPC.oldPos[pastPos - 1] = NPC.position + Vector2.Normalize(NPC.oldPos[pastPos - 1] - NPC.position) * 45 * NPC.scale;
+                NPC.oldPos[pastPos - 1] = NPC.position + Vector2.Normalize(NPC.oldPos[pastPos - 1] - NPC.position) * 45;
             }
 
             NPC.timeLeft = segment.timeLeft;

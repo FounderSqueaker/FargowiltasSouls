@@ -31,7 +31,6 @@ namespace FargowiltasSouls.Content.Projectiles.JungleMimic
             Projectile.alpha = 255;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 15;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
         }
 
         public override bool PreAI()

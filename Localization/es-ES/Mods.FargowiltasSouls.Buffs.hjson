@@ -551,11 +551,6 @@ SolarFlareBuff: {
 	// Description: Mods.FargowiltasSouls.BuffDescription.SolarFlareBuff
 }
 
-SuperBleedBuff: {
-	// DisplayName: Blood Geyser
-	// Description: Mods.FargowiltasSouls.BuffDescription.SuperBleedBuff
-}
-
 CorruptingBuff: {
 	// DisplayName: Withering
 	// Description: You are withering

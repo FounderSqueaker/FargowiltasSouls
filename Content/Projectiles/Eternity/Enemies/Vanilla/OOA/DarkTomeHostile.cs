@@ -22,7 +22,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
         public override void SetStaticDefaults()
         {
             Main.projFrames[Type] = 8;
-            ProjectileID.Sets.TrailCacheLength[Type] = 8;
+            ProjectileID.Sets.TrailCacheLength[Type] = 16;
             ProjectileID.Sets.TrailingMode[Type] = 3;
         }
 
@@ -48,6 +48,8 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
             Projectile.timeLeft = 400;
             Projectile.hostile = true;
             Projectile.penetrate = -1;
+
+            Projectile.Opacity = 0f;
         }
 
         public override void OnSpawn(IEntitySource source)
@@ -57,6 +59,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
 
         public override void AI()
         {
+            Projectile.Opacity += 1f / 20;
             Timer++;
             Frame();
 
@@ -99,13 +102,9 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
                     Projectile.velocity = -0.5f * vel;
 
                 }
-                if (Timer > 1)
+                if (Timer > 20)
                 {
-                    Projectile.Opacity -= 0.05f;
-                    if (Projectile.Opacity <= 0)
-                    {
-                        Projectile.Kill();
-                    }
+                    Projectile.Kill();
                 }
             }
         }
@@ -154,15 +153,30 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
 
             SpriteEffects spriteEffects = Projectile.spriteDirection < 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
+            Main.spriteBatch.UseBlendState(BlendState.Additive);
+
             for (int k = Projectile.oldPos.Length - 1; k >= 0; k--)
             {
                 Vector2 drawPos = Projectile.oldPos[k] - Main.screenPosition + origin2 + new Vector2(0f, Projectile.gfxOffY);
-              Color color = Projectile.GetAlpha(lightColor) * ((Projectile.oldPos.Length - k) / ((float)Projectile.oldPos.Length * 2));
-               Main.EntitySpriteDraw(texture2D13, drawPos, rectangle, color, Projectile.rotation, origin2, Projectile.scale, spriteEffects, 0);
+                Color oldColor = Projectile.GetAlpha(lightColor) * ((Projectile.oldPos.Length - k) / ((float)Projectile.oldPos.Length * 2));
+                oldColor *= 2.5f;
+                Main.EntitySpriteDraw(texture2D13, drawPos, rectangle, oldColor, Projectile.rotation, origin2, Projectile.scale, spriteEffects, 0);
             }
+            Color color = Projectile.GetAlpha(lightColor);
+            Color glowColor = Projectile.GetAlpha(Color.Purple);
             if (Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height) && Projectile.Opacity > 0.7f)
-                Main.EntitySpriteDraw(texture2D13, Projectile.position - Main.screenPosition + origin2 + new Vector2(0f, Projectile.gfxOffY), new Microsoft.Xna.Framework.Rectangle?(rectangle), Color.Purple, Projectile.rotation, origin2, 1.2f * Projectile.scale, spriteEffects, 0);
-            Main.EntitySpriteDraw(texture2D13, Projectile.position - Main.screenPosition + origin2 + new Vector2(0f, Projectile.gfxOffY), new Microsoft.Xna.Framework.Rectangle?(rectangle), lightColor * Projectile.Opacity, Projectile.rotation, origin2, Projectile.scale, spriteEffects, 0);
+                color = glowColor;
+
+            Vector2 drawPosition = Projectile.position - Main.screenPosition + origin2 + new Vector2(0f, Projectile.gfxOffY);
+            for (int j = 0; j < 12; j++)
+            {
+                Vector2 afterimageOffset = (MathHelper.TwoPi * j / 12).ToRotationVector2() * 4f * Projectile.scale;
+
+                Main.EntitySpriteDraw(texture2D13, drawPosition + afterimageOffset, new Microsoft.Xna.Framework.Rectangle?(rectangle), Projectile.GetAlpha(glowColor), Projectile.rotation, origin2, Projectile.scale, spriteEffects, 0);
+            }
+            Main.spriteBatch.ResetToDefault();
+
+            Main.EntitySpriteDraw(texture2D13, drawPosition, new Microsoft.Xna.Framework.Rectangle?(rectangle), color, Projectile.rotation, origin2, Projectile.scale, spriteEffects, 0);
             return false;
         }
     }

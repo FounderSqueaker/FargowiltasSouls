@@ -205,6 +205,8 @@ namespace FargowiltasSouls.Core
     }
     internal class WillChampionSceneEffect : ChampionSceneEffect
     {
+        //public override int Music => ModLoader.TryGetMod("FargowiltasMusic", out Mod musicMod)
+        //        ? MusicLoader.GetMusicSlot(musicMod, (musicMod.Version >= Version.Parse("0.1.7.4")) ? "Assets/Music/WillChampion" : "Assets/Music/Champions") : MusicID.OtherworldlyBoss1;
         public override bool IsSceneEffectActive(Player player) => ModSceneUtils.TryFindBoss(this);
         public override float GetWeight(Player player) => 0.517f;
     }

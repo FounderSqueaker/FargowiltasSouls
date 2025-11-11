@@ -4,6 +4,7 @@ using FargowiltasSouls.Content.Items.Accessories.Forces;
 using FargowiltasSouls.Content.Items.Accessories.Souls;
 using FargowiltasSouls.Content.Items.Misc;
 using FargowiltasSouls.Core.AccessoryEffectSystem;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -38,7 +39,7 @@ namespace FargowiltasSouls.Core.Systems
             RecipeGroup.RegisterGroup("FargowiltasSouls:AnyBonesBanner", group);
 
             //cobalt
-            group = new RecipeGroup(() => ItemXOrY(ItemID.CobaltRepeater, ItemID.PalladiumRepeater), ItemID.CobaltRepeater, ItemID.PalladiumRepeater);
+            /*group = new RecipeGroup(() => ItemXOrY(ItemID.CobaltRepeater, ItemID.PalladiumRepeater), ItemID.CobaltRepeater, ItemID.PalladiumRepeater);
             RecipeGroup.RegisterGroup("FargowiltasSouls:AnyCobaltRepeater", group);
 
             //mythril
@@ -55,7 +56,7 @@ namespace FargowiltasSouls.Core.Systems
 
             //any adamantite
             group = new RecipeGroup(() => ItemXOrY(ItemID.AdamantiteBar, ItemID.TitaniumBar), ItemID.AdamantiteBar, ItemID.TitaniumBar);
-            RecipeGroup.RegisterGroup("FargowiltasSouls:AnyAdamantite", group);
+            RecipeGroup.RegisterGroup("FargowiltasSouls:AnyAdamantite", group);*/
 
             //shroomite head
             group = new RecipeGroup(() => AnyItem(ItemID.ShroomiteHelmet), ItemID.ShroomiteHelmet, ItemID.ShroomiteMask, ItemID.ShroomiteHeadgear);
@@ -108,6 +109,11 @@ namespace FargowiltasSouls.Core.Systems
             //colored husk
             group = new RecipeGroup(() => AnyItem("ColorHusk"), ItemID.VioletHusk, ItemID.CyanHusk, ItemID.RedHusk);
             RecipeGroup.RegisterGroup("FargowiltasSouls:AnyColoredHusk", group);
+
+            //jungle ench
+            //regrowth
+            group = new RecipeGroup(() => ItemXOrY(ItemID.StaffofRegrowth, ItemID.AcornAxe), ItemID.StaffofRegrowth, ItemID.AcornAxe);
+            RecipeGroup.RegisterGroup("FargowiltasSouls:AnyStaffofRegrowth", group);
 
             //snow ench
             //hood
@@ -296,7 +302,16 @@ namespace FargowiltasSouls.Core.Systems
             {
                 //disable shimmer decrafts
                 if (recipe.createItem.ModItem != null && (recipe.createItem.ModItem is BaseEnchant || recipe.createItem.ModItem is BaseForce || recipe.createItem.ModItem is BaseSoul))
+                {
                     recipe.DisableDecraft();
+                    foreach (var item in recipe.requiredItem)
+                        FargoSoulsSets.Items.MaterialOfImportantItem[item.type] = recipe.createItem.type;
+                    foreach (var i in recipe.acceptedGroups)
+                        foreach (var itemType in RecipeGroup.recipeGroups[i].ValidItems)
+                            FargoSoulsSets.Items.MaterialOfImportantItem[itemType] = recipe.createItem.type;
+                }
+                    
+
 
                 // disable pre-evil meteorite recipes
                 /*

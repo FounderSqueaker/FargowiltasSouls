@@ -28,18 +28,6 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Desert
             }
         }
 
-        public override void OnFirstTick(NPC npc)
-        {
-            base.OnFirstTick(npc);
-
-            if (Main.rand.NextBool(4))
-            {
-                int type = Main.rand.Next(NPCID.SandShark, NPCID.SandsharkHallow + 1);
-                if (type != npc.type)
-                    npc.Transform(type);
-            }
-        }
-
         public override void AI(NPC npc)
         {
             base.AI(npc);

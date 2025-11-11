@@ -87,7 +87,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Souls
             .AddIngredient(ItemID.FireGauntlet)
             .AddIngredient(ItemID.YoyoBag)
             .AddRecipeGroup("FargowiltasSouls:ScourgeoftheCorruptorOrVampireKnives")
-            .AddIngredient(ItemID.TheEyeOfCthulhu)
+            .AddIngredient(ItemID.Flairon)
             .AddIngredient(ModContent.ItemType<AbomEnergy>(), 10)
             .AddTile(ModContent.Find<ModTile>("Fargowiltas", "CrucibleCosmosSheet"))
             .Register();

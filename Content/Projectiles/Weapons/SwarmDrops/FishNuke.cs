@@ -25,7 +25,7 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.SwarmDrops
         public override void SetDefaults()
         {
             Projectile.width = 52;
-            Projectile.height = 76;
+            Projectile.height = 52;
             Projectile.aiStyle = -1;
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Ranged;
@@ -36,7 +36,7 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.SwarmDrops
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;
             //AIType = ProjectileID.Bullet;
-            //Projectile.scale = 2f;
+            Projectile.scale = 2f;
         }
 
         public override void AI()
@@ -65,7 +65,7 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.SwarmDrops
                 if (++Projectile.localAI[1] > 12f && Projectile.ai[0] != -2)
                 {
                     Projectile.localAI[1] = 0f;
-                    Projectile.ai[0] = FargoSoulsUtil.FindClosestHostileNPC(Projectile.Center, 500, true);
+                    Projectile.ai[0] = FargoSoulsUtil.FindClosestHostileNPC(Projectile.Center, 16 * 10 + Projectile.width, true);
                     Projectile.netUpdate = true;
                 }
             }
@@ -89,6 +89,21 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.SwarmDrops
                 Projectile.Resize(200, 200);
             }
         }
+
+        /*public override bool? CanHitNPC(NPC target)
+        {
+            if (!target.noTileCollide && !Collision.CanHitLine(Projectile.Center, 0, 0, target.Center, 0, 0))
+                return false;
+
+            return base.CanHitNPC(target);
+        }
+
+        epublic override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
+        {
+            width /= 2;
+            height /= 2;
+            return base.TileCollideStyle(ref width, ref height, ref fallThrough, ref hitboxCenterFrac);
+        }*/
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {

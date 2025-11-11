@@ -26,23 +26,24 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
         public bool Jumped;
         public bool AnchorSlam;
         public bool ShortHopping;
+        public bool Wet;
 
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(JumpTimer);
-            binaryWriter.Write7BitEncodedInt(AnchorSlamStartup);
-            binaryWriter.Write7BitEncodedInt(ShortHopAerialTimer);
+            binaryWriter.Write(JumpTimer);
+            binaryWriter.Write(AnchorSlamStartup);
+            binaryWriter.Write(ShortHopAerialTimer);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            JumpTimer = binaryReader.Read7BitEncodedInt();
-            AnchorSlamStartup = binaryReader.Read7BitEncodedInt();
-            ShortHopAerialTimer = binaryReader.Read7BitEncodedInt();
+            JumpTimer = binaryReader.ReadInt32();
+            AnchorSlamStartup = binaryReader.ReadInt32();
+            ShortHopAerialTimer = binaryReader.ReadInt32();
         }
 
         public override void OnFirstTick(NPC npc)
@@ -69,16 +70,27 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
             bool result = base.SafePreAI(npc);
 
             const float gravity = 0.4f;
+            DelegateMethods.v3_1 = new Vector3(0.8f, 0f, 0);
+            Utils.PlotTileLine(npc.Center, npc.Center + npc.velocity, 10, DelegateMethods.CastLight);
             //Main.NewText($"{npc.ai[0]}, {npc.ai[1]}, {npc.ai[2]}, {npc.ai[3]}, ");
 
-            if (npc.wet && npc.HasPlayerTarget) // water ai
+            if (npc.wet) // water ai
             {
                 npc.ai[0] = 3;
                 Jumped = AnchorSlam = ShortHopping = false;
                 JumpTimer = AnchorSlamStartup = ShortHopAerialTimer = 0;
+                Wet = true;
             }
             else // regular ai
             {
+                if (Wet)
+                {
+                    float spd = Math.Clamp(3, -npc.velocity.Y, 10);
+                    npc.velocity = new(0, -spd);
+                    Wet = false;
+                    return base.SafePreAI(npc);
+                }
+
                 if (JumpTimer > 120) //initiate jump
                 {
                     JumpTimer = 0;
@@ -125,7 +137,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
                     if (npc.Center.X > Main.player[t].Center.X - 16 && npc.Center.X < Main.player[t].Center.X + 16 && !AnchorSlam && Collision.CanHitLine(npc.Center, 0, 0, Main.player[t].Center, 0, 0))
                     {
                         AnchorSlam = true;
-                        AnchorSlamStartup = 40;
+                        AnchorSlamStartup = 10;
                         SoundEngine.PlaySound(SoundID.DD2_WitherBeastHurt with { Pitch = 0.5f }, npc.Center);
                     }
                     if (AnchorSlam)
@@ -134,14 +146,28 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
                         {
                             npc.ai[0] = 1;
                             npc.ai[1]++;
-                            npc.velocity *= 0.01f;
+                            if (AnchorSlamStartup > 9)
+                                npc.velocity.Y *= 0.01f;
+                            npc.velocity.X *= 0.01f;
+                            npc.velocity.Y -= 1.5f;
                             AnchorSlamStartup--;
                         }
                         else //initiate 
                         {
                             npc.noTileCollide = false;
-                            npc.velocity.Y += 2;
-                            npc.MaxFallSpeedMultiplier *= 2f;
+                            if (npc.velocity.Y == 0)
+                                npc.ai[1] = 0;
+                            else
+                            {
+                                if (npc.velocity.Y < 20)
+                                    npc.velocity.Y += 0.75f;
+                                else
+                                    npc.velocity.Y = 20;
+                                npc.noGravity = true;
+                                npc.MaxFallSpeedMultiplier *= 1f;
+                                npc.ai[1]++;
+                            }
+                                
                         }
                     }
                     JumpTimer = 0;
@@ -200,12 +226,18 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.BloodMoo
                         AnchorSlam = false;
                     }
                     npc.ai[0] = 0;
+                    npc.ai[1] = 0;
                     npc.MaxFallSpeedMultiplier *= 1;
                 }
             }
             return result;
         }
-
+        public override bool? CanFallThroughPlatforms(NPC npc)
+        {
+            if (AnchorSlam && npc.HasPlayerTarget && Main.player[npc.target] is Player player && (player.Top.Y > npc.Bottom.Y + 30))
+                return true;
+            return base.CanFallThroughPlatforms(npc);
+        }
         public override void OnHitPlayer(NPC npc, Player target, Player.HurtInfo hurtInfo)
         {
             base.OnHitPlayer(npc, target, hurtInfo);

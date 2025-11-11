@@ -21,12 +21,12 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.MechanicalBosses
 {
     public class DestroyerScanTelegraph : ModProjectile
     {
-        public ref float Timer => ref Projectile.ai[0];
+        public float Timer;
+        public ref float Radius => ref Projectile.ai[0];
 
         public ref float ArcAngle => ref Projectile.ai[1];
 
-        public ref float Width => ref Projectile.ai[2];
-        public ref float maxTime => ref Projectile.localAI[2];
+        public ref float MaxTime => ref Projectile.ai[2];
 
         // Can be anything.
         public override string Texture => "Terraria/Images/Extra_" + ExtrasID.MartianProbeScanWave;
@@ -45,21 +45,21 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.MechanicalBosses
 
         public override void SendExtraAI(BinaryWriter writer)
         {
-            writer.Write7BitEncodedInt(npc);
+            writer.Write(npc);
             writer.Write(Projectile.localAI[1]);
             writer.Write(Projectile.localAI[2]);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
-            npc = reader.Read7BitEncodedInt();
+            npc = reader.ReadInt32();
             Projectile.localAI[1] = reader.ReadSingle();
             Projectile.localAI[2] = reader.ReadSingle();
         }
         int npc;
         public override void OnSpawn(IEntitySource source)
         {
-            if (source is EntitySource_Parent parent && parent.Entity is NPC parentNpc && parentNpc.type == NPCID.TheDestroyer)
+            if (source is EntitySource_Parent parent && parent.Entity is NPC parentNpc && (parentNpc.type == NPCID.TheDestroyer || parentNpc.type == NPCID.Probe))
             {
                 npc = parentNpc.whoAmI;
                 Projectile.velocity = parentNpc.velocity;
@@ -68,14 +68,21 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.MechanicalBosses
 
         public override void AI()
         {
-            if (maxTime == 0)
-                maxTime = Projectile.timeLeft;
+            if (MaxTime == 0)
+                MaxTime = Projectile.timeLeft;
             NPC parent = FargoSoulsUtil.NPCExists(npc);
             if (parent != null)
             {
                 Projectile.Center = parent.Center;
                 Projectile.velocity = parent.velocity;
                 Projectile.rotation = Projectile.velocity.ToRotation();
+                if (parent.type == NPCID.Probe)
+                {
+                    Projectile.rotation = (parent.rotation.ToRotationVector2() * parent.spriteDirection).ToRotation();
+                    if (parent.dontTakeDamage)
+                        Projectile.Kill();
+                }
+                    
             }
             Timer++;
         }
@@ -91,8 +98,8 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.MechanicalBosses
                 color = Color.Red;
 
             Vector2 pos = Projectile.Center;
-            float timeLerp = MathF.Pow(Projectile.timeLeft / maxTime, 0.5f);
-            float radius = 500 + 500 * timeLerp;
+            float timeLerp = MathF.Pow(Projectile.timeLeft / MaxTime, 0.5f);
+            float radius = Radius + Radius * timeLerp;
             float arcAngle = Projectile.rotation;
             float arcWidth = ArcAngle * timeLerp;
 

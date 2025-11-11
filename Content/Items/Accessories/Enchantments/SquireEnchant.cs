@@ -91,74 +91,6 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
                     accelBoost = 1;
                     speedBoost = 1;
                 }
-                /*if (player.HasEffect<ValhallaDashEffect>())
-                {
-
-                    if (modPlayer.ValhallaDashCD > 0)
-                    {
-                        modPlayer.ValhallaDashCD--;
-                    }
-
-                    if (modPlayer.ValhallaDashCD == 0)
-                    {
-                        if (Main.myPlayer == player.whoAmI)
-                        {
-                            if (Fargowiltas.Fargowiltas.DashKey.Current)
-                            {
-                                if (player.controlDown)
-                                {
-                                    ValhallaDash(player, true, 1);
-                                }
-                                //up
-                                else if (player.controlUp)
-                                {
-                                    ValhallaDash(player, true, -1);
-                                }
-                                if (player.controlRight)
-                                {
-                                    ValhallaDash(player, false, 1);
-                                }
-                                else if (player.controlLeft)
-                                {
-                                    ValhallaDash(player, false, -1);
-                                }
-                            }
-                            else if (!ModContent.GetInstance<FargoClientConfig>().DoubleTapDashDisabled)
-                            {
-                                //mount dash
-                                if ((player.controlDown && (player.releaseDown)))
-                                {
-                                    if (player.doubleTapCardinalTimer[0] > 0 && player.doubleTapCardinalTimer[0] != 15)
-                                    {
-                                        ValhallaDash(player, true, 1);
-                                    }
-                                }
-                                //up
-                                else if ((player.controlUp && player.releaseUp))
-                                {
-                                    if (player.doubleTapCardinalTimer[1] > 0 && player.doubleTapCardinalTimer[1] != 15)
-                                    {
-                                        ValhallaDash(player, true, -1);
-                                    }
-                                }
-                                if (player.controlRight && player.releaseRight)
-                                {
-                                    if (player.doubleTapCardinalTimer[2] > 0 && player.doubleTapCardinalTimer[2] != 15)
-                                    {
-                                        ValhallaDash(player, false, 1);
-                                    }
-                                }
-                                else if (player.controlLeft && player.releaseLeft)
-                                {
-                                    if (player.doubleTapCardinalTimer[3] > 0 && player.doubleTapCardinalTimer[3] != 15)
-                                    {
-                                        ValhallaDash(player, false, -1);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }*/
 
                 if (player.HasEffect<SquireMountJump>())
                 {
@@ -171,73 +103,8 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
                 mount._data.fallDamage = 0;
                 player.noFallDmg = true;
 
-                /*
-                if (modPlayer.IsDashingTimer == 0)
-                {
-                    //mount._data.usesHover = modPlayer.BaseSquireMountData.usesHover;
-                }
-                */
-
-
                 //Main.NewText(mount.DashSpeed);
             }
-        }
-
-        public static void ValhallaDash(Player player, bool vertical, int direction)
-        {
-            /*//horizontal
-            if (!vertical)
-            {
-                player.FargoSouls().MonkDashing = 10;
-                player.velocity.X = 22 * (float)direction;
-            }
-            else
-            {
-                float multi;
-
-                //down
-                if (direction == 1)
-                {
-                    multi = 32;
-                }
-                //up
-                else
-                {
-                    multi = 18;
-                }
-
-                player.FargoSouls().MonkDashing = -10;
-                player.velocity.Y = multi * (float)direction;
-            }
-
-            player.FargoSouls().ValhallaDashCD = 30;
-            player.dashDelay = 60;
-            if (player.FargoSouls().IsDashingTimer < 10)
-                player.FargoSouls().IsDashingTimer = 10;
-
-            if (Main.netMode == NetmodeID.MultiplayerClient)
-                NetMessage.SendData(MessageID.PlayerControls, number: player.whoAmI);
-
-            //dash dust n stuff
-            for (int num17 = 0; num17 < 20; num17++)
-            {
-                int num18 = Dust.NewDust(new Vector2(player.position.X, player.position.Y), player.width, player.height, DustID.Smoke, 0f, 0f, 100, default, 2f);
-                Dust expr_CDB_cp_0 = Main.dust[num18];
-                expr_CDB_cp_0.position.X += Main.rand.Next(-5, 6);
-                Dust expr_D02_cp_0 = Main.dust[num18];
-                expr_D02_cp_0.position.Y += Main.rand.Next(-5, 6);
-                Main.dust[num18].velocity *= 0.2f;
-                Main.dust[num18].scale *= 1f + Main.rand.Next(20) * 0.01f;
-                //Main.dust[num18].shader = GameShaders.Armor.GetSecondaryShader(player.cShoe, this);
-            }
-            int num19 = Gore.NewGore(player.GetSource_FromThis(), new Vector2(player.position.X + player.width / 2 - 24f, player.position.Y + player.height / 2 - 34f), default, Main.rand.Next(61, 64), 1f);
-            Main.gore[num19].velocity.X = Main.rand.Next(-50, 51) * 0.01f;
-            Main.gore[num19].velocity.Y = Main.rand.Next(-50, 51) * 0.01f;
-            Main.gore[num19].velocity *= 0.4f;
-            num19 = Gore.NewGore(player.GetSource_FromThis(), new Vector2(player.position.X + player.width / 2 - 24f, player.position.Y + player.height / 2 - 14f), default, Main.rand.Next(61, 64), 1f);
-            Main.gore[num19].velocity.X = Main.rand.Next(-50, 51) * 0.01f;
-            Main.gore[num19].velocity.Y = Main.rand.Next(-50, 51) * 0.01f;
-            Main.gore[num19].velocity *= 0.4f;*/
         }
 
         public static void ResetMountStats(FargoSoulsPlayer modPlayer)

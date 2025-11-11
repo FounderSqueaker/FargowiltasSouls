@@ -30,7 +30,6 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.FinalUpgrades
             Projectile.extraUpdates = 1;
             Projectile.FargoSouls().CanSplit = false;
             Projectile.FargoSouls().TimeFreezeImmune = true;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
             Projectile.FargoSouls().DeletionImmuneRank = 2;
         }
 

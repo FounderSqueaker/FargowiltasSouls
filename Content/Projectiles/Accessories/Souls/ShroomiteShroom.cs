@@ -24,7 +24,6 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.Souls
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 20;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
             Projectile.penetrate = 4;
             Projectile.ArmorPenetration = 20;
         }

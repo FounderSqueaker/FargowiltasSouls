@@ -97,7 +97,7 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.ChallengerItems
                     Projectile.maxPenetrate = 1;
                     vectorToIdlePosition = Main.MouseWorld - Projectile.Center;
                     speed = 18f;
-                    SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, player.Center);
+                    SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact with { Volume = 0.4f, MaxInstances = 10 }, player.Center);
                     Projectile.timeLeft = 60;
                     homingonMouse = true;
                     home = false;

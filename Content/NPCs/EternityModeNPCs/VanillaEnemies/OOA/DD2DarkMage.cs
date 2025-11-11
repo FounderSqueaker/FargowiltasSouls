@@ -47,22 +47,22 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
-            binaryWriter.Write7BitEncodedInt(AnimState);
-            binaryWriter.Write7BitEncodedInt(AnimStartTime);
-            binaryWriter.Write7BitEncodedInt(State);
-            binaryWriter.Write7BitEncodedInt(Timer);
-            binaryWriter.Write7BitEncodedInt(PreviousState);
+            binaryWriter.Write(AnimState);
+            binaryWriter.Write(AnimStartTime);
+            binaryWriter.Write(State);
+            binaryWriter.Write(Timer);
+            binaryWriter.Write(PreviousState);
             binaryWriter.Write(NormalAI);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-            AnimState = binaryReader.Read7BitEncodedInt();
-            AnimStartTime = binaryReader.Read7BitEncodedInt();
-            State = binaryReader.Read7BitEncodedInt();
-            Timer = binaryReader.Read7BitEncodedInt();
-            PreviousState = binaryReader.Read7BitEncodedInt();
+            AnimState = binaryReader.ReadInt32();
+            AnimStartTime = binaryReader.ReadInt32();
+            State = binaryReader.ReadInt32();
+            Timer = binaryReader.ReadInt32();
+            PreviousState = binaryReader.ReadInt32();
             NormalAI = binaryReader.ReadBoolean();
         }
 
@@ -217,21 +217,23 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
         public void ChooseAttack(NPC npc)
         {
             ResetState(npc);
-            List<States> states = [];
-            for (int i = 1; i <= 4; i++)
+            if (FargoSoulsUtil.HostCheck)
             {
-                if (PreviousState != i)
+                List<States> states = [];
+                for (int i = 1; i <= 4; i++)
                 {
-                    states.Add((States)i);
+                    if (PreviousState != i)
+                    {
+                        states.Add((States)i);
+                    }
                 }
+                State = (int)Main.rand.NextFromCollection(states);
             }
-            State = (int) Main.rand.NextFromCollection(states);
             NetSync(npc);
         }
         public void Movement(NPC npc)
         {
             npc.velocity = Vector2.UnitY;
-            Vector2 vel = Vector2.Zero;
             int crystal = NPC.FindFirstNPC(NPCID.DD2EterniaCrystal);
             if (crystal != -1)
             {
@@ -249,6 +251,10 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                     return;
                 npc.velocity += Vector2.UnitX * npc.direction;
             }
+
+            // stop him getting stuck on ledges
+            if (Collision.SolidCollision(npc.position + Vector2.UnitX * npc.velocity.X, npc.width, npc.height))
+                npc.velocity -= 3 * Vector2.UnitY;
         }
         #endregion
         #region Animation
@@ -335,7 +341,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
 
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            if (!NormalAI)
+            if (!NormalAI && !npc.IsABestiaryIconDummy)
                 Animate(npc);
             return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
         }

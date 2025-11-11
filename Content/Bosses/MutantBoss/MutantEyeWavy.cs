@@ -8,10 +8,6 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
 {
     public class MutantEyeWavy : MutantEye
     {
-        public override string Texture => FargoSoulsUtil.AprilFools ?
-            "FargowiltasSouls/Content/Bosses/MutantBoss/MutantEye_April" :
-            "Terraria/Images/Projectile_452";
-
         public override int TrailAdditive => 150;
 
         public override void SetStaticDefaults()
@@ -25,7 +21,7 @@ namespace FargowiltasSouls.Content.Bosses.MutantBoss
             base.SetDefaults();
             Projectile.timeLeft = 180;
             Projectile.FargoSouls().TimeFreezeImmune = true;
-            CooldownSlot = 0;
+            CooldownSlot = ImmunityCooldownID.TileContactDamage;
         }
 
         private float Amplitude => Projectile.ai[0];

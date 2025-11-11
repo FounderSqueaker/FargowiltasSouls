@@ -4,11 +4,11 @@ using FargowiltasSouls.Common.Utilities;
 using FargowiltasSouls.Content.BossBars;
 using FargowiltasSouls.Content.Buffs.Eternity;
 using FargowiltasSouls.Content.Items.Accessories;
-using FargowiltasSouls.Content.Items.Armor.Masks;
 using FargowiltasSouls.Content.Items.BossBags;
 using FargowiltasSouls.Content.Items.Placables.Relics;
 using FargowiltasSouls.Content.Items.Placables.Trophies;
 using FargowiltasSouls.Content.Items.Summons;
+using FargowiltasSouls.Content.Items.Vanity.Masks;
 using FargowiltasSouls.Content.Items.Weapons.Challengers;
 using FargowiltasSouls.Core.Systems;
 using Luminance.Core.Graphics;
@@ -302,8 +302,10 @@ namespace FargowiltasSouls.Content.Bosses.TrojanSquirrel
         public Rectangle LegFrame = new Rectangle(0, 0, LegTexture.Width() / 5, LegTexture.Height() / LegFrameMax);
         public const int LegFrameMax = 7;
         public float LegFramecounter;
+        public int AnimationLengthOverride;
 
         private bool spawned;
+        private bool introJump;
 
         public override void SendExtraAI(BinaryWriter writer)
         {
@@ -485,6 +487,7 @@ namespace FargowiltasSouls.Content.Bosses.TrojanSquirrel
             if (!spawned)
             {
                 spawned = true;
+                introJump = true;
 
                 NPC.TargetClosest(false);
 
@@ -604,9 +607,9 @@ namespace FargowiltasSouls.Content.Bosses.TrojanSquirrel
                         {
                             float increment = 1f;
                             if (head == null)
-                                increment += 0.5f;
+                                increment += 0.75f;
                             if (arms == null)
-                                increment += 0.5f;
+                                increment += 0.75f;
                             if (WorldSavingSystem.MasochistModeReal)
                                 increment += 1f;
                             if (NPC.dontTakeDamage)
@@ -666,7 +669,11 @@ namespace FargowiltasSouls.Content.Bosses.TrojanSquirrel
                         NPC.velocity.X = 0;
 
                         if (LegFrameType == 1)
+                        {
                             LegFrameType = 2;
+                            LegFrame.Y = 0;
+                        }
+                            
 
                         TileCollision(player.Bottom.Y - 1 > NPC.Bottom.Y, Math.Abs(player.Center.X - NPC.Center.X) < NPC.width / 2 && NPC.Bottom.Y < player.Bottom.Y - 1);
 
@@ -674,14 +681,18 @@ namespace FargowiltasSouls.Content.Bosses.TrojanSquirrel
                         if (WorldSavingSystem.EternityMode)
                         {
                             if (head == null)
-                                threshold -= 20;
+                                threshold -= WorldSavingSystem.MasochistModeReal ? 15 : 10;
                             if (arms == null)
-                                threshold -= 20;
+                                threshold -= WorldSavingSystem.MasochistModeReal ? 15 : 10;
                             if (head == null && arms == null)
-                                threshold -= 30;
+                                threshold -= WorldSavingSystem.MasochistModeReal ? 35 : 35;
                         }
                         if (WorldSavingSystem.MasochistModeReal || NPC.localAI[3] >= 2)
                             threshold -= 20;
+
+                        AnimationLengthOverride = threshold;
+                        AnimationLengthOverride -= 45;
+                        AnimationLengthOverride = Math.Max(15, AnimationLengthOverride);
 
                         if (NPC.ai[3] != 0f) //telegraphing jump
                         {
@@ -691,12 +702,18 @@ namespace FargowiltasSouls.Content.Bosses.TrojanSquirrel
                             NPC.position.X += shake;
 
                             if (LegFrameType == 3) // run frame; incorrect, can happen on transition sometimes
+                            {
                                 LegFrameType = 2;
+                                LegFrame.Y = 0;
+                            }
                         }
                         else // telegraphing run
                         {
                             if (LegFrameType == 4) // jump frame; incorrect
+                            {
                                 LegFrameType = 2;
+                                LegFrame.Y = 0;
+                            }
                         }
 
                         if (++NPC.localAI[0] > threshold)
@@ -731,6 +748,13 @@ namespace FargowiltasSouls.Content.Bosses.TrojanSquirrel
                             if (LegFrameType == 1)
                                 LegFrameType = 2;
                             Vector2 distance = player.Top - NPC.Bottom;
+
+                            if (introJump)
+                            {
+                                distance.X /= 2;
+                                introJump = false;
+                            }
+                                
 
                             if (WorldSavingSystem.EternityMode && arms == null)
                             {
@@ -1082,6 +1106,10 @@ namespace FargowiltasSouls.Content.Bosses.TrojanSquirrel
             //Main.NewText("framey: " + LegFrame.Y);
             //Main.NewText("framex: " + LegFrame.X);
             //140 is the width of each X Frame.
+
+            if (Main.netMode == NetmodeID.Server) // mp
+                return;
+
             NPC.frame.X = 0;
             if (++NPC.frameCounter >= 7)
             {
@@ -1147,12 +1175,16 @@ namespace FargowiltasSouls.Content.Bosses.TrojanSquirrel
                 //Preparing to either jump, or run.
                 case 2:
                     {
+                        int animLength = AnimationLengthOverride;
+                        int framesPerFrame = 3;
+                        if (animLength > 0)
+                            framesPerFrame = (int)(animLength / 5f);
                         bool PreparingJump = NPC.ai[0] == 2;
                         bool BeforeJump = (NPC.ai[0] == 1 && NPC.ai[3] != 0f);
                         bool PreparingRun = NPC.ai[0] == 0 || (NPC.ai[0] == 1 && NPC.ai[3] == 0f);
 
                         LegFrame.X = 0;
-                        if (++LegFramecounter >= 3)
+                        if (++LegFramecounter >= framesPerFrame)
                         {
                             LegFramecounter = 0;
 
@@ -1342,7 +1374,7 @@ namespace FargowiltasSouls.Content.Bosses.TrojanSquirrel
         {
             if (NPC.life <= 0)
             {
-                for (int i = 3; i <= 7; i++)
+                for (int i = 2; i <= 7; i++)
                 {
                     Vector2 pos = NPC.position + new Vector2(Main.rand.NextFloat(NPC.width), Main.rand.NextFloat(NPC.height));
                     if (!Main.dedServ)
@@ -1409,6 +1441,28 @@ namespace FargowiltasSouls.Content.Bosses.TrojanSquirrel
             npcLoot.Add(ItemDropRule.BossBag(ModContent.ItemType<TrojanSquirrelBag>()));
 
             npcLoot.Add(ItemDropRule.MasterModeCommonDrop(ModContent.ItemType<TrojanSquirrelRelic>()));
+        }
+
+        public static int HeadIconIndex;
+
+        public static int bodyIconIndex;
+
+        public static void LoadHeadIcon()
+        {
+            string BodyPath = "FargowiltasSouls/Content/Bosses/TrojanSquirrel/TrojanSquirrel_Body_Boss";
+            string HeadPath = "FargowiltasSouls/Content/Bosses/TrojanSquirrel/TrojanSquirrel_Head_Boss";
+            FargowiltasSouls.Instance.AddBossHeadTexture(BodyPath);
+            bodyIconIndex = ModContent.GetModBossHeadSlot(BodyPath);
+            HeadIconIndex = ModContent.GetModBossHeadSlot(HeadPath);
+        }
+
+        public override void BossHeadSlot(ref int index)
+        {
+            if (head == null)
+                index = bodyIconIndex;
+            else
+                index = HeadIconIndex;
+            base.BossHeadSlot(ref index);
         }
 
         public override void BossHeadSpriteEffects(ref SpriteEffects spriteEffects)

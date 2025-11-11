@@ -21,14 +21,6 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories
             FargowiltasSouls.MutantMod.Call("LowRenderProj", Projectile);
         }
 
-        bool oil;
-
-        public override void OnSpawn(IEntitySource source)
-        {
-            if (source.Context == "SlimyShield")
-                oil = true;
-        }
-
         public override void AI()
         {
             int dust = Dust.NewDust(Projectile.Center, Projectile.width, Projectile.height, DustID.BlueTorch, Projectile.velocity.X * 0.2f,

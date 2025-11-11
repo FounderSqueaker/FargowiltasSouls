@@ -26,8 +26,6 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
             Item.value = 20000;
         }
 
-        public override void UpdateInventory(Player player) => player.AddEffect<CactusPassiveEffect>(Item);
-        public override void UpdateVanity(Player player) => player.AddEffect<CactusPassiveEffect>(Item);
         public override void UpdateAccessory(Player player, bool hideVisual)
         {
             player.AddEffect<CactusEffect>(Item);
@@ -91,36 +89,20 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
         public static int BaseDamage(Player player) => FargoSoulsUtil.HighestDamageTypeScaling(player, player.FargoSouls().ForceEffect<CactusEnchant>() ? 40 : 16);
         private static void CactusSpray(Player player, Vector2 position)
         {
-            int numNeedles = 8;
-            int rangemult = 1;
-            if (player.FargoSouls().ForceEffect<CactusEnchant>())
-            {
-                numNeedles = 16;
-                rangemult = 2;
-            }
-
+            int numNeedles = player.FargoSouls().ForceEffect<CactusEnchant>() ? Main.rand.Next(10, 17) : Main.rand.Next(5, 9);
+            int range = player.FargoSouls().ForceEffect<CactusEnchant>() ? 8 : 4;
+            float rngrot = Main.rand.NextFloat(0, MathHelper.TwoPi);
             for (int i = 0; i < numNeedles; i++)
             {
-                int spread = (int)MathHelper.Lerp(0.9f, 4.5f, i);
-                int p = Projectile.NewProjectile(player.GetSource_EffectItem<CactusEffect>(), position, Vector2.UnitX.RotatedBy(spread + Main.rand.NextFloat(-0.2f, 0.2f)) * (4 + Main.rand.NextFloat(-0.5f, 0.5f)) * rangemult, ModContent.ProjectileType<CactusNeedle>(), BaseDamage(player), 5f);
-                if (p != Main.maxProjectiles)
-                {
-                    Projectile proj = Main.projectile[p];
-                    if (proj != null && proj.active)
-                    {
-                        proj.FargoSouls().CanSplit = false;
-
-                        proj.ai[0] = 1; //these needles can inflict enemies with needled
-                    }
-
-                }
+                Vector2 vel = Vector2.UnitX.RotatedBy((MathHelper.TwoPi / numNeedles * i) + Main.rand.NextFloat(-0.1f, 0.1f)).RotatedBy(rngrot) * (range + Main.rand.NextFloat(-0.5f, 0.5f));
+                Projectile.NewProjectile(player.GetSource_EffectItem<CactusEffect>(), position, vel, ModContent.ProjectileType<CactusNeedle>(), BaseDamage(player), 5f, ai0: 1);
             }
         }
     }
 
     public class CactusPassiveEffect : AccessoryEffect
     {
-        // Gives player immunity to some cactus hazards like rolling cactus tile damage, DST cactus damage or cactus mimic aggro
-        public override Header ToggleHeader => null;
+        public override Header ToggleHeader => Header.GetHeader<LifeHeader>();
+        public override int ToggleItemType => ModContent.ItemType<CactusEnchant>();
     }
 }

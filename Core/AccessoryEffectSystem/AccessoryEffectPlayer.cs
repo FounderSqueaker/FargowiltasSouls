@@ -19,6 +19,7 @@ namespace FargowiltasSouls.Core.AccessoryEffectSystem
         public bool[] DeactivatedEffects = [];
         public bool[] EquippedEffects = [];
         public Item[] EffectItems = [];
+        public float[] Cooldowns = [];
 
         private static readonly Dictionary<Expression<Func<AccessoryEffect, Delegate>>, List<AccessoryEffect>> Hooks = [];
 
@@ -39,6 +40,7 @@ namespace FargowiltasSouls.Core.AccessoryEffectSystem
             DeactivatedEffects = new bool[effectCount];
             EquippedEffects = new bool[effectCount];
             EffectItems = new Item[effectCount];
+            Cooldowns = new float[effectCount];
         }
         #region Overrides
 
@@ -187,7 +189,7 @@ namespace FargowiltasSouls.Core.AccessoryEffectSystem
         private static List<AccessoryEffect> HookOnHitNPCWithProj = AddHook<Action<Player, Projectile, NPC, NPC.HitInfo, int>>(p => p.OnHitNPCWithProj);
         public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
         {
-            if (target.type == NPCID.TargetDummy || target.friendly)
+            if (!target.Hostile())
                 return;
 
             foreach (AccessoryEffect effect in HookOnHitNPCWithProj)
@@ -205,7 +207,7 @@ namespace FargowiltasSouls.Core.AccessoryEffectSystem
         private static List<AccessoryEffect> HookOnHitNPCWithItem = AddHook<Action<Player, Item, NPC, NPC.HitInfo, int>>(p => p.OnHitNPCWithItem);
         public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
         {
-            if (target.type == NPCID.TargetDummy || target.friendly)
+            if (!target.Hostile())
                 return;
 
             foreach (AccessoryEffect effect in HookOnHitNPCWithItem)

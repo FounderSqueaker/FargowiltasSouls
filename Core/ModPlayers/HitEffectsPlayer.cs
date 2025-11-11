@@ -167,7 +167,7 @@ namespace FargowiltasSouls.Core.ModPlayers
 
         public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)/* tModPorter If you don't need the Projectile, consider using OnHitNPC instead */
         {
-            if (target.type == NPCID.TargetDummy || target.friendly)
+            if (!target.Hostile())
                 return;
 
             //if (proj.minion)// && proj.type != ModContent.ProjectileType<CelestialRuneAncientVision>() && proj.type != ModContent.ProjectileType<SpookyScythe>())
@@ -202,7 +202,7 @@ namespace FargowiltasSouls.Core.ModPlayers
             if (StyxSet)
             {
                 StyxMeter += (int)(hitInfo.Damage * StyxCrown.StyxChargeMultiplier(Player, StyxCrown.ChargeContext.DealDamage));
-                if (StyxTimer <= 0 && !target.friendly && target.lifeMax > 5 && target.type != NPCID.TargetDummy)
+                if (StyxTimer <= 0 && target.Hostile())
                     StyxTimer = 60;
             }
 
@@ -291,7 +291,7 @@ namespace FargowiltasSouls.Core.ModPlayers
 
         public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
         {
-            if (target.type == NPCID.TargetDummy || target.friendly)
+            if (!target.Hostile())
                 return;
 
             OnHitNPCEither(target, hit, item.DamageType, item: item);
@@ -633,11 +633,11 @@ namespace FargowiltasSouls.Core.ModPlayers
 
             if (Main.myPlayer == Player.whoAmI)
             {
-                if (WorldSavingSystem.MasochistModeReal && FargoSoulsUtil.BossIsAlive(ref EModeGlobalNPC.mutantBoss, ModContent.NPCType<MutantBoss>()) && EModeGlobalNPC.mutantBoss.IsWithinBounds(Main.maxNPCs))
+                if (WorldSavingSystem.MasochistModeReal && Main.getGoodWorld && FargoSoulsUtil.BossIsAlive(ref EModeGlobalNPC.mutantBoss, ModContent.NPCType<MutantBoss>()) && EModeGlobalNPC.mutantBoss.IsWithinBounds(Main.maxNPCs))
                 {
                     if (!Player.HasBuff(ModContent.BuffType<TimeFrozenBuff>()))
                     {
-                        The22Incident += Main.getGoodWorld ? 2 : 1;
+                        The22Incident += 1;
                         Rectangle rect = new Rectangle((int)Player.Center.X - 111, (int)Player.Center.Y, 222, 222);
                         for (int i = 0; i < The22Incident; i++)
                             CombatText.NewText(rect, Color.DarkOrange, The22Incident, true);

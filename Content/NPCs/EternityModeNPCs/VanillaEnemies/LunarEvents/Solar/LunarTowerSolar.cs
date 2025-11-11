@@ -268,6 +268,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.LunarEve
                     for (int i = -2; i <= 2; i++)
                         Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Center, speed.RotatedBy(i * rotate), ProjectileID.CultistBossFireBall, FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 0.5f), 0f, Main.myPlayer);
 
+                    /*
                     if (NPC.CountNPCS(NPCID.SolarCrawltipedeHead) <= 0 && WorldSavingSystem.MasochistModeReal) //spawn john
                     {
                         int n = NPC.NewNPC(npc.GetSource_FromThis(), (int)npc.Center.X, (int)(npc.Center.Y - npc.height * 0.45f), NPCID.SolarCrawltipedeHead);
@@ -278,6 +279,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.LunarEve
 
                         }
                     }
+                    */
                 }
 
             }

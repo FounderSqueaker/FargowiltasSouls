@@ -34,7 +34,6 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.SwarmDrops
 
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 30;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
             Projectile.extraUpdates = 1;
         }
 

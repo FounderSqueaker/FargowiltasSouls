@@ -124,10 +124,9 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
             FargoSoulsPlayer modPlayer = player.FargoSouls();
             if (player.whoAmI == Main.myPlayer)
             {
-                modPlayer.MeteorCD--;
-                float denominator = 20f;
+                float denominator = 10f;
                 if (modPlayer.ForceEffect<MeteorEnchant>())
-                    denominator = 12f;
+                    denominator = 6f;
                 modPlayer.MeteorCD -= player.velocity.Length() / denominator;
             }
         }

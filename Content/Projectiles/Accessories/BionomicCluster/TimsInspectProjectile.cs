@@ -95,7 +95,7 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.BionomicCluster
             var diagonalNoise = FargoAssets.WavyNoise;
             if (!blackTile.IsLoaded || !diagonalNoise.IsLoaded)
                 return false;
-            var maxOpacity = Projectile.Opacity * ModContent.GetInstance<FargoClientConfig>().TransparentFriendlyProjectiles;
+            var maxOpacity = 0.4f * Projectile.Opacity * ModContent.GetInstance<FargoClientConfig>().TransparentFriendlyProjectiles;
 
             ManagedShader borderShader = ShaderManager.GetShader("FargowiltasSouls.GenericInnerAura");
             borderShader.TrySetParameter("colorMult", 7.35f);
@@ -125,6 +125,9 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.BionomicCluster
 
             foreach (NPC n in Main.ActiveNPCs)
             {
+                if (n.Distance(Projectile.Center) > 3000)
+                    continue;
+
                 int potion = -1;
                 // Check drops for tim's conc
                 List<IItemDropRule> rulesforNPC = Main.ItemDropsDB.GetRulesForNPCID(n.type, false);
@@ -155,7 +158,7 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.BionomicCluster
 
                 
                 float distOpac = MathHelper.Min(1, 1 - MathHelper.Lerp(0f, 0.9f, (dist - radius)/(radius * 0.9f)));
-                float actualOpac = oScale * distOpac;
+                float actualOpac = 0.8f * Projectile.Opacity * oScale * distOpac;
                 Main.EntitySpriteDraw(potText, pos - Main.screenPosition + potText.Size() / 2, rect, Color.White * actualOpac, 0, rect.Size() / 2, distOpac * oScale, SpriteEffects.None);
             }
             

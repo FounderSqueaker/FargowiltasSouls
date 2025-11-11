@@ -1,3 +1,4 @@
+using Fargowiltas;
 using FargowiltasSouls.Assets.Sounds;
 using FargowiltasSouls.Core.Systems;
 using Microsoft.Xna.Framework;
@@ -409,9 +410,11 @@ namespace FargowiltasSouls.Content.Bosses.TrojanSquirrel
 
             SpriteEffects effects = NPC.direction < 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            var trojan = body.As<TrojanSquirrel>();
             if (body != null)
+            {
+                var trojan = body.As<TrojanSquirrel>();
                 Main.EntitySpriteDraw(texture2D13, body.Top - screenPos + new Vector2(10f, NPC.gfxOffY - 30 * NPC.scale) + trojan.bodyOffset, new Microsoft.Xna.Framework.Rectangle?(rectangle), color26, NPC.rotation, origin2, NPC.scale, effects, 0);
+            }
 
             return false;
         }
@@ -451,7 +454,10 @@ namespace FargowiltasSouls.Content.Bosses.TrojanSquirrel
             {
                 Vector2 pos = NPC.Center;
                 if (!Main.dedServ)
+                {
                     Gore.NewGore(NPC.GetSource_FromThis(), pos, NPC.velocity, ModContent.Find<ModGore>(Mod.Name, $"TrojanSquirrelGore1").Type, NPC.scale);
+                    Gore.NewGore(NPC.GetSource_FromThis(), pos, NPC.velocity, ModContent.Find<ModGore>("Fargowiltas", $"TophatSquirrelGore").Type, NPC.scale);
+                }               
             }
         }
     }

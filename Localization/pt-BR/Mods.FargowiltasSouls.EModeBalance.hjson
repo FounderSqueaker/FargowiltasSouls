@@ -14,6 +14,7 @@ Split: Frequência de divisão reduzida
 WaterBolt: Não pode ser usado até que Esqueletron seja derrotado
 // SpaceGun: Cannot be used until an evil boss is defeated
 // DemonScythe: Reduced damage and speed by 40% until an evil boss is defeated
+// EarlyPotions: Reduced effect until an evil boss is defeated
 // HolyDodge: Dodge cooldown increased to 45 seconds
 ZenithNone: Nenhum enfraquecimento em vigor
 ZenithHitRate: "Taxa de acerto consideravelmente reduzida, melhora ao derrotar: "
@@ -76,3 +77,4 @@ IceBarrier: Modo Eternidade: 10% de redução nos danos
 // AntiSpam: Held projectiles have increased hitrate
 // Tipsy: Tipsy buff additionally reduces defense by 2
 // Trimarang: Doubled projectile speed
+// SkyFracture: Increased projectile speed

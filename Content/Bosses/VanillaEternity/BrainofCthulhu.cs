@@ -49,10 +49,10 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(ConfusionTimer);
-            binaryWriter.Write7BitEncodedInt(ConfusionIdleTimer);
-            binaryWriter.Write7BitEncodedInt(IllusionTimer);
-            binaryWriter.Write7BitEncodedInt(ClonefadeDashTimer);
+            binaryWriter.Write(ConfusionTimer);
+            binaryWriter.Write(ConfusionIdleTimer);
+            binaryWriter.Write(IllusionTimer);
+            binaryWriter.Write(ClonefadeDashTimer);
             binaryWriter.Write(CloneFade);
             bitWriter.WriteBit(EnteredPhase2);
             bitWriter.WriteBit(KnockbackImmune);
@@ -62,10 +62,10 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            ConfusionTimer = binaryReader.Read7BitEncodedInt();
-            ConfusionIdleTimer = binaryReader.Read7BitEncodedInt();
-            IllusionTimer = binaryReader.Read7BitEncodedInt();
-            ClonefadeDashTimer = binaryReader.Read7BitEncodedInt();
+            ConfusionTimer = binaryReader.ReadInt32();
+            ConfusionIdleTimer = binaryReader.ReadInt32();
+            IllusionTimer = binaryReader.ReadInt32();
+            ClonefadeDashTimer = binaryReader.ReadInt32();
             CloneFade = binaryReader.ReadSingle();
             EnteredPhase2 = bitReader.ReadBit();
             KnockbackImmune = bitReader.ReadBit();
@@ -166,7 +166,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                         {
                             npc.netUpdate = true;
                         }
-                            
+
 
                         KnockbackImmune = true;
                         ClonefadeDashTimer++;
@@ -178,7 +178,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                         teleportTimer = 60;
                         npc.netUpdate = true;
                     }
-                       
+
                 }
                 if (teleportTimer < cloneTime)
                 {
@@ -190,7 +190,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                     ClonefadeDashTimer = 0;
                     KnockbackImmune = false;
                 }
-                    
+
 
                 //debuff cleanse when tp'ing
                 if (npc.alpha > 0 && npc.buffType[0] != 0)
@@ -203,7 +203,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                     Projectile.NewProjectile(npc.GetSource_FromThis(), spawn, Vector2.Zero, ModContent.ProjectileType<GlowRingHollow>(), 0, 0f, Main.myPlayer, 8, 180);
                     Projectile.NewProjectile(npc.GetSource_FromThis(), spawn, Vector2.Zero, ModContent.ProjectileType<GlowRingHollow>(), 0, 0f, Main.myPlayer, 8, 200);
                     Projectile.NewProjectile(npc.GetSource_FromThis(), spawn, Vector2.Zero, ModContent.ProjectileType<GlowRingHollow>(), 0, 0f, Main.myPlayer, 8, 220);
-                };
+                }
+                ;
 
                 void LaserSpread(Vector2 spawn)
                 {
@@ -220,7 +221,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                         for (int i = -max; i <= max; i++)
                             Projectile.NewProjectile(npc.GetSource_FromThis(), spawn, 0.2f * Main.player[npc.target].DirectionFrom(spawn).RotatedBy(MathHelper.ToRadians(degree) * i), ModContent.ProjectileType<DestroyerLaser>(), laserDamage, 0f, Main.myPlayer);
                     }
-                };
+                }
+                ;
 
                 if (--ConfusionTimer < 0)
                 {
@@ -464,7 +466,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 float num35 = 50f * npc.scale;
                 float num36 = Main.NPCAddHeight(npc);
 
-                Vector2 drawPos = new(npc.position.X - screenPos.X + (float)(npc.width / 2) - (float)TextureAssets.Npc[npc.type].Width() * npc.scale / 2f + halfSize.X * npc.scale, 
+                Vector2 drawPos = new(npc.position.X - screenPos.X + (float)(npc.width / 2) - (float)TextureAssets.Npc[npc.type].Width() * npc.scale / 2f + halfSize.X * npc.scale,
                     npc.position.Y - screenPos.Y + (float)npc.height - (float)texture.Height() * npc.scale / (float)Main.npcFrameCount[npc.type] + 4f + halfSize.Y * npc.scale + num36 + num35 + npc.gfxOffY);
 
                 // glow
@@ -498,20 +500,20 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 float resist = MathHelper.Lerp(1f, 0.3f, 1f - Math.Max(0.12f, (float)Math.Sqrt((double)npc.life / npc.lifeMax)));
                 modifiers.FinalDamage *= resist;
             }
-                
+
 
             if (KnockbackImmune)
             {
                 modifiers.DisableKnockback();
             }
-                
+
 
             base.ModifyIncomingHit(npc, ref modifiers);
         }
 
         public override void OnHitPlayer(NPC npc, Player target, Player.HurtInfo hurtInfo)
         {
-            return;          
+            return;
         }
 
         public override void LoadSprites(NPC npc, bool recolor)
@@ -534,14 +536,14 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(IchorAttackTimer);
+            binaryWriter.Write(IchorAttackTimer);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            IchorAttackTimer = binaryReader.Read7BitEncodedInt();
+            IchorAttackTimer = binaryReader.ReadInt32();
         }
 
         public override void SetDefaults(NPC npc)
@@ -598,7 +600,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         }
         public override void OnHitPlayer(NPC npc, Player target, Player.HurtInfo hurtInfo)
         {
-            target.AddBuff(BuffID.Ichor, 120);     
+            target.AddBuff(BuffID.Ichor, 60 * 3 + 30);
         }
 
         public override bool CheckDead(NPC npc)

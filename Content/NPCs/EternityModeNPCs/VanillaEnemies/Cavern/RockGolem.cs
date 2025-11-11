@@ -16,20 +16,21 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern
         public override NPCMatcher CreateMatcher() => new NPCMatcher().MatchType(NPCID.RockGolem);
 
         public int JumpTimer;
+        public int Frame;
         public bool Jumped;
 
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(JumpTimer);
+            binaryWriter.Write(JumpTimer);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            JumpTimer = binaryReader.Read7BitEncodedInt();
+            JumpTimer = binaryReader.ReadInt32();
         }
 
         public override void SetDefaults(NPC npc)
@@ -42,7 +43,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern
         public override bool SafePreAI(NPC npc)
         {
             bool result = base.SafePreAI(npc);
-            if (!Main.hardMode && npc.GetLifePercent() > 0.95f)
+            if (!Main.hardMode && npc.GetLifePercent() > 0.99f)
             {
                 if (Main.GameUpdateCount % 49 == 0)
                     CombatText.NewText(npc.Hitbox, Color.Gray, "z");
@@ -78,6 +79,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern
 
             if (JumpTimer == 330)
             {
+                Frame = 10;
                 JumpTimer++; //avoid edge case
 
                 if (FargoSoulsUtil.HostCheck)
@@ -91,6 +93,8 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern
                 npc.velocity.X = npc.ai[2];
                 npc.velocity.Y = npc.ai[3];
                 npc.ai[3] += gravity;
+
+                if (npc.ai[1] % 12 == 0 && Frame < 14) Frame++;
 
                 int num22 = 2;
                 for (int index1 = 0; index1 < num22; ++index1)
@@ -132,6 +136,12 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Cavern
 
             return result;
         }
+
+        public override void FindFrame(NPC npc, int frameHeight)
+        {
+            if (Jumped) npc.frame.Y = Frame * frameHeight;
+        }
+
         public override void OnKill(NPC npc)
         {
             if (FargoSoulsUtil.HostCheck)

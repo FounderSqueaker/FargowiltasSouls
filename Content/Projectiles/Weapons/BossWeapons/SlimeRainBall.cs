@@ -17,7 +17,7 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.BossWeapons
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = 1;
-            CooldownSlot = -1;
+            CooldownSlot = ImmunityCooldownID.General;
         }
 
         public override void AI()
@@ -38,7 +38,7 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.BossWeapons
 
         public override Color? GetAlpha(Color lightColor)
         {
-            return new Color(lightColor.R, lightColor.G, 255, lightColor.A);
+            return new Color(lightColor.R, lightColor.G, lightColor.B, lightColor.A);
         }
     }
 }

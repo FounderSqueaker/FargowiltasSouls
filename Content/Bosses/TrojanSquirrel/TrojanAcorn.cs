@@ -19,7 +19,7 @@ namespace FargowiltasSouls.Content.Bosses.TrojanSquirrel
             base.SetDefaults();
 
             Projectile.tileCollide = true;
-            CooldownSlot = -1;
+            CooldownSlot = ImmunityCooldownID.General;
         }
 
         public override void OnKill(int timeLeft)

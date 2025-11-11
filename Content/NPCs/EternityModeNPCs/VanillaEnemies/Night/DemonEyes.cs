@@ -41,14 +41,14 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Night
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(AttackTimer);
+            binaryWriter.Write(AttackTimer);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            AttackTimer = binaryReader.Read7BitEncodedInt();
+            AttackTimer = binaryReader.ReadInt32();
         }
 
         public override void OnFirstTick(NPC npc)
@@ -63,7 +63,14 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Night
                 AttackTimer++;
             if (AttackTimer == 360) //warning flash
             {
-                SoundEngine.PlaySound(SoundID.MaxMana with {Pitch = 0.8f, MaxInstances = 1}, npc.Center);
+                if (!Collision.CanHitLine(npc.Center, 0, 0, Main.player[npc.target].Center, 0, 0))
+                {
+                    AttackTimer = Main.rand.Next(0, 120);
+                }
+                else
+                {
+                    SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = 0.8f, MaxInstances = 1 }, npc.Center);
+                }
                 npc.netUpdate = true;
                 NetSync(npc);
             }
@@ -162,6 +169,8 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Night
         public override void AI(NPC npc)
         {
             npc.position += npc.velocity;
+
+            Lighting.AddLight(npc.Center, 0.75f / 3, 1.35f / 3, 1.5f / 3);
         }
 
         public override void OnHitPlayer(NPC npc, Player target, Player.HurtInfo hurtInfo)

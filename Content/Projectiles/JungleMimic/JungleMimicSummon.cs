@@ -40,7 +40,6 @@ namespace FargowiltasSouls.Content.Projectiles.JungleMimic
             AIType = ProjectileID.BabySlime;
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = 15;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
         }
         public override bool? CanCutTiles()
         {

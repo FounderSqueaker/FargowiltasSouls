@@ -30,23 +30,23 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
 
-            binaryWriter.Write7BitEncodedInt(AITimer);
-            binaryWriter.Write7BitEncodedInt(AttackTimer);
+            binaryWriter.Write(AITimer);
+            binaryWriter.Write(AttackTimer);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
 
-            AITimer = binaryReader.Read7BitEncodedInt();
-            AttackTimer = binaryReader.Read7BitEncodedInt();
+            AITimer = binaryReader.ReadInt32();
+            AttackTimer = binaryReader.ReadInt32();
         }
 
         public override void SetDefaults(NPC npc)
         {
             base.SetDefaults(npc);
 
-            npc.lifeMax /= 8;
+            npc.SetLifeMaxByMode(1000, 1000, 1000);
         }
 
         public override void LoadSprites(NPC npc, bool recolor)
@@ -69,6 +69,9 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             EModeGlobalNPC.guardBoss = npc.whoAmI;
             npc.damage = npc.defDamage;
             npc.defense = npc.defDefense;
+            npc.lifeMax = 1000;
+            if (npc.life > npc.lifeMax)
+                npc.life = npc.lifeMax;
 
             while (npc.buffType[0] != 0)
             {

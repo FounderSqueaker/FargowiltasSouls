@@ -547,11 +547,6 @@ SolarFlareBuff: {
 	Description: Mods.FargowiltasSouls.BuffDescription.SolarFlareBuff
 }
 
-SuperBleedBuff: {
-	DisplayName: 血如泉涌
-	Description: Mods.FargowiltasSouls.BuffDescription.SuperBleedBuff
-}
-
 CorruptingBuff: {
 	DisplayName: 凋零
 	Description: 你正在凋零

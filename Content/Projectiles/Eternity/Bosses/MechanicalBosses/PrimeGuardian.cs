@@ -24,7 +24,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.MechanicalBosses
         {
             base.SetDefaults();
             Projectile.timeLeft = 600;
-            CooldownSlot = -1;
+            CooldownSlot = ImmunityCooldownID.General;
         }
 
         public override bool CanHitPlayer(Player target)

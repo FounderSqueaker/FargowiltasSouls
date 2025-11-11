@@ -63,6 +63,7 @@ namespace FargowiltasSouls.Content.Items.Weapons.Challengers
             {
                 type = ShotType;
                 damage *= 2;
+                damage = (int)(damage * (1 + player.ActualClassCrit(DamageClass.Ranged) / 100));
             }
         }
         public override void ModifyWeaponCrit(Player player, ref float crit)
@@ -70,6 +71,10 @@ namespace FargowiltasSouls.Content.Items.Weapons.Challengers
             if (EmpoweredShot)
             {
                 crit = 100;
+            }
+            else
+            {
+                crit = 0;
             }
         }
 

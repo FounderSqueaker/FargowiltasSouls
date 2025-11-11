@@ -12,19 +12,17 @@ namespace FargowiltasSouls.Content.Bosses.AbomBoss
 {
     public class AbomScytheSplit : ModProjectile
     {
-        public override string Texture => "FargowiltasSouls/Content/Bosses/AbomBoss/AbomDeathScythe";
 
         public override void SetStaticDefaults()
         {
-            // DisplayName.SetDefault("Abominationn Scythe");
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 10;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
         public override void SetDefaults()
         {
-            Projectile.width = 40;
-            Projectile.height = 40;
+            Projectile.width = 80;
+            Projectile.height = 80;
             Projectile.hostile = true;
             Projectile.penetrate = -1;
             Projectile.aiStyle = -1;
@@ -32,8 +30,6 @@ namespace FargowiltasSouls.Content.Bosses.AbomBoss
             Projectile.ignoreWater = true;
             Projectile.tileCollide = false;
             CooldownSlot = ImmunityCooldownID.Bosses;
-
-            Projectile.scale = 2f;
         }
 
         public override void AI()

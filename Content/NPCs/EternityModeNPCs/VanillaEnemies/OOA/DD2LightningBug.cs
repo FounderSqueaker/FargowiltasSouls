@@ -23,22 +23,23 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
         {
             base.SetDefaults(npc);
             npc.knockBackResist = 0f;
+            npc.lifeMax /= 2;
         }
 
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             base.SendExtraAI(npc, bitWriter, binaryWriter);
-            binaryWriter.Write7BitEncodedInt(State);
-            binaryWriter.Write7BitEncodedInt(Target);
-            binaryWriter.Write7BitEncodedInt(Timer);
+            binaryWriter.Write(State);
+            binaryWriter.Write(Target);
+            binaryWriter.Write(Timer);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             base.ReceiveExtraAI(npc, bitReader, binaryReader);
-            State = binaryReader.Read7BitEncodedInt();
-            Target = binaryReader.Read7BitEncodedInt();
-            Timer = binaryReader.Read7BitEncodedInt();
+            State = binaryReader.ReadInt32();
+            Target = binaryReader.ReadInt32();
+            Timer = binaryReader.ReadInt32();
         }
 
         public override bool SafePreAI(NPC npc)
@@ -54,7 +55,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
             switch (State)
             {
                 case 0: // Looking for target
-                    Target = FindClosestDD2Sentry(npc.Center);
+                    Target = EModeDD2Event.FindClosestDD2Sentry(npc.Center);
                     if (Target != -1)
                     {
                         State = 1;
@@ -64,7 +65,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                     return false;
                 case 1: // Approaching Target
                     sentry = Main.projectile[Target];
-                    if (!sentry.active || sentry.Eternity().Jammed)
+                    if (!sentry.Alive() || sentry.Eternity().Jammed || !ProjectileID.Sets.IsADD2Turret[sentry.type])
                     {
                         State = 0;
                         Target = -1;
@@ -84,7 +85,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                     break;
                 case 2: // Jamming Target
                     sentry = Main.projectile[Target];
-                    if (!sentry.active)
+                    if (!sentry.Alive() || !ProjectileID.Sets.IsADD2Turret[sentry.type])
                     {
                         State = 0;
                         Target = -1;
@@ -102,7 +103,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                     return false;
             }
 
-            float speedCap = 3f;
+            float speedCap = 2.5f;
             if (npc.velocity.Length() > speedCap)
             {
                 npc.velocity.Normalize();
@@ -110,27 +111,6 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
             }
 
             return false;
-        }
-
-        public int FindClosestDD2Sentry(Vector2 position)
-        {
-            int n = -1;
-            float dist = -1;
-            for (int i = 0; i < Main.projectile.Length; i++)
-            {
-                Projectile p = Main.projectile[i];
-                if (!p.active || !ProjectileID.Sets.IsADD2Turret[p.type] || p.Eternity().Jammed)
-                    continue;
-
-                float projDist = (p.Center - position).Length();
-                if (dist == -1 || projDist < dist)
-                {
-                    dist = projDist;
-                    n = i;
-                }
-            }
-
-            return n;
         }
 
         public override void AI(NPC npc)
@@ -142,8 +122,12 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
 
         public override void OnKill(NPC npc)
         {
-            if (Target != -1 && Main.projectile[Target].active)
+            if (Target != -1 && Main.projectile[Target].Alive())
+            {
                 Main.projectile[Target].Eternity().Jammed = false;
+                if (Main.dedServ)
+                    NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Target);
+            }
             base.OnKill(npc);
         }
 

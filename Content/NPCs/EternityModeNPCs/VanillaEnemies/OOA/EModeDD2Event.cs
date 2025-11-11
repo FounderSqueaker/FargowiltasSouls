@@ -9,6 +9,7 @@ using Terraria.ModLoader;
 using Terraria.ID;
 using static Terraria.ID.NPCID;
 using Microsoft.Xna.Framework.Graphics;
+using FargowiltasSouls.Content.NPCs.EternityModeNPCs.CustomEnemies.OOA;
 
 namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
 {
@@ -22,6 +23,27 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                 return null;
 
             return Main.npc[n];
+        }
+
+        public static int FindClosestDD2Sentry(Vector2 position, bool ignoreJammed = true)
+        {
+            int n = -1;
+            float dist = -1;
+            for (int i = 0; i < Main.projectile.Length; i++)
+            {
+                Projectile p = Main.projectile[i];
+                if (!p.Alive() || !ProjectileID.Sets.IsADD2Turret[p.type] || (p.Eternity().Jammed && !ignoreJammed))
+                    continue;
+
+                float projDist = (p.Center - position).Length();
+                if (dist == -1 || projDist < dist)
+                {
+                    dist = projDist;
+                    n = i;
+                }
+            }
+
+            return n;
         }
 
         public static float GetWaveProgressPercent()
@@ -450,9 +472,25 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                     else if (Main.rand.NextBool(3) && NPC.CountNPCS(DD2GoblinBomberT3) < num)
                         num9 = OOANPC(x, y, DD2GoblinBomberT3);
                     break;
-                case 7: // Goblins, Goblin Bombers, Javelinsts, Drakins, Wither Beasts, and Betsy
-                    // Note: Betsy is spawned elsewhere in vanilla code do not spawn it here
-                    // Note 2: Not changing this until betsy rework
+                case 7: // Betsy Wave: Goblins, Goblin Bombers, Wyverns, Drakins, Wither Beasts, Dark Mage, and Ogre
+                    if (BetsyBlockSpawn)
+                        break;
+
+                    float percent = (float)BetsyOOAKills / (float)BetsyOOAKillsNeeded;
+                    if (percent >= 1)
+                        break;
+
+                    if (percent >= 0.3f && percent <= 0.4f && !NPC.AnyNPCs(DD2DarkMageT3)) // spawn dark mage ~30-40%
+                    {
+                        num8 = OOANPC(x, y, DD2DarkMageT3);
+                        break;
+                    }
+                    if (percent >= 0.65f && percent <= 0.75f && !NPC.AnyNPCs(DD2OgreT3)) // spawn ogre ~65-75%
+                    {
+                        num8 = OOANPC(x, y, DD2OgreT3);
+                        break;
+                    }
+
                     if (Main.rand.NextBool(20) && NPC.CountNPCS(DD2DrakinT3) < num6)
                     {
                         num8 = OOANPC(x, y, DD2DrakinT3);
@@ -461,9 +499,9 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                     {
                         num8 =  OOANPC(x, y, DD2WitherBeastT3);
                     }
-                    else if (Main.rand.NextBool(10) && NPC.CountNPCS(DD2JavelinstT3) < num2)
+                    else if (Main.rand.NextBool(20) && NPC.CountNPCS(DD2WyvernT3) < num2)
                     {
-                        num8 = OOANPC(x, y, DD2JavelinstT3);
+                        num8 = OOANPC(x, y, DD2WyvernT3);
                     }
                     else if (NPC.CountNPCS(DD2GoblinT3) + NPC.CountNPCS(DD2GoblinBomberT3) < num)
                     {
@@ -654,7 +692,6 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                     ];
                 case 6:
                     return [
-                        DD2GoblinT3,
                         DD2GoblinBomberT3,
                         DD2WyvernT3,
                         DD2WitherBeastT3,
@@ -666,11 +703,6 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                     ];
                 case 7:
                     return [
-                        DD2GoblinT3,
-                        DD2GoblinBomberT3,
-                        DD2JavelinstT3,
-                        DD2WitherBeastT3,
-                        DD2DrakinT3,
                         DD2Betsy
                     ];
             }
@@ -680,16 +712,33 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
         #endregion
 
         private static IEntitySource GetSpawnSource_OldOnesArmy() => new EntitySource_OldOnesArmy();
+
+        public static int BetsyOOAKillsNeeded = -1;
+        public static int BetsyOOAKills = -1;
+        public static bool BetsyBlockSpawn = false;
+
+        public override void PreUpdateNPCs()
+        {
+            if (!NPC.AnyNPCs(DD2Betsy))
+            {
+                BetsyBlockSpawn = false;
+                BetsyOOAKills = -1;
+                BetsyOOAKillsNeeded = -1;
+            }
+            base.PreUpdateNPCs();
+        }
     }
 
     public class EModeDD2GlobalNPC : GlobalNPC
     {
         public override bool InstancePerEntity => true;
 
-        public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
-            => Sets.BelongsToInvasionOldOnesArmy[entity.type] && entity.type != NPCID.DD2EterniaCrystal;
+        public static bool[] IsExcludedOOANPC = Sets.Factory.CreateBoolSet(false, [NPCID.DD2LanePortal, NPCID.DD2EterniaCrystal, NPCID.DD2Betsy, ModContent.NPCType<BowlingSpit>(), ModContent.NPCType<TavernkeepPortal>()]);
 
-        public static bool IsInstance(NPC npc) => Sets.BelongsToInvasionOldOnesArmy[npc.type] && npc.type != NPCID.DD2EterniaCrystal;
+        public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
+            => Sets.BelongsToInvasionOldOnesArmy[entity.type] && !IsExcludedOOANPC[entity.type];
+
+        public static bool IsInstance(NPC npc) => Sets.BelongsToInvasionOldOnesArmy[npc.type] && !IsExcludedOOANPC[npc.type];
 
         public bool DrakinBuff;
         public int SpitBall = -1;
@@ -735,6 +784,14 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                 npc.dontTakeDamage = false;
                 npc.ShowNameOnHover = true;
             }
+        }
+
+        public override void OnKill(NPC npc)
+        {
+            if (EModeDD2Event.BetsyOOAKills >= 0)
+                EModeDD2Event.BetsyOOAKills += EModeDD2Event.IsDD2Boss(npc.type) ? 5 : 1;
+
+            base.OnKill(npc);
         }
     }
 }

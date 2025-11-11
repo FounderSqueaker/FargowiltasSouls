@@ -2,11 +2,13 @@
 using FargowiltasSouls.Content.Items.Accessories.Forces;
 using FargowiltasSouls.Content.Projectiles.Accessories.Souls;
 using FargowiltasSouls.Core.AccessoryEffectSystem;
+using FargowiltasSouls.Core.Systems;
 using FargowiltasSouls.Core.Toggler.Content;
 using Microsoft.Xna.Framework;
 using MonoMod.Utils;
 using System;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -31,14 +33,15 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
 
         public override void UpdateAccessory(Player player, bool hideVisual)
         {
-            AddEffects(player, Item);
-        }
-        public static void AddEffects(Player player, Item item)
-        {
-            player.AddEffect<ChloroMinion>(item);
+            //player.AddEffect<ChloroMinion>(item);
             player.FargoSouls().ChlorophyteEnchantActive = true;
-            player.AddEffect<JungleJump>(item);
-            player.AddEffect<JungleDashEffect>(item);
+            //player.AddEffect<JungleJumpEffect>(Item);
+            //player.jumpBoost = true;
+            //player.noFallDmg = true;
+            player.AddEffect<JungleHerbEffect>(Item);
+            player.AddEffect<JungleDashEffect>(Item);
+            player.AddEffect<JungleSporesEffect>(Item);
+            player.AddEffect<JungleDashCooldownEffect>(Item);
         }
 
         public override void AddRecipes()
@@ -49,23 +52,31 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
                 .AddIngredient(ItemID.ChlorophyteGreaves)
                 .AddIngredient(null, "JungleEnchant")
                 .AddIngredient(ItemID.ChlorophyteClaymore)
-                .AddIngredient(ItemID.AcornAxe) // Axe of Regrowth
-                                                //grape juice
-                                                //.AddIngredient(ItemID.Seedling);
-                                                //plantero pet
+                .AddIngredient(ItemID.JungleRose) // replace later
 
                 .AddTile<EnchantedTreeSheet>()
-               .Register();
+                .Register();
         }
         public override int DamageTooltip(out DamageClass damageClass, out Color? tooltipColor, out int? scaling)
         {
-            damageClass = DamageClass.Summon;
+            damageClass = DamageClass.Generic;
             tooltipColor = null;
             scaling = null;
-            return (int)(ChloroMinion.BaseDamage(Main.LocalPlayer) * Main.LocalPlayer.ActualClassDamage(DamageClass.Summon));
+            return JungleSporesEffect.BaseDamage(Main.LocalPlayer, true);
         }
     }
-    public class ChloroMinion : AccessoryEffect
+    public class JungleDashCooldownEffect : AccessoryEffect
+    {
+        public override Header ToggleHeader => Header.GetHeader<NatureHeader>();
+        public override int ToggleItemType => ModContent.ItemType<JungleEnchant>();
+
+        public override void PostUpdateMiscEffects(Player player)
+        {
+            if (player.miscCounter % 4 == 3 && player.dashDelay > 0) // Reduced dash cooldown by 25%
+                player.dashDelay--;
+        }
+    }
+    /*public class ChloroMinion : AccessoryEffect
     {
         public override Header ToggleHeader => Header.GetHeader<NatureHeader>();
         public override int ToggleItemType => ModContent.ItemType<ChlorophyteEnchant>();
@@ -90,5 +101,5 @@ namespace FargowiltasSouls.Content.Items.Accessories.Enchantments
                 }
             }
         }
-    }
+    }*/
 }

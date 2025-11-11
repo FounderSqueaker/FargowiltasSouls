@@ -19,7 +19,7 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.SwarmDrops
         public override void SetDefaults()
         {
             base.SetDefaults();
-            CooldownSlot = -1;
+            CooldownSlot = ImmunityCooldownID.General;
             Projectile.hostile = false;
             Projectile.friendly = true;
             Projectile.DamageType = DamageClass.Magic;
@@ -30,7 +30,6 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.SwarmDrops
 
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 6;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
         }
 
         public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)

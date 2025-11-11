@@ -16,7 +16,6 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.BossWeapons
 
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 15; // Similarly to Blender
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
         }
     }
 }

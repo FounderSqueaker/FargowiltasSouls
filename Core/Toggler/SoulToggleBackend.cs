@@ -154,10 +154,10 @@ namespace FargowiltasSouls.Core.Toggler
             player.SetToggleValue<BeeEffect>(false);
             player.SetToggleValue<CactusEffect>(false);
             player.SetToggleValue<PumpkinEffect>(false);
-            player.SetToggleValue<ChloroMinion>(false);
+            //player.SetToggleValue<ChloroMinion>(false);
             player.SetToggleValue<RainUmbrellaEffect>(false);
             player.SetToggleValue<RainInnerTubeEffect>(false);
-            player.SetToggleValue<JungleJump>(false);
+            //player.SetToggleValue<JungleJumpEffect>(false);
             player.SetToggleValue<MoltenEffect>(false);
             player.SetToggleValue<ShroomiteShroomEffect>(false);
             player.SetToggleValue<DarkArtistMinion>(false);

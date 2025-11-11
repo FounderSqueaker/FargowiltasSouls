@@ -17,7 +17,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.BloodMoo
             Projectile.friendly = true;
             Projectile.hostile = true;
             Projectile.trap = true;
-            CooldownSlot = -1;
+            CooldownSlot = ImmunityCooldownID.General;
         }
 
         public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)

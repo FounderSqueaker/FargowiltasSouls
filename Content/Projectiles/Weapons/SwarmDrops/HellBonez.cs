@@ -32,7 +32,6 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.SwarmDrops
             
             Projectile.usesIDStaticNPCImmunity = true;
             Projectile.idStaticNPCHitCooldown = 8;
-            Projectile.FargoSouls().noInteractionWithNPCImmunityFrames = true;
             Projectile.GetGlobalProjectile<AttackSpeedScalingGlobalProjectile>().UseAttackSpeedToDoubleHit = true;
         }
 

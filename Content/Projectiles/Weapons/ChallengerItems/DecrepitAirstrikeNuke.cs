@@ -99,6 +99,7 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.ChallengerItems
 
         public override void OnKill(int timeLeft)
         {
+            
             ScreenShakeSystem.StartShake(10, shakeStrengthDissipationIncrement: 10f / 30);
 
             foreach (Projectile p in Main.projectile.Where(p => p.active && !p.hostile && p.owner == Main.myPlayer && p.minion && p.minionSlots > 0 && FargoSoulsUtil.IsSummonDamage(p, false, false) && Projectile.Colliding(Projectile.Hitbox, p.Hitbox)))
@@ -124,7 +125,7 @@ namespace FargowiltasSouls.Content.Projectiles.Weapons.ChallengerItems
             {
                 int gore = Gore.NewGore(Projectile.GetSource_FromThis(), Projectile.Center, (Vector2.UnitX * 5).RotatedByRandom(MathHelper.TwoPi), Main.rand.Next(61, 64), 2);
             }
-            SoundEngine.PlaySound(SoundID.Item62 with { Pitch = -0.2f }, Projectile.Center);
+            SoundEngine.PlaySound(FargosSoundRegistry.BaronNukeExplosion, Projectile.Center);
         }
 
         public override bool PreDraw(ref Color lightColor)
