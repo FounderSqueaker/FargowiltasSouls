@@ -66,12 +66,13 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
 
             if (Timer >= 180)
             {
-                if (Javelin == -1 && FargoSoulsUtil.HostCheck)
+                if (Javelin == -1)
                 {
                     if (FargoSoulsUtil.HostCheck)
                         Javelin = Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Center, Vector2.Zero, ModContent.ProjectileType<JavelinSpin>(), npc.damage / 6, 3f, ai0: npc.whoAmI);
                     SoundEngine.PlaySound(SoundID.Item60, npc.Center);
                     npc.netUpdate = true;
+                    NetSync(npc);
                 }
                 if (Timer > 390)
                 {
