@@ -2434,9 +2434,13 @@ namespace FargowiltasSouls.Content.Projectiles
 
         public static bool CanBeAbsorbed(Projectile p)
         {
-            if (!WorldSavingSystem.EternityMode)
+            if (!p.Alive())
                 return false;
-            return p.CanBeReflected() && p.FargoSouls().DeletionImmuneRank == 0 && !p.FargoSouls().IsOnHitSource && !FargoSoulsUtil.IsSummonDamage(p, false);
+
+            if (!p.friendly || !p.FargoSouls().HasRanPostAI)
+                return false;
+
+            return p.CanBeReflected() || (!p.FargoSouls().IsAHeldProj && p.FargoSouls().DeletionImmuneRank == 0 && !p.FargoSouls().IsOnHitSource && !FargoSoulsUtil.IsSummonDamage(p, false));
         }
     }
 }

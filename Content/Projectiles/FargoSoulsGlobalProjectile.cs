@@ -93,6 +93,7 @@ namespace FargowiltasSouls.Content.Projectiles
         public bool EnchantmentProj;
         public float HeldProjMemorizedDamage;
         public float HeldProjMemorizedCrit;
+        public bool HasRanPostAI = false;
         public bool Reflected;
 
         public float TagStackMultiplier = 1;
@@ -1275,6 +1276,8 @@ namespace FargowiltasSouls.Content.Projectiles
 
         public override void PostAI(Projectile projectile)
         {
+            HasRanPostAI = true;
+
             Player player = Main.player[projectile.owner];
             FargoSoulsPlayer modPlayer = player.FargoSouls();
 
