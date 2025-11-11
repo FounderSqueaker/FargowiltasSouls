@@ -89,7 +89,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Environment
             //size increases over time until max size
             if (Projectile.scale < 1f)
             {
-                Projectile.scale += 0.05f;
+                Projectile.scale += 0.01f;
 
                 if (Projectile.scale == 1f)
                 {
