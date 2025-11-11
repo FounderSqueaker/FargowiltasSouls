@@ -431,7 +431,6 @@ namespace FargowiltasSouls.Content.Projectiles
                 && !FargoSoulsUtil.IsSummonDamage(projectile, true, false)
                 && !FargoSoulsSets.Projectiles.DoesNotAffectHuntress[projectile.type])
             {
-                Main.NewText($"{projectile}");
                 HuntressProj = 1;
             }
             if (player.HasEffect<NinjaEffect>() && modPlayer.NinjaCounter >= 1
