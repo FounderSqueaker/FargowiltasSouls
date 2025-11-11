@@ -46,6 +46,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.BossMinions
             NPC.alpha = 255;
             NPC.lavaImmune = true;
             NPC.aiStyle = -1;
+            NPC.chaseable = false;
 
         }
 
