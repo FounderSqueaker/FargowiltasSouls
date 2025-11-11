@@ -65,7 +65,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                     return false;
                 case 1: // Approaching Target
                     sentry = Main.projectile[Target];
-                    if (!sentry.active || sentry.Eternity().Jammed)
+                    if (!sentry.Alive() || sentry.Eternity().Jammed || !ProjectileID.Sets.IsADD2Turret[sentry.type])
                     {
                         State = 0;
                         Target = -1;
@@ -85,7 +85,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                     break;
                 case 2: // Jamming Target
                     sentry = Main.projectile[Target];
-                    if (!sentry.active)
+                    if (!sentry.Alive() || !ProjectileID.Sets.IsADD2Turret[sentry.type])
                     {
                         State = 0;
                         Target = -1;
@@ -122,8 +122,12 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
 
         public override void OnKill(NPC npc)
         {
-            if (Target != -1 && Main.projectile[Target].active)
+            if (Target != -1 && Main.projectile[Target].Alive())
+            {
                 Main.projectile[Target].Eternity().Jammed = false;
+                if (Main.dedServ)
+                    NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Target);
+            }
             base.OnKill(npc);
         }
 

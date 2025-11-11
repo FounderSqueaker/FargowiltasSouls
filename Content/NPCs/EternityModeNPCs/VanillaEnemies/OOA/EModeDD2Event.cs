@@ -32,7 +32,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
             for (int i = 0; i < Main.projectile.Length; i++)
             {
                 Projectile p = Main.projectile[i];
-                if (!p.active || !ProjectileID.Sets.IsADD2Turret[p.type] || (p.Eternity().Jammed && !ignoreJammed))
+                if (!p.Alive() || !ProjectileID.Sets.IsADD2Turret[p.type] || (p.Eternity().Jammed && !ignoreJammed))
                     continue;
 
                 float projDist = (p.Center - position).Length();

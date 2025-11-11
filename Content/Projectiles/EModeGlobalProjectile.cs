@@ -24,6 +24,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 using Terraria;
@@ -32,6 +33,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
@@ -227,6 +229,20 @@ namespace FargowiltasSouls.Content.Projectiles
                     break;
             }
         }
+
+        public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter)
+        {
+            base.SendExtraAI(projectile, bitWriter, binaryWriter);
+            binaryWriter.Write(Jammed);
+        }
+
+        public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
+        {
+            base.ReceiveExtraAI(projectile, bitReader, binaryReader);
+            Jammed = binaryReader.ReadBoolean();
+        }
+
+        
 
         private static bool NonSwarmFight(Projectile projectile, params int[] types)
         {
@@ -839,11 +855,19 @@ namespace FargowiltasSouls.Content.Projectiles
             // OOA Sentry Jamming
             if (Jammed)
             {
-                JammedRecoverTime = 90;
-                if (Main.rand.NextBool(4))
+                if (!ProjectileID.Sets.IsADD2Turret[projectile.type])
                 {
-                    float rot = Main.rand.NextFloat(0, MathHelper.TwoPi);
-                    new ElectricSpark(projectile.Center, 5 * Vector2.UnitX.RotatedBy(rot), Color.Purple, 1f, 25).Spawn();
+                    Jammed = false;
+                    JammedRecoverTime = 0;
+                }
+                else
+                {
+                    JammedRecoverTime = 90;
+                    if (Main.rand.NextBool(4))
+                    {
+                        float rot = Main.rand.NextFloat(0, MathHelper.TwoPi);
+                        new ElectricSpark(projectile.Center, 5 * Vector2.UnitX.RotatedBy(rot), Color.Purple, 1f, 25).Spawn();
+                    }
                 }
             }
             if (JammedRecoverTime > 0)

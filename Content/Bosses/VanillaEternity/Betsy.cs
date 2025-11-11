@@ -234,7 +234,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
 
             if (DD2Event.Ongoing)
             {
-                EModeUtils.DropSummon(npc, "DraconicCrystal", WorldSavingSystem.DownedBetsy, ref DroppedSummon, NPC.downedGolemBoss);
+                EModeUtils.DropSummon(npc, "BetsyEgg", WorldSavingSystem.DownedBetsy, ref DroppedSummon, NPC.downedGolemBoss);
             }
             return false;
         }
