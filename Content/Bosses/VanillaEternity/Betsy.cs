@@ -1331,7 +1331,7 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             ResetState(npc);
             if (AvailableStates.Count == 0)
             {
-                int max = InPhase2 ? 9 : 8;
+                int max = 8; //InPhase2 ? 9 : 8;
                 for (int i = 5; i <= max; i++)
                 {
                     if (PreviousState != i)
@@ -1342,8 +1342,8 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
             }
             if (FargoSoulsUtil.HostCheck)
             {
-                State = (int)States.LightningAura; //Main.rand.NextFromCollection(AvailableStates);
-                //AvailableStates.Remove((States)State);
+                State = (int)Main.rand.NextFromCollection(AvailableStates);
+                AvailableStates.Remove((States)State);
             }
             NetSync(npc);
         }

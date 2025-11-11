@@ -733,7 +733,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
     {
         public override bool InstancePerEntity => true;
 
-        public static bool[] IsExcludedOOANPC = Sets.Factory.CreateBoolSet(false, [NPCID.DD2LanePortal, NPCID.DD2EterniaCrystal, ModContent.NPCType<TavernkeepPortal>()]);
+        public static bool[] IsExcludedOOANPC = Sets.Factory.CreateBoolSet(false, [NPCID.DD2LanePortal, NPCID.DD2EterniaCrystal, NPCID.DD2Betsy, ModContent.NPCType<BowlingSpit>(), ModContent.NPCType<TavernkeepPortal>()]);
 
         public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
             => Sets.BelongsToInvasionOldOnesArmy[entity.type] && !IsExcludedOOANPC[entity.type];
