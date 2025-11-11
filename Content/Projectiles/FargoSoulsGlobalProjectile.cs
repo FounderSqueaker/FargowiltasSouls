@@ -125,6 +125,7 @@ namespace FargowiltasSouls.Content.Projectiles
             ProjAIStyleID.Drill,
             ProjAIStyleID.HeldProjectile,
             ProjAIStyleID.Xenopopper,
+            ProjAIStyleID.ThickLaser,
             ProjAIStyleID.Yoyo,
             ProjAIStyleID.TerrarianBeam,
             ProjAIStyleID.SleepyOctopod,
