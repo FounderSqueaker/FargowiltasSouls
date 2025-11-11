@@ -3903,12 +3903,12 @@ SoulGuyLegs: {
 }
 
 TerrysChocolateOrange: {
-	// DisplayName: Terry's Chocolate Orange
-	/* Tooltip:
+	DisplayName: Terry's Chocolate Orange
+	Tooltip:
 		'''
-		Major improvements to all stats
-		'Favored by the man with the red hat'
-		Increases life regeneration
-		10 minute duration
-		''' */
+		{$CommonItemTooltip.MajorStats}
+		«Обожаем мужчиной в красной шляпе»
+		Ускоряет регенерацию здоровья
+		Длительность 10 минут
+		'''
 }
