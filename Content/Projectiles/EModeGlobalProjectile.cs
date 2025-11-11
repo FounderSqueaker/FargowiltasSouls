@@ -268,7 +268,7 @@ namespace FargowiltasSouls.Content.Projectiles
                     FargoSoulsUtil.GetOrigin(projectile, source, out sourceProj);
                     SourceItemType = projectile.FargoSouls().SourceItemType;
 
-                    if (sourceProj is not null && sourceProj.FargoSouls().ItemSource && (((sourceProj.minion || sourceProj.sentry) && (ProjectileID.Sets.MinionShot[projectile.type] || ProjectileID.Sets.SentryShot[projectile.type])) || FargoSoulsSets.Projectiles.DoesNotAffectHuntress[sourceProj.type]))
+                    if (sourceProj is not null && sourceProj.FargoSouls().ItemSource && (((sourceProj.minion || sourceProj.sentry) && (ProjectileID.Sets.MinionShot[projectile.type] || ProjectileID.Sets.SentryShot[projectile.type])) || FargoSoulsGlobalProjectile.DoesNotAffectHuntressType.Contains(sourceProj.type)))
                     { // reuse this with the intention to make shots from held projectiles work with Huntress, or make minion shots count as ItemSource
                         projectile.FargoSouls().ItemSource = true;
                     }

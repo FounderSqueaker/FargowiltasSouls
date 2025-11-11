@@ -1,8 +1,6 @@
 ﻿using Fargowiltas;
 using FargowiltasSouls.Content.Items.Weapons.Challengers;
 using FargowiltasSouls.Content.Patreon.ParadoxWolf;
-using FargowiltasSouls.Content.Projectiles;
-using FargowiltasSouls.Content.Projectiles.Weapons.BossWeapons;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +21,6 @@ namespace FargowiltasSouls
         public class Projectiles
         {
             public static bool[] PierceResistImmune;
-            public static bool[] DoesNotAffectHuntress;
         }
         public class NPCs
         {
@@ -104,35 +101,6 @@ namespace FargowiltasSouls
                 ProjectileID.FlyingKnife,
                 ProjectileID.WeatherPainShot
                 );
-
-            Projectiles.DoesNotAffectHuntress = projectileFactory.CreateBoolSet(false,
-                ProjectileID.NightsEdge,
-                ProjectileType<Tome>()
-            );
-
-            List<int> HuntressAIStyle =
-            [
-                ProjAIStyleID.Vilethorn,
-                ProjAIStyleID.MagicMissile,
-                ProjAIStyleID.Spear,
-                ProjAIStyleID.Drill,
-                ProjAIStyleID.HeldProjectile,
-                ProjAIStyleID.Xenopopper,
-                ProjAIStyleID.ThickLaser,
-                ProjAIStyleID.Yoyo,
-                ProjAIStyleID.TerrarianBeam,
-                ProjAIStyleID.SleepyOctopod,
-                ProjAIStyleID.ForwardStab,
-                ProjAIStyleID.ShortSword
-            ];
-
-            var projKeys = ContentSamples.ProjectilesByType.Where(p => HuntressAIStyle.Contains(p.Value.aiStyle)).ToDictionary();
-
-            for (int i = 0; i < Projectiles.DoesNotAffectHuntress.Length; i++)
-            {
-                Projectiles.DoesNotAffectHuntress[i] |= projKeys.ContainsKey(i) || EModeGlobalProjectile.FancySwings.Contains(i);
-            }
-
 
             #endregion
             #region NPCs
