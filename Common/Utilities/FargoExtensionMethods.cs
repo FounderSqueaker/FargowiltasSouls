@@ -323,15 +323,18 @@ namespace FargowiltasSouls //lets everything access it without using
             player.controlLeft = false;
             player.controlRight = false;
             player.controlJump = false;
+            player.controlUp = false;
             player.controlDown = false;
             player.controlUseItem = false;
             player.controlUseTile = false;
             player.controlHook = false;
             player.releaseHook = true;
+            player.controlMount = false;
+            player.releaseMount = false;
             if (player.grapCount > 0)
                 player.RemoveAllGrapplingHooks();
-            if (player.mount.Active)
-                player.mount.Dismount(player);
+            //if (player.mount.Active)
+            //    player.mount.Dismount(player);
             player.FargoSouls().NoUsingItems = 2;
             if (preventDashing)
             {
