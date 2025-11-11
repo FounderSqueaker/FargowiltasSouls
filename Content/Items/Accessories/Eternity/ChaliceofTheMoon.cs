@@ -5,7 +5,7 @@ using FargowiltasSouls.Content.Buffs.Minions;
 using FargowiltasSouls.Content.Patreon.DanielTheRobot;
 using FargowiltasSouls.Core.AccessoryEffectSystem;
 using FargowiltasSouls.Core.Toggler.Content;
-using FargowiltasSouls.Content.Projectiles.Accessories.ChaliceOfTheMoon;
+using FargowiltasSouls.Content.Projectiles.Accessories.HeartOfTheMaster;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
@@ -162,9 +162,6 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
         {
             if (ModContent.TryFind("Fargowiltas", "Omnistation", out ModBuff omnibuff))
                 ChaliceBuffs.Add(omnibuff.Type);
-        }
-        public override void PostUpdateEquips(Player player)
-        {
 
             foreach (int buff in ChaliceBuffs)
             {
