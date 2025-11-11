@@ -111,13 +111,13 @@ namespace FargowiltasSouls.Content.Projectiles
             ProjectileID.TinyEater
         ];
 
-        internal static List<int> DoesNotAffectHuntressType =
+        internal static HashSet<int> DoesNotAffectHuntressType =
         [
             ProjectileID.NightsEdge,
             ModContent.ProjectileType<Tome>()
         ];
 
-        private static List<int> DoesNotAffectHuntressStyle =
+        private static HashSet<int> DoesNotAffectHuntressStyle =
         [
             ProjAIStyleID.Vilethorn,
             ProjAIStyleID.MagicMissile,

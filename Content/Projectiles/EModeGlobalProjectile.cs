@@ -1500,7 +1500,7 @@ namespace FargowiltasSouls.Content.Projectiles
             }*/
         }
         private int FadeTimer = 0;
-        public static int[] FancySwings => [
+        public static HashSet<int> FancySwings => [
             ProjectileID.Excalibur,
             ProjectileID.TrueExcalibur,
             ProjectileID.TerraBlade2,
