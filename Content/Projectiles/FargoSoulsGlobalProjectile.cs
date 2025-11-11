@@ -110,27 +110,6 @@ namespace FargowiltasSouls.Content.Projectiles
             ModContent.ProjectileType<CreeperHitbox>(),
             ProjectileID.TinyEater
         ];
-
-        internal static List<int> DoesNotAffectHuntressType =
-        [
-            ProjectileID.NightsEdge,
-            ModContent.ProjectileType<Tome>()
-        ];
-
-        private static List<int> DoesNotAffectHuntressStyle =
-        [
-            ProjAIStyleID.Vilethorn,
-            ProjAIStyleID.MagicMissile,
-            ProjAIStyleID.Spear,
-            ProjAIStyleID.Drill,
-            ProjAIStyleID.HeldProjectile,
-            ProjAIStyleID.Xenopopper,
-            ProjAIStyleID.Yoyo,
-            ProjAIStyleID.TerrarianBeam,
-            ProjAIStyleID.SleepyOctopod,
-            ProjAIStyleID.ForwardStab,
-            ProjAIStyleID.ShortSword
-        ];
         public override void SetStaticDefaults()
         {
             A_SourceNPCGlobalProjectile.SourceNPCSync[ProjectileID.DD2ExplosiveTrapT3Explosion] = true;
@@ -231,12 +210,6 @@ namespace FargowiltasSouls.Content.Projectiles
                     break;
             }
 
-            if (!DoesNotAffectHuntressType.Contains(projectile.type) &&
-            (EModeGlobalProjectile.FancySwings.Contains(projectile.type) || DoesNotAffectHuntressStyle.Contains(projectile.aiStyle)))
-            {
-                DoesNotAffectHuntressType.Add(projectile.type); // fix vanilla jank
-            }
-
             //            Fargowiltas.ModProjDict.TryGetValue(projectile.type, out ModProjID);
         }
         public void ModifyProjectileSize(Projectile projectile, Player player, IEntitySource source)
@@ -298,7 +271,7 @@ namespace FargowiltasSouls.Content.Projectiles
 
                 if (sourceProj is not null)
                 {
-                    if (sourceProj.FargoSouls().ItemSource && (((sourceProj.minion || sourceProj.sentry) && (ProjectileID.Sets.MinionShot[projectile.type] || ProjectileID.Sets.SentryShot[projectile.type])) || DoesNotAffectHuntressType.Contains(sourceProj.type)))
+                    if (sourceProj.FargoSouls().ItemSource && (((sourceProj.minion || sourceProj.sentry) && (ProjectileID.Sets.MinionShot[projectile.type] || ProjectileID.Sets.SentryShot[projectile.type])) || FargoSoulsSets.Projectiles.DoesNotAffectHuntress[sourceProj.type]))
                         ItemSource = true; // reuse this with the intention to make shots from held projectiles work with Huntress, or make minion shots count as ItemSource
 
                     if (sourceProj.FargoSouls().TikiTagged)
@@ -456,8 +429,9 @@ namespace FargowiltasSouls.Content.Projectiles
                 && projectile.DamageType != DamageClass.Default
                 && projectile.FargoSouls().Homing != true
                 && !FargoSoulsUtil.IsSummonDamage(projectile, true, false)
-                && !DoesNotAffectHuntressType.Contains(projectile.type))
+                && !FargoSoulsSets.Projectiles.DoesNotAffectHuntress[projectile.type])
             {
+                Main.NewText($"{projectile}");
                 HuntressProj = 1;
             }
             if (player.HasEffect<NinjaEffect>() && modPlayer.NinjaCounter >= 1
