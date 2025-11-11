@@ -10,6 +10,7 @@ using FargowiltasSouls.Content.Items.Accessories;
 using FargowiltasSouls.Content.Items.Accessories.Enchantments;
 using FargowiltasSouls.Content.Items.Accessories.Eternity;
 using FargowiltasSouls.Content.Items.Accessories.Forces;
+using FargowiltasSouls.Content.Items.Consumables;
 using FargowiltasSouls.Content.Items.Materials;
 using FargowiltasSouls.Content.Items.Misc;
 using FargowiltasSouls.Content.Items.Summons;
@@ -1462,6 +1463,11 @@ namespace FargowiltasSouls.Core.Globals
             if (shop.NpcType == ModContent.NPCType<Deviantt>())
             {
                 shop.Add(new Item(ModContent.ItemType<EternityAdvisor>()) { shopCustomPrice = Item.buyPrice(copper: 10000) });
+            }
+
+            if (shop.NpcType == NPCID.Clothier)
+            {
+                shop.Add(new Item(ModContent.ItemType<TerrysChocolateOrange>()) { shopCustomPrice = Item.buyPrice(platinum: 1) });
             }
         }
         public override void ModifyActiveShop(NPC npc, string shopName, Item[] items)

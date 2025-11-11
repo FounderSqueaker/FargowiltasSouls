@@ -3897,3 +3897,14 @@ SoulGuyLegs: {
 	// DisplayName: F Legs
 	// Tooltip: "[i:FargowiltasSouls/Masochist]"
 }
+
+TerrysChocolateOrange: {
+	// DisplayName: Terry's Chocolate Orange
+	/* Tooltip:
+		'''
+		Major improvements to all stats
+		'Favored by the man with the red hat'
+		Increases life regeneration
+		10 minute duration
+		''' */
+}
