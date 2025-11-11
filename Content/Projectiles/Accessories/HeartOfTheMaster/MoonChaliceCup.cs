@@ -11,11 +11,11 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-namespace FargowiltasSouls.Content.Projectiles.Accessories.ChaliceOfTheMoon
+namespace FargowiltasSouls.Content.Projectiles.Accessories.HeartOfTheMaster
 {
     public class MoonChaliceCup : ModProjectile
     {
-        public override string Texture => FargoAssets.GetAssetString("Content/Projectiles/Accessories/HeartOfTheMaster", "SqueakersWildNightDrink");
+        public override string Texture => FargoAssets.GetAssetString("Content/Projectiles/Accessories/HeartOfTheMaster", "MoonChaliceCup");
         public override void SetDefaults()
         {
             Projectile.width = 28;
