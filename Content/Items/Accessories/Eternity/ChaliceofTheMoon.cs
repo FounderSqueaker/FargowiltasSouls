@@ -35,9 +35,8 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.noUseGraphic = true;
             Item.shoot = ModContent.ProjectileType<MoonChaliceCup>();
-            Item.UseSound = null;
-            Item.useTime = 180;
-            Item.useAnimation = 180;
+            Item.useTime = 30;
+            Item.useAnimation = 30;
         }
         public override void UpdateInventory(Player player)
         {
@@ -68,6 +67,10 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
         public override void SafeModifyTooltips(List<TooltipLine> tooltips)
         {
             
+        }
+        public override bool CanShoot(Player player)
+        {
+            return player.ownedProjectileCounts[Item.shoot] < 1 && base.CanShoot(player);
         }
     }
     public class ChalicePotionEffect : AccessoryEffect
@@ -111,53 +114,7 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
             BuffID.WarTable
            // BuffID.Honey
         ];
-        public static List<int> ChaliceBuffsUse =
-        [
-            BuffID.AmmoReservation,
-            BuffID.Archery,
-            BuffID.Battle,
-            BuffID.Builder,
-            BuffID.BiomeSight,
-            BuffID.Calm,
-            BuffID.Crate,
-            BuffID.Dangersense,
-            BuffID.Endurance,
-            BuffID.WellFed3,
-            BuffID.Featherfall,
-            BuffID.Fishing,
-            BuffID.Flipper,
-            BuffID.Gills,
-            BuffID.Gravitation,
-            BuffID.Heartreach,
-            BuffID.Hunter,
-            BuffID.Inferno,
-            BuffID.Invisibility,
-            BuffID.Ironskin,
-            BuffID.Lifeforce,
-            BuffID.Lucky,
-            BuffID.MagicPower,
-            BuffID.ManaRegeneration,
-            BuffID.Mining,
-            BuffID.NightOwl,
-            BuffID.ObsidianSkin,
-            BuffID.Rage,
-            BuffID.Regeneration,
-            BuffID.Shine,
-            BuffID.Sonar,
-            BuffID.Spelunker,
-            BuffID.Summoning,
-            BuffID.Swiftness,
-            BuffID.Thorns,
-            BuffID.Titan,
-            BuffID.Warmth,
-            BuffID.WaterWalking,
-            BuffID.Wrath,
-            BuffID.AmmoBox,
-            BuffID.Bewitched,
-            BuffID.Clairvoyance,
-            BuffID.Sharpened,
-            BuffID.WarTable,
-        ];
+        
         public override void PostUpdateEquips(Player player)
         {
             if (ModContent.TryFind("Fargowiltas", "Omnistation", out ModBuff omnibuff))
