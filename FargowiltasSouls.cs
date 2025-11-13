@@ -26,6 +26,7 @@ using FargowiltasSouls.Content.NPCs.EternityModeNPCs.Accessories;
 using FargowiltasSouls.Content.NPCs.EternityModeNPCs.BossMinions;
 using FargowiltasSouls.Content.NPCs.EternityModeNPCs.CustomEnemies.Desert;
 using FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.Jungle;
+using FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA;
 using FargowiltasSouls.Content.Patreon.Volknet;
 using FargowiltasSouls.Content.Projectiles.Eternity.Environment;
 using FargowiltasSouls.Content.Projectiles.Weapons.ChallengerItems;
@@ -679,7 +680,8 @@ namespace FargowiltasSouls
             WakeUpDeviantt,
             WakeUpMutant,
             SyncSoulVortexHit,
-            ClearNPCBuffFromClient
+            ClearNPCBuffFromClient,
+            GoblinDodgeRoll
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
@@ -1060,6 +1062,16 @@ namespace FargowiltasSouls
                                 if (index > -1)
                                     npc.DelBuff(index);
                             }
+                        }
+                        break;
+                    case PacketID.GoblinDodgeRoll: // client to server
+                        {
+                            NPC npc = FargoSoulsUtil.NPCExists(reader.ReadByte(), new int[] { NPCID.DD2GoblinT1, NPCID.DD2GoblinT2, NPCID.DD2GoblinT3 });
+                            DD2Goblin goblin = npc.GetGlobalNPC<DD2Goblin>();
+                            goblin.State = -1;
+                            goblin.Timer = -1;
+                            npc.HideStrikeDamage = true;
+                            npc.netUpdate = true;
                         }
                         break;
                     default:

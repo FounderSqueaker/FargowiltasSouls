@@ -683,14 +683,6 @@ namespace FargowiltasSouls.Content.Bosses.VanillaEternity
                 MinionDamageCounter += hit.Damage;
         }
 
-        public override void SafeModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
-        {
-            base.SafeModifyHitByProjectile(npc, projectile, ref modifiers);
-
-            if (ProjectileID.Sets.CultistIsResistantTo[projectile.type])
-                modifiers.FinalDamage *= 1 / 1.3f;
-        }
-
         public override void SafeOnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
         {
             base.SafeOnHitByProjectile(npc, projectile, hit, damageDone);

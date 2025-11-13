@@ -880,29 +880,30 @@ TimFireball.DisplayName: Fireball
 TimHatSummon.DisplayName: Tim's Magic Hat
 BloodTrail.DisplayName: Blood Trail
 MermanAnchor.DisplayName: Merman Anchor
-JavelinSpark.DisplayName: Spark
-TrojanSnowPile.DisplayName: Snow Pile
+MoonChaliceCup.DisplayName: Moon Chalice Cup
+MutantFancyMovementTell.DisplayName: Mutant Fancy Movement Tell
+TrojanSnowPile.DisplayName: Trojan Snow Pile
+ChloroBomb.DisplayName: Chloro Bomb
+ChloroRay.DisplayName: Chloro Ray
+ShadowBolt.DisplayName: Shadow Bolt
+BetsyDarkMageClone.DisplayName: Betsy Dark Mage Clone
+BetsyFusedSigil.DisplayName: Betsy Fused Sigil
+BetsyFusedSigilProj.DisplayName: Betsy Fused Sigil Proj
+BetsyKoboldClone.DisplayName: Betsy Kobold Clone
+BetsyLightningAura.DisplayName: Betsy Lightning Aura
+BetsyLightningBugClone.DisplayName: Betsy Lightning Bug Clone
+BetsySpawnPortal.DisplayName: Betsy Spawn Portal
+BetsyWindVortex.DisplayName: Betsy Wind Vortex
+BetsyWyvernClone.DisplayName: Betsy Wyvern Clone
+DD2CrystalAura.DisplayName: D D2 Crystal Aura
+DD2CrystalDeathray.DisplayName: D D2 Crystal Deathray
+FlyingDragonHostile.DisplayName: Flying Dragon Hostile
+PhantasmalBoltEoC.DisplayName: Phantasmal Bolt Eo C
+BloodSpinShot.DisplayName: Blood Spin Shot
 BloodThornWarning.DisplayName: Blood Thorn Warning
+DreadSuck.DisplayName: Dread Suck
 EelChum.DisplayName: Eel Chum
 EelChumBucket.DisplayName: Eel Chum Bucket
 EelDrippler.DisplayName: Eel Drippler
-DD2CrystalAura.DisplayName: Crystal Aura
-BetsySpawnPortal.DisplayName: Mini Etherian Portal
-BetsyWyvernClone.DisplayName: Wyvern
-BetsyWindVortex.DisplayName: Wind Vortex
-FlyingDragonHostile.DisplayName: Flying Dragon
-BetsyFusedSigil.DisplayName: Fused Sigil
-BetsyFusedSigilProj.DisplayName: Kobold Explosion
-DD2CrystalDeathray.DisplayName: Crystal Deathray
-BetsyKoboldClone.DisplayName: Kobold Glider
-BetsyLightningBugClone.DisplayName: Lightning Bug
-BetsyLightningAura.DisplayName: Lightning
-BetsyDarkMageClone.DisplayName: Dark Mage
 LacBeetleCloud.DisplayName: Lac Beetle Cloud
-ChloroBomb.DisplayName: Chloro Bomb
-MutantFancyMovementTell.DisplayName: Mutant Fancy Movement Tell
-ShadowBolt.DisplayName: Shadow Bolt
-PhantasmalBoltEoC.DisplayName: Phantasmal Bolt
-DreadSuck.DisplayName: Dread Suck
-BloodSpinShot.DisplayName: Blood Spin Shot
-ChloroRay.DisplayName: Chloro Ray
+JavelinSpark.DisplayName: Javelin Spark

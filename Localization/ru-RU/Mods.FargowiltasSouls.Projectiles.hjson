@@ -880,29 +880,30 @@ TimFireball.DisplayName: Огненный шар
 TimHatSummon.DisplayName: Волшебная шляпа Тима
 BloodTrail.DisplayName: Кровавый след
 MermanAnchor.DisplayName: Якорь тритона
-JavelinSpark.DisplayName: Искра
+// MoonChaliceCup.DisplayName: Moon Chalice Cup
+// MutantFancyMovementTell.DisplayName: Mutant Fancy Movement Tell
 TrojanSnowPile.DisplayName: Сугроб
+ChloroBomb.DisplayName: Хлорофитовая бомба
+ChloroRay.DisplayName: Хлорофитовый луч
+ShadowBolt.DisplayName: Теневая спираль
+BetsyDarkMageClone.DisplayName: Тёмный маг
+BetsyFusedSigil.DisplayName: Сплавленная печать
+BetsyFusedSigilProj.DisplayName: Взрыв кобольда
+BetsyKoboldClone.DisplayName: Кобольд-планёр
+BetsyLightningAura.DisplayName: Молния
+BetsyLightningBugClone.DisplayName: Светящийся жук
+BetsySpawnPortal.DisplayName: Мини-этерианский портал
+BetsyWindVortex.DisplayName: Ветряной вихрь
+BetsyWyvernClone.DisplayName: Виверна
+DD2CrystalAura.DisplayName: Аура кристалла
+DD2CrystalDeathray.DisplayName: Луч смерти кристалла
+FlyingDragonHostile.DisplayName: Летающий дракон
+PhantasmalBoltEoC.DisplayName: Фантазматический выстрел
+// BloodSpinShot.DisplayName: Blood Spin Shot
 BloodThornWarning.DisplayName: Предупреждение
+// DreadSuck.DisplayName: Dread Suck
 EelChum.DisplayName: Наживка
 EelChumBucket.DisplayName: Ведро наживки
 EelDrippler.DisplayName: Стекатель
-DD2CrystalAura.DisplayName: Аура кристалла
-BetsySpawnPortal.DisplayName: Мини-этерианский портал
-BetsyWyvernClone.DisplayName: Виверна
-BetsyWindVortex.DisplayName: Ветряной вихрь
-FlyingDragonHostile.DisplayName: Летающий дракон
-BetsyFusedSigil.DisplayName: Сплавленная печать
-BetsyFusedSigilProj.DisplayName: Взрыв кобольда
-DD2CrystalDeathray.DisplayName: Луч смерти кристалла
-BetsyKoboldClone.DisplayName: Кобольд-планёр
-BetsyLightningBugClone.DisplayName: Светящийся жук
-BetsyLightningAura.DisplayName: Молния
-BetsyDarkMageClone.DisplayName: Тёмный маг
 LacBeetleCloud.DisplayName: Хитиновое облако
-ChloroBomb.DisplayName: Хлорофитовая бомба
-// MutantFancyMovementTell.DisplayName: Mutant Fancy Movement Tell
-ShadowBolt.DisplayName: Теневая спираль
-PhantasmalBoltEoC.DisplayName: Фантазматический выстрел
-// DreadSuck.DisplayName: Dread Suck
-// BloodSpinShot.DisplayName: Blood Spin Shot
-ChloroRay.DisplayName: Хлорофитовый луч
+JavelinSpark.DisplayName: Искра

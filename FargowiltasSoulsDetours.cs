@@ -96,6 +96,8 @@ namespace FargowiltasSouls
 
             On_ItemSlot.PickItemMovementAction += AllowSouls;
             On_Main.HoverOverNPCs += HoverOverNPCs;
+            On_Player.QuickGrapple += DontDismountOnGrappleShoot;
+            On_Player.GrappleMovement += DontDismountOnGrappleLand;
         }
 
         private void SetSpawnPlayer(On_NPC.orig_SpawnOnPlayer orig, int plr, int Type)
@@ -146,6 +148,8 @@ namespace FargowiltasSouls
 
             On_ItemSlot.PickItemMovementAction -= AllowSouls;
             On_Main.HoverOverNPCs -= HoverOverNPCs;
+            On_Player.QuickGrapple -= DontDismountOnGrappleShoot;
+            On_Player.GrappleMovement -= DontDismountOnGrappleLand;
         }
 
         private int AllowSouls(On_ItemSlot.orig_PickItemMovementAction orig, Item[] inv, int context, int slot, Item checkItem)
@@ -698,6 +702,34 @@ namespace FargowiltasSouls
                 Main.npc[WallofFleshEye.realLife].dontTakeDamage = (bool)WallofFleshEye.realImmune;
                 WallofFleshEye.realLife = -1;
                 WallofFleshEye.realImmune = null;
+            }
+        }
+        public void DontDismountOnGrappleShoot(On_Player.orig_QuickGrapple orig, Player self)
+        {
+            bool check = false;
+            if (self.FargoSouls().SquireEnchantItem != null && self.mount.Active)
+            {
+                check = true;
+                typeof(Mount).GetField("_active", LumUtils.UniversalBindingFlags)?.SetValue(self.mount, false);
+            }
+            orig(self);
+            if (check)
+            {
+                typeof(Mount).GetField("_active", LumUtils.UniversalBindingFlags)?.SetValue(self.mount, true);
+            }
+        }
+        public void DontDismountOnGrappleLand(On_Player.orig_GrappleMovement orig, Player self)
+        {
+            bool check = false;
+            if (self.FargoSouls().SquireEnchantItem != null && self.mount.Active)
+            {
+                check = true;
+                typeof(Mount).GetField("_active", LumUtils.UniversalBindingFlags)?.SetValue(self.mount, false);
+            }
+            orig(self);
+            if (check)
+            {
+                typeof(Mount).GetField("_active", LumUtils.UniversalBindingFlags)?.SetValue(self.mount, true);
             }
         }
     }

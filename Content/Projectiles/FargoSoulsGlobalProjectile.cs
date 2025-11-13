@@ -93,6 +93,7 @@ namespace FargowiltasSouls.Content.Projectiles
         public bool EnchantmentProj;
         public float HeldProjMemorizedDamage;
         public float HeldProjMemorizedCrit;
+        public bool HasRanPostAI = false;
         public bool Reflected;
 
         public float TagStackMultiplier = 1;
@@ -111,13 +112,13 @@ namespace FargowiltasSouls.Content.Projectiles
             ProjectileID.TinyEater
         ];
 
-        internal static List<int> DoesNotAffectHuntressType =
+        internal static HashSet<int> DoesNotAffectHuntressType =
         [
             ProjectileID.NightsEdge,
             ModContent.ProjectileType<Tome>()
         ];
 
-        private static List<int> DoesNotAffectHuntressStyle =
+        private static HashSet<int> DoesNotAffectHuntressStyle =
         [
             ProjAIStyleID.Vilethorn,
             ProjAIStyleID.MagicMissile,
@@ -125,6 +126,7 @@ namespace FargowiltasSouls.Content.Projectiles
             ProjAIStyleID.Drill,
             ProjAIStyleID.HeldProjectile,
             ProjAIStyleID.Xenopopper,
+            ProjAIStyleID.ThickLaser,
             ProjAIStyleID.Yoyo,
             ProjAIStyleID.TerrarianBeam,
             ProjAIStyleID.SleepyOctopod,
@@ -1274,6 +1276,8 @@ namespace FargowiltasSouls.Content.Projectiles
 
         public override void PostAI(Projectile projectile)
         {
+            HasRanPostAI = true;
+
             Player player = Main.player[projectile.owner];
             FargoSoulsPlayer modPlayer = player.FargoSouls();
 

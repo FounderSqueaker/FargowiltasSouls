@@ -19,6 +19,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.CustomEnemies.OOA
         {
             base.SetStaticDefaults();
             NPCID.Sets.ImmuneToAllBuffs[Type] = true;
+            NPCID.Sets.BelongsToInvasionOldOnesArmy[Type] = true;
             this.ExcludeFromBestiary();
         }
         public override void SetDefaults()

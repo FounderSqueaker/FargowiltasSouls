@@ -77,7 +77,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Environment
                 }
             }
 
-            bool hasTop = Main.tile[new Vector2(Projectile.position.X, Projectile.position.Y - 8f).ToTileCoordinates16()].HasTile ? true : false; // TODO: Make this better later so that it makes icicle fall instead
+            bool hasTop = Main.tile[new Vector2(Projectile.position.X, Projectile.position.Y - 8f).ToTileCoordinates16()].HasUnactuatedTile ? true : false; // TODO: Make this better later so that it makes icicle fall instead
 
             if (target == null || Projectile.Center.Distance(target.Center) > 500 || (Projectile.ai[0] == 0 && !hasTop))
             {
@@ -89,7 +89,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Environment
             //size increases over time until max size
             if (Projectile.scale < 1f)
             {
-                Projectile.scale += 0.05f;
+                Projectile.scale += 0.01f;
 
                 if (Projectile.scale == 1f)
                 {

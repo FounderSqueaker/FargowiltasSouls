@@ -1,4 +1,5 @@
 ﻿using FargowiltasSouls.Assets.Textures;
+using FargowiltasSouls.Common.Graphics.Particles;
 using FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA;
 using FargowiltasSouls.Core;
 using FargowiltasSouls.Core.Systems;
@@ -44,6 +45,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
             Projectile.width = 10;
             Projectile.height = 10;
             Projectile.hostile = true;
+            Projectile.FargoSouls().DeletionImmuneRank = 1;
         }
 
         public override void SendExtraAI(BinaryWriter writer)
@@ -80,10 +82,29 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
 
                 float n = Timer > 60 ? 60 : Timer;
                 float radius = 20 * MathF.Pow(n, 0.5f);
-
-                if (Timer >= 10 && FargoSoulsUtil.HostCheck)
+                Vector2 offset = Projectile.Center + 0.5f * radius * Projectile.direction * Vector2.UnitX;
+                if (Timer >= 10)
                 {
-                    Projectile.NewProjectile(Terraria.Entity.InheritSource(Projectile), Projectile.Center + 0.7f * radius * Projectile.direction * Vector2.UnitX, Vector2.Zero, ModContent.ProjectileType<OOAForceFieldProj>(), 0, 0f, ai0: radius);
+                    float distance = 3f * 24;
+
+                    Main.projectile.Where(x => EModeGlobalProjectile.CanBeAbsorbed(x) && !x.Eternity().isADD2Proj).ToList().ForEach(x =>
+                    {
+                        if (Vector2.Distance(x.Hitbox.ClosestPointInRect(offset), offset) <= distance)
+                        {
+                            //for (int i = 0; i < 5; i++)
+                            //{
+                            //    int dustId = Dust.NewDust(new Vector2(x.position.X, x.position.Y + 2f), x.width, x.height + 5, DustID.PinkTorch, x.velocity.X * 0.2f, x.velocity.Y * 0.2f, 100, default, 1.5f);
+                            //    Main.dust[dustId].noGravity = true;
+                            //}
+                            for (int i = 0; i < 3; i++)
+                            {
+                                new SmallSparkle(x.Center, 5 * Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi), Color.Purple, 1f, 7).Spawn();
+                            }
+                            new BigSparkle(x.Center, Vector2.Zero, Color.Purple, 0.5f, 5).Spawn();
+                            SoundEngine.PlaySound(SoundID.MaxMana with { MaxInstances = 2 }, x.Center);
+                            x.active = false;
+                        }
+                    });
                 }
             }
             else
@@ -142,41 +163,6 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
             return false;
-        }
-    }
-
-    public class OOAForceFieldProj : ModProjectile
-    {
-        public override string Texture => FargoAssets.GetAssetString("Content/Projectiles", "Empty");
-
-        public override void SetDefaults()
-        {
-            Projectile.timeLeft = 2;
-            Projectile.width = 25;
-            Projectile.height = 50;
-            Projectile.hostile = true;
-        }
-
-        public override void AI()
-        {
-            Projectile.height = 50;
-
-            float distance = 3f * 24;
-
-            Main.projectile.Where(x => EModeGlobalProjectile.CanBeAbsorbed(x) && !x.Eternity().isADD2Proj).ToList().ForEach(x =>
-            {
-                if (Vector2.Distance(x.Center, Projectile.Center) <= distance)
-                {
-                    for (int i = 0; i < 5; i++)
-                    {
-                        int dustId = Dust.NewDust(new Vector2(x.position.X, x.position.Y + 2f), x.width, x.height + 5, DustID.PinkTorch, x.velocity.X * 0.2f, x.velocity.Y * 0.2f, 100, default, 1.5f);
-                        Main.dust[dustId].noGravity = true;
-                    }
-
-                    SoundEngine.PlaySound(SoundID.MaxMana with { MaxInstances = 2 }, Projectile.Center);
-                    x.Kill();
-                }
-            });
         }
     }
 }

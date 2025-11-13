@@ -1,11 +1,14 @@
-﻿using FargowiltasSouls.Assets.Textures;
+﻿using System.Collections.Generic;
+using FargowiltasSouls.Assets.Textures;
 using FargowiltasSouls.Content.Buffs.Eternity;
 using FargowiltasSouls.Content.Buffs.Minions;
+using FargowiltasSouls.Content.Patreon.DanielTheRobot;
 using FargowiltasSouls.Core.AccessoryEffectSystem;
 using FargowiltasSouls.Core.Toggler.Content;
+using FargowiltasSouls.Content.Projectiles.Accessories.HeartOfTheMaster;
 using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -16,7 +19,6 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
     {
         public override string Texture => FargoAssets.GetAssetString("Content/Items/Accessories/Eternity", Name);
         public override bool Eternity => true;
-
         public override void SetStaticDefaults()
         {
             Terraria.GameContent.Creative.CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
@@ -30,14 +32,11 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
             //Item.defense = 10;
             Item.rare = ItemRarityID.Purple;
             Item.value = Item.sellPrice(0, 8);
-
-            Item.useStyle = ItemUseStyleID.DrinkLiquid;
-            Item.useAnimation = 17;
-            Item.useTime = 17;
-            Item.useTurn = true;
-            Item.UseSound = SoundID.Item3;
-
-            Item.consumable = false;
+            Item.useStyle = ItemUseStyleID.Shoot;
+            Item.noUseGraphic = true;
+            Item.shoot = ModContent.ProjectileType<MoonChaliceCup>();
+            Item.useTime = 30;
+            Item.useAnimation = 30;
         }
         public override void UpdateInventory(Player player)
         {
@@ -68,6 +67,10 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
         public override void SafeModifyTooltips(List<TooltipLine> tooltips)
         {
             
+        }
+        public override bool CanShoot(Player player)
+        {
+            return player.ownedProjectileCounts[Item.shoot] < 1 && base.CanShoot(player);
         }
     }
     public class ChalicePotionEffect : AccessoryEffect
@@ -111,13 +114,11 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
             BuffID.WarTable
            // BuffID.Honey
         ];
-        public override void SetStaticDefaults()
+        
+        public override void PostUpdateEquips(Player player)
         {
             if (ModContent.TryFind("Fargowiltas", "Omnistation", out ModBuff omnibuff))
                 ChaliceBuffs.Add(omnibuff.Type);
-        }
-        public override void PostUpdateEquips(Player player)
-        {
 
             foreach (int buff in ChaliceBuffs)
             {
