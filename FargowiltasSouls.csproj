@@ -75,7 +75,6 @@
     <None Remove="Localization\en-US\Mods.FargowiltasSouls.ActiveSkills.hjson" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Assets\Textures\Content\NPCs\" />
     <Folder Include="Assets\Textures\Gores\Weapons\BigSting\" />
     <Folder Include="Assets\Sounds\Challengers\Trojan\" />
     <Folder Include="Assets\Sounds\VanillaEternity\KingSlime\" />
