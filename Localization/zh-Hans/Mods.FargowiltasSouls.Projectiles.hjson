@@ -895,8 +895,8 @@ EmpressRitual.DisplayName: 女皇结界
 // BetsySpawnPortal.DisplayName: Betsy Spawn Portal
 // BetsyWindVortex.DisplayName: Betsy Wind Vortex
 // BetsyWyvernClone.DisplayName: Betsy Wyvern Clone
-// DD2CrystalAura.DisplayName: D D2 Crystal Aura
-// DD2CrystalDeathray.DisplayName: D D2 Crystal Deathray
+// DD2CrystalAura.DisplayName: Crystal Aura
+// DD2CrystalDeathray.DisplayName: Crystal Deathray
 // FlyingDragonHostile.DisplayName: Flying Dragon Hostile
 // PhantasmalBoltEoC.DisplayName: Phantasmal Bolt Eo C
 // BloodSpinShot.DisplayName: Blood Spin Shot
@@ -907,3 +907,4 @@ EmpressRitual.DisplayName: 女皇结界
 // EelDrippler.DisplayName: Eel Drippler
 // LacBeetleCloud.DisplayName: Lac Beetle Cloud
 // JavelinSpark.DisplayName: Javelin Spark
+// BetsyDD2Shield.DisplayName: Etherian Shield

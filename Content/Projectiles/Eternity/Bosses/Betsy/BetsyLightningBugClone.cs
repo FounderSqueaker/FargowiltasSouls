@@ -82,7 +82,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
 
         public override void OnKill(int timeLeft)
         {
-            SoundEngine.PlaySound(SoundID.DD2_LightningBugDeath, Projectile.Center);
+            SoundEngine.PlaySound(SoundID.DD2_LightningBugDeath with { Volume = 0.1f }, Projectile.Center);
 
             for (int i = 0; i < 2; i++)
             {

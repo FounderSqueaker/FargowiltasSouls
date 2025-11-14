@@ -4,6 +4,7 @@ using FargowiltasSouls.Core.Systems;
 using Luminance.Core.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,6 +68,16 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
             int timeToDet = WorldSavingSystem.MasochistModeReal ? 120 : 180;
             if (Projectile.ai[1] == 1)
             {
+                if (timer < 0)
+                    timer = 0;
+
+                if (timer == 0)
+                {
+                    Vector2 pos = betsy.Center + 270 * Vector2.UnitX.RotatedBy(betsy.AngleTo(Projectile.Center));
+                    SoundEngine.PlaySound(SoundID.DD2_GhastlyGlaiveImpactGhost with { Pitch = -0.5f }, pos);
+                    if (FargoSoulsUtil.HostCheck)
+                        Projectile.NewProjectile(Projectile.InheritSource(Projectile), pos, Vector2.Zero, ModContent.ProjectileType<BetsyDD2Shield>(), 0, 0, ai0: Projectile.whoAmI);
+                }
                 timer++;
                 if (timer == timeToDet)
                 {
@@ -102,8 +113,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
                     
                     if (timer % 2 == 0)
                     {
-                        SoundEngine.PlaySound(SoundID.DD2_SkyDragonsFuryShot with { Pitch = -0.2f, Volume = 2f }, Projectile.Center);
-                        SoundEngine.PlaySound(SoundID.DD2_SkyDragonsFuryShot with { Pitch = -0.2f, Volume = 2f }, Projectile.Center);
+                        SoundEngine.PlaySound(SoundID.DD2_SkyDragonsFuryShot with { Pitch = -0.2f}, Projectile.Center);
                     }
 
                 }
@@ -112,6 +122,10 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
                 {
                     Projectile.Kill();
                 }
+            }
+            else
+            {
+                timer--;
             }
         }
 
@@ -132,8 +146,28 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
             }
 
             int timeToDet = WorldSavingSystem.MasochistModeReal ? 120 : 180;
-            float ai2 = Projectile.ai[2] > timeToDet ? 2f * (Projectile.ai[2] - timeToDet) : 0;
-
+            float ai2;
+            float retractTime = 20;
+            if (Projectile.ai[1] == 0)
+            {
+                ai2 = MathHelper.Lerp(0, 58, (-1)*(180f+Projectile.ai[2]) / 360f);
+            }
+            else
+            {
+                if (Projectile.ai[2] > timeToDet)
+                {
+                    ai2 = 2f * (Projectile.ai[2] - timeToDet);
+                }
+                else if (Projectile.ai[2] > timeToDet - retractTime)
+                {
+                    ai2 = MathHelper.Lerp(0, 58, (retractTime - (Projectile.ai[2] - timeToDet + retractTime)) / retractTime);
+                }
+                else
+                {
+                    ai2 = 58;
+                }
+            }
+            ai2 = MathHelper.Clamp(ai2, 0, 58);
 
             Color color = Color.RoyalBlue;
             Vector2 pos = Projectile.Center;
@@ -141,7 +175,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
             // aimed to betsy
 
             float radius = 20 * MathHelper.Min(15, ai2);
-            float arcWidth = 0.90f * MathHelper.PiOver4;
+            float arcWidth = Projectile.ai[2] <= timeToDet ? 0 : 1.04f * MathHelper.PiOver4;
             float arcAngle = Projectile.AngleTo(betsy.Center);
 
             var blackTile = TextureAssets.MagicPixel;
@@ -161,14 +195,14 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
             shader.TrySetParameter("anchorPoint", pos);
             shader.TrySetParameter("screenPosition", Main.screenPosition);
             shader.TrySetParameter("screenSize", Main.ScreenSize.ToVector2());
-            shader.TrySetParameter("maxOpacity", 0.35f);
+            shader.TrySetParameter("maxOpacity", Projectile.ai[2] > timeToDet ? 0.35f : 0.2f);
             shader.TrySetParameter("color", color.ToVector4());
             
             // rest
 
-            float radius2 = 20 * MathHelper.Min(58, ai2);
-
-            float arcWidth2 = MathHelper.Pi - 0.25f * MathHelper.PiOver4;
+            float radius2 = Projectile.ai[1] == 0 ? 20 * 58 : 20 * ai2;
+            float lerp = LumUtils.Saturate(Projectile.ai[2] / 90f);
+            float arcWidth2 = Projectile.ai[1] == 0 ? 1.3f * MathHelper.Pi : MathHelper.Lerp(1.3f * MathHelper.Pi, (MathHelper.Pi - 0.05f * MathHelper.PiOver4), lerp);
             float arcAngle2 = MathHelper.Pi + Projectile.AngleTo(betsy.Center);
 
             Main.spriteBatch.GraphicsDevice.Textures[1] = noise.Value;
@@ -180,6 +214,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
+            float colorMult = Projectile.ai[1] == 0 ? ai2 / 58f : 1;
 
             ManagedShader shader2 = ShaderManager.GetShader("FargowiltasSouls.DestroyerScanTelegraph");
             shader2.TrySetParameter("colorMult", 7.35f);
@@ -190,8 +225,8 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
             shader2.TrySetParameter("anchorPoint", pos);
             shader2.TrySetParameter("screenPosition", Main.screenPosition);
             shader2.TrySetParameter("screenSize", Main.ScreenSize.ToVector2());
-            shader2.TrySetParameter("maxOpacity", 0.5f);
-            shader2.TrySetParameter("color", color.ToVector4());
+            shader2.TrySetParameter("maxOpacity", Projectile.ai[2] > timeToDet ? 0.5f : 0.4f);
+            shader2.TrySetParameter("color", color.ToVector4() * colorMult);
 
 
             Main.spriteBatch.GraphicsDevice.Textures[1] = noise.Value;

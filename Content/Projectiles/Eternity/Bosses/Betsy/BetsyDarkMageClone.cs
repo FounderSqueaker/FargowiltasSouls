@@ -66,8 +66,12 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Betsy
                     FargoSoulsUtil.DustRing(chargeCenter, 30, DustID.UltraBrightTorch, scale * 3f, scale: scale);
                 }
 
-                float r = Main.rand.NextFloat(0f, MathHelper.TwoPi);
-                new SparkParticle(chargeCenter + 100 * scale * Vector2.UnitX.RotatedBy(r), -10 * scale * Vector2.UnitX.RotatedBy(r), Color.RoyalBlue, scale, 10).Spawn();
+                if (timer % 2 == 0)
+                {
+                    float r = Main.rand.NextFloat(0f, MathHelper.TwoPi);
+                    new ElectricSpark(chargeCenter + 50 * scale * Vector2.UnitX.RotatedBy(r), -7 * scale * Vector2.UnitX.RotatedBy(r), Color.RoyalBlue, 0.7f * scale, 10).Spawn();
+                }
+                
             }
         }
 
