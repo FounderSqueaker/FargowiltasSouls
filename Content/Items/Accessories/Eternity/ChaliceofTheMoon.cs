@@ -114,11 +114,13 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
             BuffID.WarTable
            // BuffID.Honey
         ];
-        
-        public override void PostUpdateEquips(Player player)
+        public override void SetStaticDefaults()
         {
             if (ModContent.TryFind("Fargowiltas", "Omnistation", out ModBuff omnibuff))
                 ChaliceBuffs.Add(omnibuff.Type);
+        }
+        public override void PostUpdateEquips(Player player)
+        {
 
             foreach (int buff in ChaliceBuffs)
             {
