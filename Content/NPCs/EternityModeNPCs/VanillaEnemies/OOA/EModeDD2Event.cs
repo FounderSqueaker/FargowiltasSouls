@@ -425,13 +425,13 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                         num9 = OOAChanceNPC(x, y, DD2GoblinT3, DD2JavelinstT3, 10);
                     break;
                 case 4: // Goblin Bombers, Javelinsts, Drakins, Kobold Flyers, Lightning Bugs, and Dark Mage
-                    if (Main.rand.NextBool(12) && !NPC.AnyNPCs(DD2DarkMageT3))
+                    if (Main.rand.NextBool(20) && !NPC.AnyNPCs(DD2DarkMageT3))
                         num8 = OOANPC(x, y, DD2DarkMageT3);
                     else if (Main.rand.NextBool(9) && NPC.CountNPCS(DD2DrakinT3) < num6)
                         num8 = OOANPC(x, y, DD2DrakinT3);
-                    else if (Main.rand.NextBool(11) && NPC.CountNPCS(DD2LightningBugT3) < num3)
+                    else if (Main.rand.NextBool(15) && NPC.CountNPCS(DD2LightningBugT3) < num3)
                         num8 = OOANPC(x, y, DD2LightningBugT3);
-                    else if (Main.rand.NextBool(5) && NPC.CountNPCS(DD2JavelinstT3) < num2)
+                    else if (Main.rand.NextBool(7) && NPC.CountNPCS(DD2JavelinstT3) < num2)
                         num8 = OOANPC(x, y, DD2JavelinstT3);
                     if (Main.rand.NextBool(9) && NPC.CountNPCS(DD2KoboldFlyerT3) < num5)
                         num9 = OOANPC(x, y, DD2KoboldFlyerT3);
@@ -441,29 +441,27 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                 case 5: // Goblins, Javelinsts, Wither Beasts, Drakins, Kobold Walkers, Kobold Flyers, Lightning Bugs, and Ogre
                     if (Main.rand.NextBool(20) && !NPC.AnyNPCs(DD2OgreT3))
                         num8 = OOANPC(x, y, DD2OgreT3);
-                    else if (Main.rand.NextBool(5) && NPC.CountNPCS(DD2LightningBugT3) < num7)
+                    else if (Main.rand.NextBool(10) && NPC.CountNPCS(DD2LightningBugT3) < num7)
                         num8 = OOANPC(x, y, DD2LightningBugT3);
                     else if (Main.rand.NextBool(17) && NPC.CountNPCS(DD2WitherBeastT3) < num4)
                         num8 = OOANPC(x, y, DD2WitherBeastT3);
                     else if (Main.rand.NextBool(12) && NPC.CountNPCS(DD2DrakinT3) < num6)
                         num8 = OOANPC(x, y, DD2DrakinT3);
-                    else if (Main.rand.NextBool(9) && NPC.CountNPCS(DD2WitherBeastT3) + NPC.CountNPCS(DD2JavelinstT3) < num4)
-                        num8 = OOAChanceNPC(x, y, DD2JavelinstT3, DD2WitherBeastT3, 6);
-                    if (Main.rand.NextBool(7) && NPC.CountNPCS(DD2KoboldWalkerT3) + NPC.CountNPCS(DD2KoboldFlyerT3) < num5)
+                    else if (Main.rand.NextBool(11) && NPC.CountNPCS(DD2WitherBeastT3) + NPC.CountNPCS(DD2JavelinstT3) < num4)
+                        num8 = OOAChanceNPC(x, y, DD2JavelinstT3, DD2WitherBeastT3, 8);
+                    if (Main.rand.NextBool(10) && NPC.CountNPCS(DD2KoboldWalkerT3) + NPC.CountNPCS(DD2KoboldFlyerT3) < num5)
                         num9 = OOAChanceNPC(x, y, DD2KoboldWalkerT3, DD2KoboldFlyerT3, 4);
                     else if (Main.rand.NextBool(5) && NPC.CountNPCS(DD2GoblinT3) < num)
                         num9 = OOANPC(x, y, DD2GoblinT3);
                     break;
-                case 6: // Goblin Bombers, Wyverns, Wither Beasts, Drakins, Kobold Flyers, Lightning Bugs, Dark Mage, and Ogre
-                    if (Main.rand.NextBool(16) && !NPC.AnyNPCs(DD2OgreT3))
+                case 6: // Goblin Bombers, Wyverns, Drakins, Kobold Flyers, Lightning Bugs, Dark Mage, and Ogre
+                    if (Main.rand.NextBool(20) && !NPC.AnyNPCs(DD2OgreT3))
                         num8 = OOANPC(x, y, DD2OgreT3);
-                    else if (Main.rand.NextBool(16) && !NPC.AnyNPCs(DD2DarkMageT3))
+                    else if (Main.rand.NextBool(20) && !NPC.AnyNPCs(DD2DarkMageT3))
                         num8 = OOANPC(x, y, DD2DarkMageT3);
-                    else if (Main.rand.NextBool(11) && NPC.CountNPCS(DD2DrakinT3) < num6)
+                    else if (Main.rand.NextBool(14) && NPC.CountNPCS(DD2DrakinT3) < num6)
                         num8 = OOANPC(x, y, DD2DrakinT3);
-                    else if (Main.rand.NextBool(13) && NPC.CountNPCS(DD2WitherBeastT3) < num4)
-                        num8 = OOANPC(x, y, DD2WitherBeastT3);
-                    else if (Main.rand.NextBool(8) && NPC.CountNPCS(DD2LightningBugT3) < num7)
+                    else if (Main.rand.NextBool(14) && NPC.CountNPCS(DD2LightningBugT3) < num7)
                         num8 = OOANPC(x, y, DD2LightningBugT3);
                     else if (Main.rand.NextBool(7) && NPC.CountNPCS(DD2KoboldFlyerT3) < num5)
                         num8 = OOANPC(x, y, DD2KoboldFlyerT3);
@@ -694,7 +692,6 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                     return [
                         DD2GoblinBomberT3,
                         DD2WyvernT3,
-                        DD2WitherBeastT3,
                         DD2DrakinT3,
                         DD2KoboldFlyerT3,
                         DD2LightningBugT3,
