@@ -32,8 +32,11 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
         public override void SetDefaults(NPC entity)
         {
             base.SetDefaults(entity);
-            float mult = entity.type == NPCID.DD2DarkMageT1 ? 2 : 1.5f;
+            int tier = entity.type == NPCID.DD2DarkMageT1 ? 1 : 3;
+            float mult = tier == 1 ? 2 : 1.5f;
             entity.lifeMax = (int)(entity.lifeMax * mult);
+            if (tier == 3)
+                entity.damage = (int)(entity.damage * 0.7f);
         }
 
         public int AnimState = -1;
@@ -160,7 +163,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                 for (int i = 0; i < 6; i++)
                 {
                     int index = Main.rand.Next(0, order.Count);
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero, ModContent.ProjectileType<DarkRune>(), npc.damage / 3, 1f, ai0: npc.target, ai1: i * MathHelper.TwoPi / 6, ai2: order.ElementAt(index));
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, Vector2.Zero, ModContent.ProjectileType<DarkRune>(), FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage), 1f, ai0: npc.target, ai1: i * MathHelper.TwoPi / 6, ai2: order.ElementAt(index));
                     order.RemoveAt(index);
                 }
             }
@@ -179,7 +182,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                 {
                     Vector2 pos = player.Center + new Vector2(Main.rand.Next(-250, 250), -300);
                     npc.netUpdate = true;
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), pos, Vector2.Zero, ModContent.ProjectileType<DarkTomeHostile>(), npc.damage / 3, 1f, ai2: npc.target);
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), pos, Vector2.Zero, ModContent.ProjectileType<DarkTomeHostile>(), FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 0.9f), 1f, ai2: npc.target);
                 }
             }
             if (Timer > 500)
@@ -192,7 +195,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
             if (Timer % 35 == 0 && Timer < 6 * 35 && FargoSoulsUtil.HostCheck && npc.HasValidTarget)
             {
                 if (FargoSoulsUtil.HostCheck)
-                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, 4 * Vector2.UnitX.RotatedBy((Main.player[npc.target].Center - npc.Center).ToRotation()), ModContent.ProjectileType<DarkBolt>(), npc.damage / 4, 0.3f, ai0: npc.target);
+                    Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, 4 * Vector2.UnitX.RotatedBy((Main.player[npc.target].Center - npc.Center).ToRotation()), ModContent.ProjectileType<DarkBolt>(), FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage), 0.3f, ai0: npc.target);
                 SoundEngine.PlaySound(SoundID.DD2_DarkMageAttack, npc.Center);
             }
             if (Timer > 300)

@@ -25,9 +25,10 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
             NPCID.DD2GoblinT3
         );
 
-        public override void SetStaticDefaults()
+        public override void SetDefaults(NPC entity)
         {
-            base.SetStaticDefaults();
+            base.SetDefaults(entity);
+            entity.damage = (int)(entity.damage * 0.8f);
         }
 
         public int Timer = -60;

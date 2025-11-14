@@ -45,14 +45,17 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
 
             Timer++;
             if (Timer == 180)
+            {
                 rand = Main.rand.Next(3);
+                npc.netUpdate = true;
+            }
             if (Timer > 180 && npc.HasPlayerTarget && npc.Distance(Main.player[npc.target].Center) < 700)
             {
                 if (rand == 0) // chance to not throw
                 {
                     Vector2 targetPos = Main.player[npc.target].Center - npc.Center;
                     if (FargoSoulsUtil.HostCheck)
-                        Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Center, Main.rand.NextFloat(0.8f, 1.2f) * 8 * Vector2.UnitX.RotatedBy(targetPos.ToRotation()) - 2 * (npc.Center.Y - targetPos.Y) / 2000f * Vector2.UnitY, ModContent.ProjectileType<StinkBomb>(), FargoSoulsUtil.ScaledProjectileDamage(npc.damage), 1);
+                        Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Center, Main.rand.NextFloat(0.8f, 1.2f) * 8 * Vector2.UnitX.RotatedBy(targetPos.ToRotation()) - 2 * (npc.Center.Y - targetPos.Y) / 2000f * Vector2.UnitY, ModContent.ProjectileType<StinkBomb>(), FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 0.7f), 1);
                     SoundEngine.PlaySound(FargosSoundRegistry.ThrowShort with { Pitch = 1f }, npc.Center);
                 }
                 Timer = 0;

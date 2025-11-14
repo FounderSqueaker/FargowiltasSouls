@@ -70,6 +70,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                 npc.dontTakeDamage = true;
                 npc.ai[0] = 1;
                 npc.noTileCollide = true;
+                return;
             }
             base.HitEffect(npc, hit);
         }

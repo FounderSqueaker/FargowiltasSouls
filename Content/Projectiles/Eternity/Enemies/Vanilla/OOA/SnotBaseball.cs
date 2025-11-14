@@ -21,6 +21,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
 
         public override void SetDefaults()
         {
+            Projectile.hostile = true;
             Projectile.Opacity = 1;
             Projectile.width = 20;
             Projectile.height = 20;
@@ -80,7 +81,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
                     float spread = 0.3f;
                     if (FargoSoulsUtil.HostCheck)
                         for (int i = 0; i < 7; i++)
-                            Projectile.NewProjectile(Projectile.InheritSource(Projectile), Projectile.Center, 0.4f * Projectile.velocity.RotatedBy(Main.rand.NextFloat(-spread, spread)), ModContent.ProjectileType<SnotBaseballSplit>(), Projectile.damage / 2, 1f);
+                            Projectile.NewProjectile(Projectile.InheritSource(Projectile), Projectile.Center, 0.4f * Projectile.velocity.RotatedBy(Main.rand.NextFloat(-spread, spread)), ModContent.ProjectileType<SnotBaseballSplit>(), Projectile.damage, 1f);
                     Projectile.Kill();
                 }   
             }

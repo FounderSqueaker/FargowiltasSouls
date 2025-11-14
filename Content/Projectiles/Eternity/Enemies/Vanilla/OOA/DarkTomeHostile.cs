@@ -97,7 +97,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
                     Vector2 vel = -2 * Vector2.UnitX.RotatedBy(rot);
                     if (FargoSoulsUtil.HostCheck)
                     {
-                        Projectile p = Projectile.NewProjectileDirect(Projectile.InheritSource(Projectile), Projectile.Center, vel, ModContent.ProjectileType<TomeShotHostile>(), Projectile.damage / 2, 0.1f);
+                        Projectile p = Projectile.NewProjectileDirect(Projectile.InheritSource(Projectile), Projectile.Center, vel, ModContent.ProjectileType<TomeShotHostile>(), Projectile.damage, 0.1f);
                     }
                     Projectile.velocity = -0.5f * vel;
 

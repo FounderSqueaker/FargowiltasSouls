@@ -42,9 +42,10 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
         public override void SetDefaults(NPC entity)
         {
             base.SetDefaults(entity);
-            entity.damage /= 2;
-            float mult = entity.type == NPCID.DD2OgreT2 ? 2 : 1.5f;
+            int tier = entity.type == NPCID.DD2OgreT2 ? 2 : 3;
+            float mult = tier == 2 ? 2 : 1.5f;
             entity.lifeMax = (int)(entity.lifeMax * mult);
+            entity.damage = (int)(entity.damage * 0.7f);
             //entity.scale *= 2;
         }
 
@@ -106,17 +107,19 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
         public override bool SafePreAI(NPC npc)
         {
             NormalAI = false;
-            if (npc.Distance(Main.LocalPlayer.Center) > 3000 && !DD2Event.Ongoing)
+
+            if (npc.Distance(Main.player[Player.FindClosest(npc.position, npc.width, npc.height)].Center) > 3000 && !DD2Event.Ongoing)
             {
                 npc.active = false;
                 return false;
             }
 
-            if (!Main.player.Any(p => p.active && !p.dead && !p.ghost))
+            if (!Main.player.Any(p => p.Alive()))
                 return base.SafePreAI(npc);
 
             if (!HasAttackTarget(npc))
                 npc.TargetClosest();
+
 
             Timer++;
             switch ((AttackStates)State)
@@ -184,7 +187,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                 if (FargoSoulsUtil.HostCheck)
                 {
                     FargoSoulsUtil.DustRing(pos, 20, DustID.GemEmerald, 2f, scale: 2);
-                    Projectile.NewProjectile(npc.GetSource_FromThis(), pos, new Vector2(npc.direction * 0.3f, -8), ModContent.ProjectileType<SnotBaseball>(), (int)(npc.damage / 3), 2f, ai2: npc.target);
+                    Projectile.NewProjectile(npc.GetSource_FromThis(), pos, new Vector2(npc.direction * 0.3f, -8), ModContent.ProjectileType<SnotBaseball>(), FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 0.8f), 2f, ai2: npc.target);
                 }
             }
             else if (Timer % delay == 42 && Timer > delay)
@@ -264,7 +267,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                     SoundEngine.PlaySound(SoundID.DD2_OgreRoar, npc.Center);
                     SoundEngine.PlaySound(SoundID.DD2_OgreGroundPound, npc.Center);
                     if (FargoSoulsUtil.HostCheck)
-                        Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Bottom, Vector2.Zero, ProjectileID.DD2OgreSmash, FargoSoulsUtil.ScaledProjectileDamage(npc.damage), 0f);
+                        Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Bottom, Vector2.Zero, ProjectileID.DD2OgreSmash, FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 0.85f), 0f);
                     BeginAnimation(npc, (int)AnimationStates.Jump);
                 }
                 else if (npc.velocity.Y != 0)
@@ -294,7 +297,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                     Timer = 0;
                     SoundEngine.PlaySound(SoundID.DD2_OgreGroundPound, npc.Center);
                     if (FargoSoulsUtil.HostCheck)
-                        Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Bottom, Vector2.Zero, ProjectileID.DD2OgreSmash, FargoSoulsUtil.ScaledProjectileDamage(npc.damage), 0f);
+                        Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Bottom, Vector2.Zero, ProjectileID.DD2OgreSmash, FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 0.7f), 0f);
                     BeginAnimation(npc, (int)AnimationStates.Rest);
 
                     SoundEngine.PlaySound(SoundID.NPCDeath19, npc.Center);
@@ -302,9 +305,9 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                     {
                         float speed = 9f;
                         for (int i = 0; i < 12; i++)
-                            Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Bottom, speed * Vector2.UnitX.RotatedBy(3 * MathHelper.PiOver2 + Main.rand.NextFloat(MathHelper.PiOver4 / 2, 1.5f * MathHelper.PiOver4)), ModContent.ProjectileType<SnotBaseballSplit>(), (int)(npc.damage / 4f), 2f);
+                            Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Bottom, speed * Vector2.UnitX.RotatedBy(3 * MathHelper.PiOver2 + Main.rand.NextFloat(MathHelper.PiOver4 / 2, 1.5f * MathHelper.PiOver4)), ModContent.ProjectileType<SnotBaseballSplit>(), FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 0.85f), 2f);
                         for (int i = 0; i < 12; i++)
-                            Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Bottom, speed * Vector2.UnitX.RotatedBy(3 * MathHelper.PiOver2 - Main.rand.NextFloat(MathHelper.PiOver4 / 2, 1.5f * MathHelper.PiOver4)), ModContent.ProjectileType<SnotBaseballSplit>(), (int)(npc.damage / 4f), 2f);
+                            Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Bottom, speed * Vector2.UnitX.RotatedBy(3 * MathHelper.PiOver2 - Main.rand.NextFloat(MathHelper.PiOver4 / 2, 1.5f * MathHelper.PiOver4)), ModContent.ProjectileType<SnotBaseballSplit>(), FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 0.85f), 2f);
                     }
                     if (!Main.dedServ)
                     {
@@ -378,7 +381,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                     {
                         SoundEngine.PlaySound(SoundID.DD2_OgreGroundPound, npc.Center);
                         if (FargoSoulsUtil.HostCheck)
-                            Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Bottom, Vector2.Zero, ProjectileID.DD2OgreSmash, FargoSoulsUtil.ScaledProjectileDamage(npc.damage), 0f);
+                            Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Bottom, Vector2.Zero, ProjectileID.DD2OgreSmash, FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 0.7f), 0f);
                         BeginAnimation(npc, (int)AnimationStates.Rest);
                         ResetToIdle(npc);
                     }
@@ -415,7 +418,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                 {
                     SoundEngine.PlaySound(SoundID.DD2_OgreGroundPound, npc.Center);
                     if (FargoSoulsUtil.HostCheck)
-                        Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Bottom, Vector2.Zero, ProjectileID.DD2OgreSmash, FargoSoulsUtil.ScaledProjectileDamage(npc.damage), 0f);
+                        Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Bottom, Vector2.Zero, ProjectileID.DD2OgreSmash, FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 0.7f), 0f);
                     BeginAnimation(npc, (int)AnimationStates.Rest);
                     ResetToIdle(npc);
                 }

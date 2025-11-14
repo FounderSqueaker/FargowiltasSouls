@@ -54,7 +54,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
                 Gore g = Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.position, 0.1f * Vector2.UnitX.RotatedByRandom(MathHelper.TwoPi), GoreID.FartCloud1);
                 g.rotation = Main.rand.NextFloatDirection();
             }
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<StinkBombProj>(), Projectile.damage, 0f);
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<StinkBombProj>(), (int)(0.8f * Projectile.damage), 0f);
             SoundEngine.PlaySound(SoundID.Item16, Projectile.Center);
             SoundEngine.PlaySound(SoundID.Item14, Projectile.Center);
         }

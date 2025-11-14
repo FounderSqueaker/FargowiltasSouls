@@ -44,12 +44,14 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
 
         public override void AI()
         {
-            Projectile.ai[1]++;
-            NPC npc = Main.npc[(int)owner];
-            if (!npc.active || !(npc.type is NPCID.DD2JavelinstT1 or NPCID.DD2JavelinstT2 or NPCID.DD2JavelinstT3))
+            NPC npc = FargoSoulsUtil.NPCExists(owner, [NPCID.DD2JavelinstT1, NPCID.DD2JavelinstT2, NPCID.DD2JavelinstT3]);
+            if (npc == null)
+            {
                 Projectile.Kill();
+                return;
+            }
 
-
+            Projectile.ai[1]++;
             float distance = 3f * 16;
 
             if (Projectile.ai[1] > 80) // reflect
@@ -62,7 +64,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
                         SoundEngine.PlaySound(SoundID.Item52 with { Pitch = -0.3f }, Projectile.Center);
                         SoundEngine.PlaySound(SoundID.Item13 with { Volume = 0.7f }, Projectile.Center);
 
-                        if (FargoSoulsUtil.HostCheck)
+                        if (FargoSoulsUtil.HostCheck && Projectile.ai[2] == 0)
                         {
                             for (int i = 0; i < 3; i++)
                             {
@@ -70,6 +72,8 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
                                 float rot = Main.rand.NextFloat(-0.2f, 0.2f);
                                 Projectile.NewProjectile(Projectile.InheritSource(Projectile), x.Center, (new Vector2(-x.direction, -1) * (vel * Vector2.One)).RotatedBy(rot), ModContent.ProjectileType<JavelinSpark>(), Projectile.damage, 1f);
                             }
+                            Projectile.ai[2] = 30;
+                            npc.netUpdate = true;
                         }
 
                         // kill
@@ -82,6 +86,9 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Enemies.Vanilla.OOA
                 SoundEngine.PlaySound(SoundID.DD2_JavelinThrowersAttack with { Pitch = -0.5f, Volume = 0.5f }, Projectile.Center);
             else if (Projectile.ai[1] >= 30 && Projectile.ai[1] % 10 == 0)
                 SoundEngine.PlaySound(SoundID.DD2_JavelinThrowersAttack with { Pitch = -0.25f, Volume = 0.5f }, Projectile.Center);
+
+            if (Projectile.ai[2] > 0)
+                Projectile.ai[2]--;
 
             Vector2 offset = new Vector2(npc.spriteDirection * 15, 3);
             Projectile.Center = npc.Center + offset;

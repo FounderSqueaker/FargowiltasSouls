@@ -395,7 +395,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
             switch (NPC.waveNumber)
             {
                 case 1: // Goblin Bombers, Kobold Walkers, Kobold Flyers
-                    if (Main.rand.NextBool(3) && NPC.CountNPCS(DD2KoboldFlyerT3) < num2)
+                    if (Main.rand.NextBool(8) && NPC.CountNPCS(DD2KoboldFlyerT3) < num2)
                         num8 = OOANPC(x, y, DD2KoboldFlyerT3);
                     else if (Main.rand.NextBool(4) && NPC.CountNPCS(DD2KoboldWalkerT3) < num5)
                         num8 = OOANPC(x, y, DD2KoboldWalkerT3);
@@ -413,16 +413,16 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                         num9 = OOANPC(x, y, DD2WitherBeastT3);
                     break;
                 case 3: // Goblins, Wyverns, Javelinsts, Wither Beasts, Drakins, and Kobold Walkers
-                    if (Main.rand.NextBool(11) && NPC.CountNPCS(DD2DrakinT3) < num6)
+                    if (Main.rand.NextBool(16) && NPC.CountNPCS(DD2DrakinT3) < num6)
                         num8 = OOANPC(x, y, DD2DrakinT3);
                     else if (Main.rand.NextBool(6) && NPC.CountNPCS(DD2KoboldWalkerT3) < num5)
                         num8 = OOANPC(x, y, DD2KoboldWalkerT3);
-                    else if (Main.rand.NextBool(8) && NPC.CountNPCS(DD2WitherBeastT3) < num3)
+                    else if (Main.rand.NextBool(15) && NPC.CountNPCS(DD2WitherBeastT3) < num3)
                         num8 = OOANPC(x, y, DD2WitherBeastT3);
                     else if (Main.rand.NextBool(7) && NPC.CountNPCS(DD2WyvernT3) < num2)
                         num8 = OOANPC(x, y, DD2WyvernT3);
                     if (NPC.CountNPCS(DD2GoblinT3) + NPC.CountNPCS(DD2JavelinstT3) < num)
-                        num9 = OOAChanceNPC(x, y, DD2GoblinT3, DD2JavelinstT3, 8);
+                        num9 = OOAChanceNPC(x, y, DD2GoblinT3, DD2JavelinstT3, 10);
                     break;
                 case 4: // Goblin Bombers, Javelinsts, Drakins, Kobold Flyers, Lightning Bugs, and Dark Mage
                     if (Main.rand.NextBool(12) && !NPC.AnyNPCs(DD2DarkMageT3))
