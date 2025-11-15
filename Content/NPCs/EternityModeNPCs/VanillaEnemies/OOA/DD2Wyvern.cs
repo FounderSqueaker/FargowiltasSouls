@@ -96,7 +96,7 @@ namespace FargowiltasSouls.Content.NPCs.EternityModeNPCs.VanillaEnemies.OOA
                         SoundEngine.PlaySound(SoundID.Item20, npc.Center);
                         if (FargoSoulsUtil.HostCheck)
                         {
-                            Projectile p = Projectile.NewProjectileDirect(npc.GetSource_FromThis(), npc.Center + npc.direction * 10 * Vector2.UnitX, (crystalCenter.X - 10 - npc.Center.X) / 50 * Vector2.UnitX.RotatedBy(Main.rand.NextFloat(-spread, spread)), ProjectileID.BallofFire, npc.damage / 6, 1f);
+                            Projectile p = Projectile.NewProjectileDirect(npc.GetSource_FromThis(), npc.Center + npc.direction * 10 * Vector2.UnitX, (crystalCenter.X - 10 - npc.Center.X) / 50 * Vector2.UnitX.RotatedBy(Main.rand.NextFloat(-spread, spread)), ProjectileID.BallofFire, FargoSoulsUtil.ScaledProjectileDamage(npc.defDamage, 0.9f), 1f);
                             p.timeLeft = 80;
                             p.hostile = true;
                             p.friendly = false;
