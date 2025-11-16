@@ -36,6 +36,9 @@ namespace FargowiltasSouls.Content.PlayerDrawLayers
 
             Player player = drawInfo.drawPlayer;
 
+            if (Main.gameMenu)
+                player.FargoSouls().FlightSoulWingFrameX = 1;
+
             Rectangle frame = new((wingTexture.Width / 2) * player.FargoSouls().FlightSoulWingFrameX, wingTexture.Height / frameCount * drawInfo.drawPlayer.wingFrame, wingTexture.Width / 2, wingTexture.Height / frameCount);
             DrawData data = new(wingTexture, drawPosition.Floor(), frame, drawInfo.colorArmorBody, drawInfo.drawPlayer.bodyRotation, frame.Size() * 0.5f, 1f, drawInfo.playerEffect)
             {
