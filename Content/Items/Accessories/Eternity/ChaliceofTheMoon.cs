@@ -35,8 +35,8 @@ namespace FargowiltasSouls.Content.Items.Accessories.Eternity
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.noUseGraphic = true;
             Item.shoot = ModContent.ProjectileType<MoonChaliceCup>();
-            Item.useTime = 30;
-            Item.useAnimation = 30;
+            Item.useTime = 180;
+            Item.useAnimation = 180;
         }
         public override void UpdateInventory(Player player)
         {
