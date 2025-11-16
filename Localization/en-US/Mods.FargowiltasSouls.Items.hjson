@@ -3866,8 +3866,6 @@ TerrysChocolateOrange: {
 	Tooltip:
 		'''
 		{$CommonItemTooltip.MajorStats}
-		'Favored by the man with the red hat'
-		Increases life regeneration
-		10 minute duration
+		'Favored by great enthusiasts'
 		'''
 }
