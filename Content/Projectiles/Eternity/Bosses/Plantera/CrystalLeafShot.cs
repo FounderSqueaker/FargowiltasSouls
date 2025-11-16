@@ -173,7 +173,7 @@ namespace FargowiltasSouls.Content.Projectiles.Eternity.Bosses.Plantera
             for (int j = 0; j < 12; j++)
             {
                 Vector2 afterimageOffset = (MathHelper.TwoPi * j / 12).ToRotationVector2() * 2f * scale;
-                Color glowColor = hasRedirect ? Color.HotPink : Color.LightSkyBlue;
+                Color glowColor = hasRedirect ? Color.HotPink : Color.WhiteSmoke;
 
                 Main.EntitySpriteDraw(texture2D13, Projectile.Center - Main.screenPosition + afterimageOffset, rectangle, Projectile.GetAlpha(glowColor), rotation, rectangle.Size() / 2, scale, spriteEffects);
             }
