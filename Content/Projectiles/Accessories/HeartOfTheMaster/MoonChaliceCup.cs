@@ -87,7 +87,6 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.HeartOfTheMaster
             if (!player.Alive())
             {
                 Projectile.Kill();
-                count = 0;
                 return;
             }
 
@@ -148,7 +147,6 @@ namespace FargowiltasSouls.Content.Projectiles.Accessories.HeartOfTheMaster
                 SpilledDrink(player);
                 SoundEngine.PlaySound(SoundID.Item3 with { Pitch = drinkPitch }, player.Center);
             }
-            Main.NewText($"Count: {count}");
         }
 
         public override bool PreDraw(ref Color lightColor)
